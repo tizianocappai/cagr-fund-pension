@@ -313,8 +313,9 @@ function ResultsPanel({ results }: { results: Results }) {
         </p>
         <ForecastChart
           currentValue={results.currentValue}
-          xirr={results.xirr}
-          xirrNoAzienda={results.xirrNoAzienda}
+          defaultAderente={results.totalAderente / results.years}
+          defaultAzienda={results.totalAzienda / results.years}
+          defaultTfr={results.totalTfr / results.years}
         />
       </div>
 
@@ -326,8 +327,9 @@ function ResultsPanel({ results }: { results: Results }) {
           Bonus
         </p>
         <p className="text-sm text-[--color-muted-foreground] mb-4">
-          CAGR calcolato considerando solo i tuoi costi reali — il contributo dell'azienda non viene contato come uscita di cassa.
-          Mostra il rendimento effettivo sul capitale che hai davvero "speso".
+          Questo CAGR esclude il contributo del datore di lavoro dal costo base, perché quel denaro non è mai uscito dal tuo portafoglio:
+          nel momento in cui versi la tua quota, l'azienda aggiunge immediatamente la propria — <strong className="text-[--color-foreground]">soldi gratis</strong> che entrano in automatico.
+          Il risultato mostra quanto rende il capitale che hai <em>davvero</em> speso di tasca tua.
         </p>
         <div className="grid grid-cols-2 gap-3">
           {bonusStats.map(s => (
