@@ -102,26 +102,26 @@ export function ForecastChart({ currentValue, xirr, xirrNoAzienda }: Props) {
           />
           <ReferenceLine
             y={currentValue}
-            stroke="#d4d4d4"
+            stroke="#a3a3a3"
             strokeDasharray="3 3"
             label={{ value: 'Oggi', position: 'insideTopLeft', fontSize: 10, fill: '#a3a3a3' }}
           />
           <Line
             type="monotone"
             dataKey="📊 CAGR standard"
-            stroke="#0a0a0a"
-            strokeWidth={2}
+            stroke="#6366f1"
+            strokeWidth={2.5}
             dot={false}
-            activeDot={{ r: 4, fill: '#0a0a0a' }}
+            activeDot={{ r: 5, fill: '#6366f1' }}
           />
           <Line
             type="monotone"
             dataKey="🚀 CAGR senza azienda"
-            stroke="#525252"
-            strokeWidth={2}
+            stroke="#f97316"
+            strokeWidth={2.5}
             strokeDasharray="6 3"
             dot={false}
-            activeDot={{ r: 4, fill: '#525252' }}
+            activeDot={{ r: 5, fill: '#f97316' }}
           />
         </LineChart>
       </ResponsiveContainer>

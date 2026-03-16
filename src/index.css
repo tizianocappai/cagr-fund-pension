@@ -38,4 +38,14 @@
     font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
   }
+
+  a {
+    color: #2563eb;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  a:hover {
+    color: #1d4ed8;
+  }
 }

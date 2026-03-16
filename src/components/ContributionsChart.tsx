@@ -69,10 +69,10 @@ export function ContributionsChart({ yearRows }: Props) {
           iconSize={10}
           wrapperStyle={{ fontSize: 11, color: '#737373', paddingTop: 8 }}
         />
-        <Bar dataKey="👤 Aderente" fill="#0a0a0a" radius={[2, 2, 0, 0]} />
-        <Bar dataKey="🏢 Azienda" fill="#525252" radius={[2, 2, 0, 0]} />
-        <Bar dataKey="📦 TFR" fill="#a3a3a3" radius={[2, 2, 0, 0]} />
-        <Bar dataKey="🏦 Spese" fill="#d4d4d4" radius={[2, 2, 0, 0]} />
+        <Bar dataKey="👤 Aderente" fill="#3b82f6" radius={[2, 2, 0, 0]} />
+        <Bar dataKey="🏢 Azienda" fill="#10b981" radius={[2, 2, 0, 0]} />
+        <Bar dataKey="📦 TFR" fill="#f59e0b" radius={[2, 2, 0, 0]} />
+        <Bar dataKey="🏦 Spese" fill="#f43f5e" radius={[2, 2, 0, 0]} />
       </BarChart>
     </ResponsiveContainer>
   )

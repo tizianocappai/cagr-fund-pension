@@ -18,7 +18,7 @@ export function Nav() {
               cn(
                 'rounded-[--radius] px-3 py-1.5 text-sm transition-colors',
                 isActive
-                  ? 'bg-[--color-primary] text-[--color-primary-foreground]'
+                  ? 'bg-black text-white'
                   : 'text-[--color-muted-foreground] hover:bg-[--color-muted] hover:text-[--color-foreground]'
               )
             }
