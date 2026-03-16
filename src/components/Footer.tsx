@@ -1,7 +1,10 @@
 export function Footer() {
   return (
     <footer className="border-t border-[--color-border] bg-[--color-card]">
-      <div className="mx-auto flex max-w-2xl flex-col items-center gap-1 px-6 py-4 text-center">
+      <div className="mx-auto flex max-w-2xl flex-col items-center gap-1.5 px-6 py-4 text-center">
+        <p className="text-xs font-medium text-[--color-foreground]">
+          🚧 Beta — questo strumento è in fase sperimentale. I risultati hanno scopo puramente indicativo e non costituiscono consulenza finanziaria.
+        </p>
         <p className="text-xs text-[--color-muted-foreground]">
           🔒 Questo sito non memorizza, raccoglie o trasmette alcun tipo di dato. Tutto il calcolo avviene localmente nel tuo browser.
         </p>

@@ -16,9 +16,9 @@ export function Nav() {
             to={to}
             className={({ isActive }) =>
               cn(
-                'rounded-[--radius] px-3 py-1.5 text-sm transition-colors',
+                'rounded-[--radius] px-3 py-1.5 text-sm font-medium transition-colors no-underline',
                 isActive
-                  ? 'bg-black text-white'
+                  ? 'bg-black text-white hover:bg-neutral-800'
                   : 'text-[--color-muted-foreground] hover:bg-[--color-muted] hover:text-[--color-foreground]'
               )
             }
