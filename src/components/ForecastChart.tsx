@@ -58,10 +58,11 @@ function CustomTooltip({ active, payload, label }: any) {
 }
 
 const LINES = [
-  { key: '📈 Solo crescita',          color: '#6366f1' },
-  { key: '👤 + Aderente',             color: '#3b82f6' },
-  { key: '🏢 + Azienda',              color: '#10b981' },
-  { key: '📦 + TFR',                  color: '#f59e0b' },
+  { key: '📈 Solo crescita', color: '#6366f1', width: 2   },
+  { key: '👤 + Aderente',    color: '#3b82f6', width: 2   },
+  { key: '🏢 + Azienda',     color: '#10b981', width: 2   },
+  { key: '📦 + TFR',         color: '#f59e0b', width: 2   },
+  { key: '💰 Totale',        color: '#e11d48', width: 3   },
 ] as const
 
 export function ForecastChart({ currentValue, defaultAderente, defaultAzienda, defaultTfr }: Props) {
@@ -88,6 +89,7 @@ export function ForecastChart({ currentValue, defaultAderente, defaultAzienda, d
     '👤 + Aderente':    s1[t],
     '🏢 + Azienda':     s2[t],
     '📦 + TFR':         s3[t],
+    '💰 Totale':        s3[t],
   }))
 
   const maxVal = data[data.length - 1]['📦 + TFR']
@@ -160,9 +162,9 @@ export function ForecastChart({ currentValue, defaultAderente, defaultAzienda, d
             wrapperStyle={{ fontSize: 11, color: '#737373', paddingTop: 8 }} />
           <ReferenceLine y={currentValue} stroke="#d4d4d4" strokeDasharray="3 3"
             label={{ value: 'Oggi', position: 'insideTopLeft', fontSize: 10, fill: '#a3a3a3' }} />
-          {LINES.map(({ key, color }, i) => (
+          {LINES.map(({ key, color, width }, i) => (
             <Line key={key} type="monotone" dataKey={key}
-              stroke={color} strokeWidth={2.5}
+              stroke={color} strokeWidth={width}
               strokeDasharray={i === 0 ? '5 3' : undefined}
               dot={false} activeDot={{ r: 5, fill: color }} />
           ))}
