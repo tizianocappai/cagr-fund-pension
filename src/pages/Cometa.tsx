@@ -2,9 +2,38 @@ import * as React from 'react'
 import { Link } from 'react-router'
 import { CagrCalculator } from '@/components/CagrCalculator'
 import { FileUploader } from '@/components/ui/file-uploader'
+import { clearFile, loadFile, saveFile } from '@/lib/fileStorage'
 
 export default function Cometa() {
   const [file, setFile] = React.useState<File | null>(null)
+  const [initialFile, setInitialFile] = React.useState<File | null>(null)
+  const [restoring, setRestoring] = React.useState(true)
+
+  // Restore file from IndexedDB on mount
+  React.useEffect(() => {
+    loadFile()
+      .then(f => {
+        if (f) {
+          setInitialFile(f)
+          setFile(f)
+        }
+      })
+      .catch(() => {}) // IndexedDB unavailable (private browsing etc.) — fail silently
+      .finally(() => setRestoring(false))
+  }, [])
+
+  async function handleFileSelect(f: File) {
+    setFile(f)
+    await saveFile(f).catch(() => {})
+  }
+
+  async function handleClear() {
+    setFile(null)
+    setInitialFile(null)
+    await clearFile().catch(() => {})
+  }
+
+  if (restoring) return null
 
   return (
     <div className="bg-[--color-background] text-[--color-foreground]">
@@ -25,7 +54,9 @@ export default function Cometa() {
 
         <FileUploader
           accept=".xls"
-          onFileSelect={setFile}
+          initialFile={initialFile}
+          onFileSelect={handleFileSelect}
+          onClear={handleClear}
           className={file ? 'py-6' : undefined}
         />
 

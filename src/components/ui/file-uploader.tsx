@@ -3,14 +3,21 @@ import { cn } from '@/lib/utils'
 
 interface FileUploaderProps {
   accept?: string
+  initialFile?: File | null
   onFileSelect?: (file: File) => void
+  onClear?: () => void
   className?: string
 }
 
-export function FileUploader({ accept, onFileSelect, className }: FileUploaderProps) {
+export function FileUploader({ accept, initialFile, onFileSelect, onClear, className }: FileUploaderProps) {
   const inputRef = React.useRef<HTMLInputElement>(null)
   const [dragging, setDragging] = React.useState(false)
-  const [selectedFile, setSelectedFile] = React.useState<File | null>(null)
+  const [selectedFile, setSelectedFile] = React.useState<File | null>(initialFile ?? null)
+
+  // Sync if parent provides an initial file after mount (e.g. loaded from IndexedDB)
+  React.useEffect(() => {
+    if (initialFile) setSelectedFile(initialFile)
+  }, [initialFile])
 
   function handleFile(file: File) {
     setSelectedFile(file)
@@ -34,6 +41,14 @@ export function FileUploader({ accept, onFileSelect, className }: FileUploaderPr
       e.preventDefault()
       inputRef.current?.click()
     }
+  }
+
+  function handleClear(e: React.MouseEvent | React.KeyboardEvent) {
+    e.stopPropagation()
+    if ('key' in e && e.key !== 'Enter' && e.key !== ' ') return
+    setSelectedFile(null)
+    if (inputRef.current) inputRef.current.value = ''
+    onClear?.()
   }
 
   const labelId = React.useId()
@@ -75,6 +90,17 @@ export function FileUploader({ accept, onFileSelect, className }: FileUploaderPr
             </p>
           </div>
           <p className="text-xs text-[--color-muted-foreground]">Premi Invio o clicca per sostituire</p>
+
+          {/* Remove button */}
+          <button
+            type="button"
+            aria-label="Rimuovi file"
+            onClick={handleClear}
+            onKeyDown={handleClear as unknown as React.KeyboardEventHandler}
+            className="absolute top-2 right-2 flex h-7 w-7 items-center justify-center rounded-full bg-black text-white text-xs hover:bg-neutral-700 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-1"
+          >
+            ✕
+          </button>
         </>
       ) : (
         <>
