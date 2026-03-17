@@ -11,12 +11,7 @@ export default function Fonte() {
 
   React.useEffect(() => {
     loadFile('fonte')
-      .then(f => {
-        if (f) {
-          setInitialFile(f)
-          setFile(f)
-        }
-      })
+      .then(f => { if (f) { setInitialFile(f); setFile(f) } })
       .catch(() => {})
       .finally(() => setRestoring(false))
   }, [])
@@ -35,27 +30,25 @@ export default function Fonte() {
   if (restoring) return null
 
   return (
-    <div className="bg-[--color-background] text-[--color-foreground]">
-      <div className="mx-auto max-w-2xl px-6 py-12">
+    <div className="mx-auto max-w-4xl px-6 py-10">
 
-        <header className="mb-8">
-          <h1 className="text-3xl font-semibold tracking-tight">Carica il tuo file 🌊</h1>
-          <p className="mt-2 text-sm text-[--color-muted-foreground]">
-            Carica il file XLS esportato dal portale del fondo pensione Fonte.
-          </p>
-        </header>
+      <header className="mb-8">
+        <h1 className="text-3xl font-bold">🌊 Fondo Fonte</h1>
+        <p className="mt-2 text-muted-foreground">
+          Carica il file XLS esportato dal portale del fondo pensione Fonte.
+        </p>
+      </header>
 
-        <FileUploader
-          accept=".xls,.xlsx"
-          initialFile={initialFile}
-          onFileSelect={handleFileSelect}
-          onClear={handleClear}
-          className={file ? 'py-6' : undefined}
-        />
+      <FileUploader
+        accept=".xls,.xlsx"
+        initialFile={initialFile}
+        onFileSelect={handleFileSelect}
+        onClear={handleClear}
+        className={file ? 'py-6' : undefined}
+      />
 
-        {file && <CagrCalculator file={file} flow="fonte" parser={parseFonte} />}
+      {file && <CagrCalculator file={file} flow="fonte" parser={parseFonte} />}
 
-      </div>
     </div>
   )
 }

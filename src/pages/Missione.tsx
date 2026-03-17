@@ -181,45 +181,42 @@ const sections = [
 
 export default function Missione() {
   return (
-    <div className="bg-[--color-background] text-[--color-foreground]">
-      <div className="mx-auto max-w-2xl px-6 py-12">
+    <div className="mx-auto max-w-4xl px-6 py-10">
 
-        <header className="mb-8">
-          <h1 className="text-3xl font-semibold tracking-tight">La nostra missione 🧭</h1>
-          <p className="mt-2 text-sm text-[--color-muted-foreground]">
-            Perché abbiamo costruito questo strumento e perché il fondo pensione è più importante
-            di quanto pensi.
-          </p>
-        </header>
+      <header className="mb-8">
+        <h1 className="text-3xl font-bold">🧭 La nostra missione</h1>
+        <p className="mt-2 text-muted-foreground">
+          Perché abbiamo costruito questo strumento e perché il fondo pensione è più importante
+          di quanto pensi.
+        </p>
+      </header>
 
-        <Separator className="mb-10" />
+      <Separator className="mb-10" />
 
-        <div className="flex flex-col gap-10">
-          {sections.map((section, i) => (
-            <div key={section.title}>
-              <div className="flex items-center gap-3 mb-3">
-                <span className="text-2xl" aria-hidden="true">{section.emoji}</span>
-                <h2 className="text-lg font-semibold">{section.title}</h2>
-              </div>
-              <div className="text-sm text-[--color-muted-foreground] leading-relaxed">
-                {section.content}
-              </div>
-              {i < sections.length - 1 && <Separator className="mt-10" />}
+      <div className="flex flex-col gap-10">
+        {sections.map((section, i) => (
+          <div key={section.title}>
+            <div className="flex items-center gap-3 mb-3">
+              <span className="text-2xl" aria-hidden="true">{section.emoji}</span>
+              <h2 className="text-lg font-bold">{section.title}</h2>
             </div>
-          ))}
-        </div>
-
-        <Separator className="mt-10 mb-8" />
-
-        <div className="rounded-[--radius] border border-[--color-border] bg-[--color-muted] px-5 py-4">
-          <p className="text-xs text-[--color-muted-foreground] leading-relaxed">
-            ℹ️ <strong className="text-[--color-foreground]">Nota:</strong> i dati e gli esempi
-            riportati sono a scopo illustrativo. Per decisioni finanziarie personali consulta sempre
-            un consulente finanziario indipendente.
-          </p>
-        </div>
-
+            <div className="text-sm text-muted-foreground leading-relaxed">
+              {section.content}
+            </div>
+            {i < sections.length - 1 && <Separator className="mt-10" />}
+          </div>
+        ))}
       </div>
+
+      <Separator className="mt-10 mb-8" />
+
+      <div className="border-l-4 border-[#1d70b8] bg-[#e8f1f8] px-5 py-4">
+        <p className="text-sm leading-relaxed">
+          ℹ️ <strong>Nota:</strong> i dati e gli esempi riportati sono a scopo illustrativo.
+          Per decisioni finanziarie personali consulta sempre un consulente finanziario indipendente.
+        </p>
+      </div>
+
     </div>
   )
 }

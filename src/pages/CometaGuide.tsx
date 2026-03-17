@@ -59,15 +59,14 @@ const steps = [
 
 export default function CometaGuide() {
   return (
-    <div className="bg-[--color-background] text-[--color-foreground]">
-      <div className="mx-auto max-w-2xl px-6 py-12">
+    <div className="mx-auto max-w-4xl px-6 py-10">
 
-        <header className="mb-8">
-          <h1 className="text-3xl font-semibold tracking-tight">Guida all'utilizzo 📖</h1>
-          <p className="mt-2 text-sm text-[--color-muted-foreground]">
-            Segui questi 5 passi per calcolare il tasso di crescita medio annuo del tuo fondo pensione Cometa.
-          </p>
-        </header>
+      <header className="mb-8">
+        <h1 className="text-3xl font-bold">📖 Guida all'utilizzo</h1>
+        <p className="mt-2 text-muted-foreground">
+          Segui questi 5 passi per calcolare il tasso di crescita medio annuo del tuo fondo pensione Cometa.
+        </p>
+      </header>
 
         <Separator className="mb-10" />
 
@@ -108,7 +107,6 @@ export default function CometaGuide() {
           </p>
         </div>
 
-      </div>
     </div>
   )
 }

@@ -5,10 +5,7 @@ const Card = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElemen
   ({ className, ...props }, ref) => (
     <div
       ref={ref}
-      className={cn(
-        'rounded-[--radius] border border-[--color-border] bg-[--color-card] text-[--color-card-foreground]',
-        className
-      )}
+      className={cn('border border-[#b1b4b6] bg-white text-[#0b0c0c]', className)}
       {...props}
     />
   )
@@ -17,18 +14,14 @@ Card.displayName = 'Card'
 
 const CardHeader = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
   ({ className, ...props }, ref) => (
-    <div ref={ref} className={cn('flex flex-col gap-1.5 p-6', className)} {...props} />
+    <div ref={ref} className={cn('flex flex-col gap-1 p-5', className)} {...props} />
   )
 )
 CardHeader.displayName = 'CardHeader'
 
 const CardTitle = React.forwardRef<HTMLParagraphElement, React.HTMLAttributes<HTMLHeadingElement>>(
   ({ className, ...props }, ref) => (
-    <h3
-      ref={ref}
-      className={cn('font-semibold leading-none tracking-tight', className)}
-      {...props}
-    />
+    <h3 ref={ref} className={cn('font-bold leading-tight', className)} {...props} />
   )
 )
 CardTitle.displayName = 'CardTitle'
@@ -37,24 +30,20 @@ const CardDescription = React.forwardRef<
   HTMLParagraphElement,
   React.HTMLAttributes<HTMLParagraphElement>
 >(({ className, ...props }, ref) => (
-  <p
-    ref={ref}
-    className={cn('text-sm text-[--color-muted-foreground]', className)}
-    {...props}
-  />
+  <p ref={ref} className={cn('text-sm text-[#505a5f]', className)} {...props} />
 ))
 CardDescription.displayName = 'CardDescription'
 
 const CardContent = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
   ({ className, ...props }, ref) => (
-    <div ref={ref} className={cn('p-6 pt-0', className)} {...props} />
+    <div ref={ref} className={cn('px-5 pb-5', className)} {...props} />
   )
 )
 CardContent.displayName = 'CardContent'
 
 const CardFooter = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
   ({ className, ...props }, ref) => (
-    <div ref={ref} className={cn('flex items-center p-6 pt-0', className)} {...props} />
+    <div ref={ref} className={cn('flex items-center px-5 pb-5', className)} {...props} />
   )
 )
 CardFooter.displayName = 'CardFooter'

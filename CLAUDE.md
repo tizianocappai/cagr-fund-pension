@@ -1,8 +1,10 @@
-# CLAUDE.md — cagr-fund-pension
+# CLAUDE.md — Gennaro · Il detective del tuo fondo pensione
 
 ## Project overview
 
-A minimal React + TypeScript single-page app that calculates the **CAGR (Compound Annual Growth Rate)** of an Italian pension fund portfolio using the **XIRR** method. The user uploads an `.xls` file exported from an Italian pension portal (the file is actually HTML, not binary Excel), enters the current portfolio value, and receives a full breakdown of returns, contributions, fees, and future projections.
+**Gennaro** is a React + TypeScript SPA that calculates the real annual growth rate of an Italian pension fund portfolio using the **XIRR** method. The user uploads an `.xls` or `.xlsx` file exported from an Italian pension portal, enters the current portfolio value, and receives a full breakdown of returns, contributions, fees, and future projections.
+
+Supported funds: **Cometa** (`/cometa`) and **Fonte** (`/fonte`).
 
 ## Commands
 
@@ -21,9 +23,11 @@ npm run preview   # preview production build locally
 | Build | Vite 8 |
 | Routing | react-router 7 |
 | Styling | Tailwind CSS v4 (via `@tailwindcss/vite` plugin — no `postcss.config.js`) |
-| UI components | Hand-rolled shadcn-style components in `src/components/ui/` |
-| Charts | Recharts (installed alongside chart.js, but recharts is what's actually used) |
+| UI components | Hand-rolled components in `src/components/ui/` |
+| Charts | Recharts |
 | Utilities | clsx + tailwind-merge + class-variance-authority |
+| Analytics | `@vercel/analytics/react` (NOT `/next`) |
+| Excel parsing | SheetJS (`xlsx`) for `.xlsx`; DOMParser for `.xls` (HTML tables) |
 
 ## Project structure
 
@@ -31,44 +35,79 @@ npm run preview   # preview production build locally
 src/
   lib/
     utils.ts          # cn() helper (clsx + twMerge)
-    parseXls.ts       # HTML-table parser for the .xls export
+    parseXls.ts       # HTML-table parser for Cometa .xls export → string[][]
+    parseFonte.ts     # Column parser for Fonte .xls/.xlsx → string[][]
+    readExcel.ts      # Unified file reader: .xlsx via SheetJS, .xls via DOMParser
     xirr.ts           # XIRR solver (Newton-Raphson + bisection fallback)
+    fileStorage.ts    # IndexedDB save/load/clear with per-page key
   components/
     ui/
-      button.tsx        # always black bg / white text, type="button" default
-      card.tsx
-      badge.tsx
-      input.tsx
+      button.tsx        # GOV.UK green primary button, variant prop
+      card.tsx          # Sharp-cornered card with border
+      input.tsx         # 2px border, yellow focus ring
       separator.tsx
-      file-uploader.tsx # drag & drop, keyboard accessible (Enter/Space)
-    Nav.tsx             # top navigation bar
-    CagrCalculator.tsx  # main calculator: input → parse → XIRR → results
-    ContributionsChart.tsx  # recharts bar chart (contributions by year)
-    ForecastChart.tsx       # recharts line chart (future projection)
+      file-uploader.tsx # Drag & drop, keyboard accessible
+      tooltip.tsx       # Hover/focus tooltip with black border
+    Nav.tsx             # Black service banner + tab navigation
+    Footer.tsx          # GOV.UK-style footer with beta disclaimer
+    CagrCalculator.tsx  # Main calculator: file → parse → XIRR → results
+    ContributionsChart.tsx  # Recharts bar chart (contributions by year)
+    ForecastChart.tsx       # Recharts line chart (future projection, starts from 0)
   pages/
-    Cometa.tsx          # only active page, at / and /cometa
+    Cometa.tsx          # /cometa — Fondo Cometa flow
+    Fonte.tsx           # /fonte  — Fondo Fonte flow
+    CometaGuide.tsx     # /cometa-guide — step-by-step guide
+    Missione.tsx        # /missione — mission / educational content
   main.tsx              # BrowserRouter + Routes
   index.css             # Tailwind v4 @import + @theme design tokens
 ```
 
-## Design system
+## Design system — GOV.UK inspired
 
-**Black & white paper aesthetic** — no colors, only greyscale. Emojis are used as the sole visual accent throughout (stats, labels, status).
+Visual style inspired by [GOV.UK Design System](https://design-system.service.gov.uk/).
 
 Key CSS custom properties defined in `src/index.css` via `@theme`:
-- `--color-background: #fafaf9` — off-white page background
-- `--color-foreground: #0a0a0a` — near-black text
-- `--color-muted: #f5f5f4` — subtle surface
-- `--color-border: #e5e5e5` — dividers and card borders
-- `--radius: 0.25rem` — tight radius, feels like print
 
-**Important:** use `bg-black` / `text-white` for explicit black/white — do **not** use `bg-[--color-primary]` style arbitrary Tailwind values for colors, as Tailwind v4 does not auto-wrap bare CSS variable names in `var()`.
+| Token | Value | Usage |
+|---|---|---|
+| `--color-background` | `#ffffff` | Page background |
+| `--color-foreground` | `#0b0c0c` | Primary text |
+| `--color-muted` | `#f3f2f1` | Subtle surfaces |
+| `--color-muted-foreground` | `#505a5f` | Secondary text |
+| `--color-border` | `#b1b4b6` | Card/separator borders |
+| `--color-primary` | `#00703c` | Primary button background |
+| `--color-focus` | `#ffdd00` | Focus ring (yellow) |
+| `--color-error` | `#d4351c` | Error states |
+| `--radius` | `0rem` | No border radius (sharp corners) |
+
+**Key rules:**
+- Use Tailwind canonical classes (`text-muted-foreground`, `border-border`, `bg-muted`) — do NOT use `bg-[--color-*]` arbitrary values
+- `bg-black` / `text-white` only for the service name header bar
+- Inputs: `border-2 border-[#0b0c0c]`, yellow `focus-visible:outline-[#ffdd00]`
+- Buttons: green `bg-[#00703c]`, `shadow-[0_2px_0_#002d18]`, no border-radius
+- Section headings in results: `border-l-4 border-[#0b0c0c] pl-3 font-bold`
+- Errors: `border-l-4 border-error bg-[#fde8e6]`
+- Info callouts: `border-l-4 border-[#1d70b8] bg-[#e8f1f8]`
+- Links: `#1d70b8`, underlined; hover `#003078` with thicker underline
+- Focus: yellow `#ffdd00` outline, 3px, offset 0
+
+**Important:** Tailwind v4 does NOT auto-wrap bare CSS variable names in `var()`. Always use explicit values or canonical utility classes.
 
 ## Key implementation details
 
-### File parsing (`src/lib/parseXls.ts`)
-The `.xls` export from the Italian pension portal is actually an **HTML file** containing a single `<table>`. Parse it with `DOMParser` as `text/html`. Each `<tr>` in `<tbody>` is one transaction. Column order:
+### File reading (`src/lib/readExcel.ts`)
+Unified entry point for both file types:
+- `.xlsx` → SheetJS `XLSX.read(arrayBuffer, {type:'array'})` + `sheet_to_json({header:1, raw:true})`. Numbers come as JS numbers; convert with `.toString()` to avoid locale formatting issues.
+- `.xls` → DOMParser as `text/html`; Italian portals export HTML tables disguised as XLS.
 
+### Number parsing
+Both parsers use locale-aware `parseItalianNumber(s)`:
+- If string contains `,` → Italian format (`1.234,56`): strip `.`, replace `,` with `.`
+- Otherwise → standard decimal (`55.53` from SheetJS raw mode): plain `parseFloat`
+
+### Column mapping
+
+**Cometa** (`parseXls.ts`) — HTML table columns:
 | Index | Field |
 |---|---|
 | 0 | Tipo Operazione |
@@ -79,39 +118,58 @@ The `.xls` export from the Italian pension portal is actually an **HTML file** c
 | 9 | Altro |
 | 10 | Quota Spese (negative = cost) |
 
-Italian number format: `1.322,64` → strip `.`, replace `,` with `.` → `parseFloat`.
+**Fonte** (`parseFonte.ts`) — XLS/XLSX columns:
+| Index | Field |
+|---|---|
+| 0 | Quadrimestre (1–4) |
+| 1 | Anno |
+| 2 | Skip |
+| 3 | Ragione Sociale |
+| 4 | Importo Lordo Aderente |
+| 5 | Importo Lordo Azienda |
+| 6 | TFR |
+| 7–11 | Premi aggiuntivi → summed into `altro` |
+
+Date for Fonte is derived from quarter: Q1→Mar31, Q2→Jun30, Q3→Sep30, Q4→Dec31.
 
 ### XIRR (`src/lib/xirr.ts`)
-Solves `Σ [ CF_i / (1+r)^((d_i - d_0) / 365.25) ] = 0` using:
-1. Newton-Raphson with multiple starting guesses
-2. Bisection fallback if Newton-Raphson doesn't converge
+Solves `Σ [ CF_i / (1+r)^((d_i - d_0) / 365.25) ] = 0` using Newton-Raphson + bisection fallback.
 
-**Cash flow convention:**
-- Each transaction's `net` (aderente + azienda + tfr + altro + quotaSpese) is **negated** — contributions going *into* the fund are negative from the investor's perspective
-- The user-entered current portfolio value is the **positive** terminal cash flow
+Cash flow convention: contributions are **negated** (money into fund = negative); current portfolio value = positive terminal cash flow.
 
-### Bonus XIRR
-A second XIRR is computed excluding `Importo Lordo Azienda` from the cost basis. This answers: *"what is my personal return on the capital I actually spent?"* Employer contributions become free upside, yielding a significantly higher rate.
+### Forecast chart (`src/components/ForecastChart.tsx`)
+- Starts from **zero** (not from current portfolio value)
+- Individual lines (aderente, azienda, TFR): **linear** — `cX × year` (raw accumulation, no interest)
+- **Totale** line: compound interest — `v = (v + cAderente + cAzienda + cTfr) × (1 + r)` each year
+- `flow` prop (`'cometa' | 'fonte'`) is passed for clarity and future differentiation
+
+### `flow` prop
+Both `CagrCalculator` and `ForecastChart` accept `flow: 'cometa' | 'fonte'`. Pages pass it explicitly to prevent mapping mistakes. `ResultsPanel` inside `CagrCalculator` also receives it to thread it down.
 
 ## Routing
 
-Only one active page: **Cometa** (`/` and `/cometa`). Adding a new route means:
-1. Create `src/pages/NewPage.tsx`
-2. Add a `{ to, label, emoji }` entry to the `links` array in `src/components/Nav.tsx`
-3. Add a `<Route>` in `src/main.tsx`
+| Path | Page |
+|---|---|
+| `/` | Cometa |
+| `/cometa` | Cometa |
+| `/cometa-guide` | CometaGuide |
+| `/fonte` | Fonte |
+| `/missione` | Missione |
+
+Adding a new route: create `src/pages/NewPage.tsx`, add to `links` array in `Nav.tsx`, add `<Route>` in `main.tsx`.
 
 ## Accessibility standards
 
-- All interactive non-button elements use `role="button"` + `tabIndex={0}` + `onKeyDown` (Enter/Space)
-- All `<label>` elements are linked to inputs via `htmlFor` + `id`
-- Hint/description text uses `aria-describedby`
-- Decorative emojis have `aria-hidden="true"`
-- Focus rings: `focus-visible:ring-2 ring-black ring-offset-2` on all interactive elements
-- Hidden file inputs use `tabIndex={-1}` and `aria-hidden="true"`
+- Interactive non-button elements: `role="button"` + `tabIndex={0}` + `onKeyDown` (Enter/Space)
+- Labels linked via `htmlFor` + `id`
+- Hint text via `aria-describedby`
+- Decorative emojis: `aria-hidden="true"`
+- Focus rings: `focus-visible:outline-3 focus-visible:outline-[#ffdd00]` on all interactive elements
+- Hidden file inputs: `tabIndex={-1}` + `aria-hidden="true"`
 
 ## Dependency notes
 
-- `chart.js` + `react-chartjs-2` are installed but **not used** — recharts was chosen instead for simpler React integration
-- `react-is` is a required peer dependency of recharts; must be installed explicitly
-- All npm installs require `--legacy-peer-deps` due to Vite 8 peer conflicts with some packages
-- Vite dep cache (`node_modules/.vite`) may need manual deletion after installing new packages that are transitive deps of already-cached bundles
+- All npm installs require `--legacy-peer-deps` (`.npmrc` sets this)
+- `react-is` must be installed explicitly (peer dep of recharts)
+- Vite dep cache (`node_modules/.vite`) may need manual deletion after installing packages that are already cached transitive deps
+- `@vercel/analytics/react` — use `/react` not `/next` for Vite apps

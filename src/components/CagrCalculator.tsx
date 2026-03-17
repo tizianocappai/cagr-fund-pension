@@ -157,7 +157,7 @@ export function CagrCalculator({ file, flow, parser = parseXls }: Props) {
       <div className="flex flex-col gap-2">
         <label
           htmlFor="portfolio-value"
-          className="text-xs tracking-widest uppercase text-[--color-muted-foreground]"
+          className="text-xs tracking-widest uppercase text-muted-foreground"
         >
           💼 Valore attuale del portafoglio (€)
         </label>
@@ -174,13 +174,13 @@ export function CagrCalculator({ file, flow, parser = parseXls }: Props) {
             {loading ? 'Calcolo…' : 'Calcola Rendimento 📐'}
           </Button>
         </div>
-        <p id="portfolio-value-hint" className="text-xs text-[--color-muted-foreground]">
+        <p id="portfolio-value-hint" className="text-xs text-muted-foreground">
           Usa il formato italiano: punto come separatore migliaia, virgola come decimale.
         </p>
       </div>
 
       {error && (
-        <div className="rounded-[--radius] border border-[--color-border] bg-[--color-muted] px-4 py-3 text-sm">
+        <div className="border-l-4 border-error bg-[#fde8e6] px-4 py-3 text-sm font-bold text-error">
           ⚠️ {error}
         </div>
       )}
@@ -217,7 +217,7 @@ function ResultsPanel({ results, flow }: { results: Results; flow: Flow }) {
 
       {/* Main results */}
       <div>
-        <p className="text-xs tracking-widest uppercase text-[--color-muted-foreground] mb-4">
+        <p className="text-base font-bold mb-4 border-l-4 border-[#0b0c0c] pl-3">
           Risultati
         </p>
         <div className="grid grid-cols-2 gap-3">
@@ -234,7 +234,7 @@ function ResultsPanel({ results, flow }: { results: Results; flow: Flow }) {
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-xs text-[--color-muted-foreground]">{s.note}</p>
+                <p className="text-xs text-muted-foreground">{s.note}</p>
               </CardContent>
             </Card>
           ))}
@@ -245,34 +245,34 @@ function ResultsPanel({ results, flow }: { results: Results; flow: Flow }) {
 
       {/* Year breakdown table */}
       <div>
-        <p className="text-xs tracking-widest uppercase text-[--color-muted-foreground] mb-4">
+        <p className="text-base font-bold mb-4 border-l-4 border-[#0b0c0c] pl-3">
           Riepilogo per anno
         </p>
-        <div className="rounded-[--radius] border border-[--color-border] overflow-x-auto">
+        <div className="border border-border overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-[--color-border] bg-[--color-muted]">
-                <th className="px-3 py-2 text-left font-medium text-[--color-muted-foreground]">Anno</th>
-                <th className="px-3 py-2 text-right font-medium text-[--color-muted-foreground]">Op.</th>
-                <th className="px-3 py-2 text-right font-medium text-[--color-muted-foreground]">👤 Aderente</th>
-                <th className="px-3 py-2 text-right font-medium text-[--color-muted-foreground]">🏢 Azienda</th>
-                <th className="px-3 py-2 text-right font-medium text-[--color-muted-foreground]">📦 TFR</th>
-                <th className="px-3 py-2 text-right font-medium text-[--color-muted-foreground]">🏦 Spese</th>
-                <th className="px-3 py-2 text-right font-medium text-[--color-muted-foreground]">Netto</th>
+              <tr className="border-b border-border bg-muted">
+                <th className="px-3 py-2 text-left font-medium text-muted-foreground">Anno</th>
+                <th className="px-3 py-2 text-right font-medium text-muted-foreground">Op.</th>
+                <th className="px-3 py-2 text-right font-medium text-muted-foreground">👤 Aderente</th>
+                <th className="px-3 py-2 text-right font-medium text-muted-foreground">🏢 Azienda</th>
+                <th className="px-3 py-2 text-right font-medium text-muted-foreground">📦 TFR</th>
+                <th className="px-3 py-2 text-right font-medium text-muted-foreground">🏦 Spese</th>
+                <th className="px-3 py-2 text-right font-medium text-muted-foreground">Netto</th>
               </tr>
             </thead>
             <tbody>
               {results.yearRows.map((row, i) => (
                 <tr
                   key={row.year}
-                  className={i % 2 === 0 ? 'bg-[--color-card]' : 'bg-[--color-muted]'}
+                  className={i % 2 === 0 ? 'bg-card' : 'bg-muted'}
                 >
                   <td className="px-3 py-2 font-medium">📅 {row.year}</td>
-                  <td className="px-3 py-2 text-right font-mono text-[--color-muted-foreground]">{row.count}</td>
+                  <td className="px-3 py-2 text-right font-mono text-muted-foreground">{row.count}</td>
                   <td className="px-3 py-2 text-right font-mono">{fmt.format(row.aderente)}</td>
                   <td className="px-3 py-2 text-right font-mono">{fmt.format(row.azienda)}</td>
                   <td className="px-3 py-2 text-right font-mono">{row.tfr !== 0 ? fmt.format(row.tfr) : '—'}</td>
-                  <td className="px-3 py-2 text-right font-mono text-[--color-muted-foreground]">
+                  <td className="px-3 py-2 text-right font-mono text-muted-foreground">
                     {row.fees !== 0 ? fmt.format(Math.abs(row.fees)) : '—'}
                   </td>
                   <td className="px-3 py-2 text-right font-mono font-medium">{fmt.format(row.net)}</td>
@@ -280,7 +280,7 @@ function ResultsPanel({ results, flow }: { results: Results; flow: Flow }) {
               ))}
             </tbody>
             <tfoot>
-              <tr className="border-t border-[--color-border] bg-[--color-muted]">
+              <tr className="border-t border-border bg-muted">
                 <td className="px-3 py-2 font-semibold">Totale</td>
                 <td className="px-3 py-2 text-right font-mono font-semibold">{results.transactionCount}</td>
                 <td className="px-3 py-2 text-right font-mono font-semibold">{fmt.format(results.totalAderente)}</td>
@@ -300,7 +300,7 @@ function ResultsPanel({ results, flow }: { results: Results; flow: Flow }) {
 
       {/* Contributions chart */}
       <div>
-        <p className="text-xs tracking-widest uppercase text-[--color-muted-foreground] mb-4">
+        <p className="text-base font-bold mb-4 border-l-4 border-[#0b0c0c] pl-3">
           Contributi per anno
         </p>
         <ContributionsChart yearRows={results.yearRows} />
@@ -310,7 +310,7 @@ function ResultsPanel({ results, flow }: { results: Results; flow: Flow }) {
 
       {/* Forecast chart */}
       <div>
-        <p className="text-xs tracking-widest uppercase text-[--color-muted-foreground] mb-4">
+        <p className="text-base font-bold mb-4 border-l-4 border-[#0b0c0c] pl-3">
           Proiezione futura
         </p>
         <ForecastChart
@@ -325,12 +325,12 @@ function ResultsPanel({ results, flow }: { results: Results; flow: Flow }) {
 
       {/* Bonus section */}
       <div>
-        <p className="text-xs tracking-widest uppercase text-[--color-muted-foreground] mb-1">
+        <p className="text-base font-bold mb-1 border-l-4 border-[#0b0c0c] pl-3">
           Bonus
         </p>
-        <p className="text-sm text-[--color-muted-foreground] mb-4">
+        <p className="text-sm text-muted-foreground mb-4">
           Questo tasso di crescita medio annuo esclude il contributo del datore di lavoro dal costo base, perché quel denaro non è mai uscito dal tuo portafoglio:
-          nel momento in cui versi la tua quota, l'azienda aggiunge immediatamente la propria — <strong className="text-[--color-foreground]">soldi gratis</strong> che entrano in automatico.
+          nel momento in cui versi la tua quota, l'azienda aggiunge immediatamente la propria — <strong className="text-foreground">soldi gratis</strong> che entrano in automatico.
           Il risultato mostra quanto rende il capitale che hai <em>davvero</em> speso di tasca tua.
         </p>
         <div className="grid grid-cols-2 gap-3">
@@ -341,7 +341,7 @@ function ResultsPanel({ results, flow }: { results: Results; flow: Flow }) {
                 <CardTitle className="text-2xl">{s.value}</CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-xs text-[--color-muted-foreground]">{s.note}</p>
+                <p className="text-xs text-muted-foreground">{s.note}</p>
               </CardContent>
             </Card>
           ))}

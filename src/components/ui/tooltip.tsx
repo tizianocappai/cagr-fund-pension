@@ -30,11 +30,10 @@ export function Tooltip({ content, children, className }: TooltipProps) {
         <span
           id={id}
           role="tooltip"
-          className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 z-50 w-64 rounded-[--radius] border border-neutral-200 bg-white text-neutral-900 px-3 py-2 text-xs leading-relaxed shadow-md pointer-events-none"
+          className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 z-50 w-72 border-2 border-[#0b0c0c] bg-white text-[#0b0c0c] px-4 py-3 text-sm leading-relaxed shadow-md pointer-events-none"
         >
           {content}
-          {/* Arrow */}
-          <span className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-white" />
+          <span className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-[#0b0c0c]" />
         </span>
       )}
     </span>

@@ -9,25 +9,36 @@ const links = [
 
 export function Nav() {
   return (
-    <nav className="border-b border-[--color-border] bg-[--color-card]">
-      <div className="mx-auto flex max-w-2xl items-center gap-1 px-6 py-3">
-{links.map(({ to, label, emoji }) => (
-          <NavLink
-            key={to}
-            to={to}
-            className={({ isActive }) =>
-              cn(
-                'rounded-[--radius] px-3 py-1.5 text-sm font-medium transition-colors no-underline',
-                isActive
-                  ? 'bg-black text-white hover:bg-neutral-800'
-                  : 'text-[--color-muted-foreground] hover:bg-[--color-muted] hover:text-[--color-foreground]'
-              )
-            }
-          >
-            {emoji} {label}
-          </NavLink>
-        ))}
+    <header>
+      {/* Service name bar */}
+      <div className="bg-[#0b0c0c] text-white">
+        <div className="mx-auto max-w-4xl px-6 py-4">
+          <p className="text-xl font-bold leading-tight">🕵️ Gennaro</p>
+          <p className="text-sm text-[#b1b4b6] mt-0.5">Il detective del tuo fondo pensione</p>
+        </div>
       </div>
-    </nav>
+
+      {/* Navigation */}
+      <nav className="border-b-2 border-[#0b0c0c] bg-white">
+        <div className="mx-auto flex max-w-4xl px-6">
+          {links.map(({ to, label, emoji }) => (
+            <NavLink
+              key={to}
+              to={to}
+              className={({ isActive }) =>
+                cn(
+                  'px-4 py-3 text-sm font-bold transition-colors no-underline border-b-4 -mb-0.5',
+                  isActive
+                    ? 'border-[#0b0c0c] text-[#0b0c0c]'
+                    : 'border-transparent text-[#505a5f] hover:text-[#0b0c0c] hover:border-[#b1b4b6]'
+                )
+              }
+            >
+              {emoji} {label}
+            </NavLink>
+          ))}
+        </div>
+      </nav>
+    </header>
   )
 }
