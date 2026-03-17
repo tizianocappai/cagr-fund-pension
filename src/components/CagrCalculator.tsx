@@ -1,5 +1,6 @@
 import * as React from 'react'
-import { parseXls } from '@/lib/parseXls'
+import { parseXls, type Transaction } from '@/lib/parseXls'
+import { readExcel } from '@/lib/readExcel'
 import { computeXirr } from '@/lib/xirr'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
@@ -11,6 +12,7 @@ import { Tooltip } from '@/components/ui/tooltip'
 
 interface Props {
   file: File
+  parser?: (rows: string[][]) => Transaction[]
 }
 
 interface YearRow {
@@ -47,7 +49,7 @@ function parseItalianInput(s: string): number {
   return isNaN(n) ? NaN : n
 }
 
-export function CagrCalculator({ file }: Props) {
+export function CagrCalculator({ file, parser = parseXls }: Props) {
   const [portfolioValue, setPortfolioValue] = React.useState('')
   const [results, setResults] = React.useState<Results | null>(null)
   const [error, setError] = React.useState<string | null>(null)
@@ -58,7 +60,7 @@ export function CagrCalculator({ file }: Props) {
     setError(null)
   }, [file])
 
-  function calculate() {
+  async function calculate() {
     setError(null)
     setResults(null)
     setLoading(true)
@@ -70,89 +72,81 @@ export function CagrCalculator({ file }: Props) {
       return
     }
 
-    const reader = new FileReader()
-    reader.onload = (e) => {
-      try {
-        const html = e.target?.result as string
-        const transactions = parseXls(html)
+    try {
+      const rows = await readExcel(file)
+      const transactions = parser(rows)
 
-        if (transactions.length === 0) {
-          throw new Error('Nessuna transazione trovata nel file. Verifica il formato.')
-        }
-
-        transactions.sort((a, b) => a.dataOperazione.getTime() - b.dataOperazione.getTime())
-
-        const lastDate = transactions[transactions.length - 1].dataOperazione
-        const terminalDate = new Date() > lastDate ? new Date() : lastDate
-
-        // — Standard XIRR: all components as contributions —
-        const cashFlows = transactions
-          .filter(t => t.net !== 0)
-          .map(t => ({ amount: -t.net, date: t.dataOperazione }))
-        cashFlows.push({ amount: currentValue, date: terminalDate })
-        const rate = computeXirr(cashFlows)
-
-        // — Bonus XIRR: exclude Importo Lordo Azienda from cost basis —
-        // Only aderente + tfr + altro + quotaSpese are counted as the investor's cost
-        const cashFlowsNoAzienda = transactions
-          .filter(t => (t.importoLordoAderente + t.tfr + t.altro + t.quotaSpese) !== 0)
-          .map(t => ({
-            amount: -(t.importoLordoAderente + t.tfr + t.altro + t.quotaSpese),
-            date: t.dataOperazione,
-          }))
-        cashFlowsNoAzienda.push({ amount: currentValue, date: terminalDate })
-        const rateNoAzienda = computeXirr(cashFlowsNoAzienda)
-
-        // — Totals —
-        const totalAderente = transactions.reduce((s, t) => s + t.importoLordoAderente, 0)
-        const totalAzienda = transactions.reduce((s, t) => s + t.importoLordoAzienda, 0)
-        const totalTfr = transactions.reduce((s, t) => s + t.tfr, 0)
-        const totalFees = transactions.reduce((s, t) => s + t.quotaSpese, 0)
-
-        // — Group by year —
-        const byYear = new Map<number, YearRow>()
-        for (const t of transactions) {
-          const year = t.dataOperazione.getFullYear()
-          const existing = byYear.get(year) ?? {
-            year, count: 0, aderente: 0, azienda: 0, tfr: 0, fees: 0, net: 0,
-          }
-          existing.count += 1
-          existing.aderente += t.importoLordoAderente
-          existing.azienda += t.importoLordoAzienda
-          existing.tfr += t.tfr
-          existing.fees += t.quotaSpese
-          existing.net += t.net
-          byYear.set(year, existing)
-        }
-
-        const firstDate = transactions[0].dataOperazione
-        const years = (terminalDate.getTime() - firstDate.getTime()) / (365.25 * 24 * 60 * 60 * 1000)
-
-        setResults({
-          xirr: rate,
-          xirrNoAzienda: rateNoAzienda,
-          totalAderente,
-          totalAzienda,
-          totalTfr,
-          totalFees,
-          firstDate,
-          lastDate: transactions[transactions.length - 1].dataOperazione,
-          years,
-          yearRows: Array.from(byYear.values()).sort((a, b) => a.year - b.year),
-          transactionCount: transactions.length,
-          currentValue,
-        })
-      } catch (err) {
-        setError(err instanceof Error ? err.message : 'Errore sconosciuto durante il calcolo.')
-      } finally {
-        setLoading(false)
+      if (transactions.length === 0) {
+        throw new Error('Nessuna transazione trovata nel file. Verifica il formato.')
       }
-    }
-    reader.onerror = () => {
-      setError('Impossibile leggere il file.')
+
+      transactions.sort((a, b) => a.dataOperazione.getTime() - b.dataOperazione.getTime())
+
+      const lastDate = transactions[transactions.length - 1].dataOperazione
+      const terminalDate = new Date() > lastDate ? new Date() : lastDate
+
+      // — Standard XIRR: all components as contributions —
+      const cashFlows = transactions
+        .filter(t => t.net !== 0)
+        .map(t => ({ amount: -t.net, date: t.dataOperazione }))
+      cashFlows.push({ amount: currentValue, date: terminalDate })
+      const rate = computeXirr(cashFlows)
+
+      // — Bonus XIRR: exclude Importo Lordo Azienda from cost basis —
+      // Only aderente + tfr + altro + quotaSpese are counted as the investor's cost
+      const cashFlowsNoAzienda = transactions
+        .filter(t => (t.importoLordoAderente + t.tfr + t.altro + t.quotaSpese) !== 0)
+        .map(t => ({
+          amount: -(t.importoLordoAderente + t.tfr + t.altro + t.quotaSpese),
+          date: t.dataOperazione,
+        }))
+      cashFlowsNoAzienda.push({ amount: currentValue, date: terminalDate })
+      const rateNoAzienda = computeXirr(cashFlowsNoAzienda)
+
+      // — Totals —
+      const totalAderente = transactions.reduce((s, t) => s + t.importoLordoAderente, 0)
+      const totalAzienda = transactions.reduce((s, t) => s + t.importoLordoAzienda, 0)
+      const totalTfr = transactions.reduce((s, t) => s + t.tfr, 0)
+      const totalFees = transactions.reduce((s, t) => s + t.quotaSpese, 0)
+
+      // — Group by year —
+      const byYear = new Map<number, YearRow>()
+      for (const t of transactions) {
+        const year = t.dataOperazione.getFullYear()
+        const existing = byYear.get(year) ?? {
+          year, count: 0, aderente: 0, azienda: 0, tfr: 0, fees: 0, net: 0,
+        }
+        existing.count += 1
+        existing.aderente += t.importoLordoAderente
+        existing.azienda += t.importoLordoAzienda
+        existing.tfr += t.tfr
+        existing.fees += t.quotaSpese
+        existing.net += t.net
+        byYear.set(year, existing)
+      }
+
+      const firstDate = transactions[0].dataOperazione
+      const years = (terminalDate.getTime() - firstDate.getTime()) / (365.25 * 24 * 60 * 60 * 1000)
+
+      setResults({
+        xirr: rate,
+        xirrNoAzienda: rateNoAzienda,
+        totalAderente,
+        totalAzienda,
+        totalTfr,
+        totalFees,
+        firstDate,
+        lastDate: transactions[transactions.length - 1].dataOperazione,
+        years,
+        yearRows: Array.from(byYear.values()).sort((a, b) => a.year - b.year),
+        transactionCount: transactions.length,
+        currentValue,
+      })
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Errore sconosciuto durante il calcolo.')
+    } finally {
       setLoading(false)
     }
-    reader.readAsText(file, 'utf-8')
   }
 
   return (

@@ -6,6 +6,7 @@ import { Footer } from './components/Footer.tsx';
 import { Nav } from './components/Nav.tsx';
 import Cometa from './pages/Cometa.tsx';
 import CometaGuide from './pages/CometaGuide.tsx';
+import Fonte from './pages/Fonte.tsx';
 import { Analytics } from '@vercel/analytics/react';
 
 createRoot(document.getElementById('root')!).render(
@@ -18,6 +19,7 @@ createRoot(document.getElementById('root')!).render(
 						<Route path='/' element={<Cometa />} />
 						<Route path='/cometa' element={<Cometa />} />
 						<Route path='/cometa-guide' element={<CometaGuide />} />
+					<Route path='/fonte' element={<Fonte />} />
 					</Routes>
 				</main>
 				<Footer />

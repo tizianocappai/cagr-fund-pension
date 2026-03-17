@@ -1,17 +1,16 @@
 import * as React from 'react'
-import { Link } from 'react-router'
 import { CagrCalculator } from '@/components/CagrCalculator'
 import { FileUploader } from '@/components/ui/file-uploader'
 import { clearFile, loadFile, saveFile } from '@/lib/fileStorage'
+import { parseFonte } from '@/lib/parseFonte'
 
-export default function Cometa() {
+export default function Fonte() {
   const [file, setFile] = React.useState<File | null>(null)
   const [initialFile, setInitialFile] = React.useState<File | null>(null)
   const [restoring, setRestoring] = React.useState(true)
 
-  // Restore file from IndexedDB on mount
   React.useEffect(() => {
-    loadFile('cometa')
+    loadFile('fonte')
       .then(f => {
         if (f) {
           setInitialFile(f)
@@ -24,13 +23,13 @@ export default function Cometa() {
 
   async function handleFileSelect(f: File) {
     setFile(f)
-    await saveFile(f, 'cometa').catch(() => {})
+    await saveFile(f, 'fonte').catch(() => {})
   }
 
   async function handleClear() {
     setFile(null)
     setInitialFile(null)
-    await clearFile('cometa').catch(() => {})
+    await clearFile('fonte').catch(() => {})
   }
 
   if (restoring) return null
@@ -39,16 +38,10 @@ export default function Cometa() {
     <div className="bg-[--color-background] text-[--color-foreground]">
       <div className="mx-auto max-w-2xl px-6 py-12">
 
-        <p className="mb-6 text-sm">
-          📖 Prima volta? Leggi la{' '}
-          <Link to="/cometa-guide">guida passo passo</Link>{' '}
-          per sapere come esportare il file dal portale Fondo Cometa.
-        </p>
-
         <header className="mb-8">
-          <h1 className="text-3xl font-semibold tracking-tight">Carica il tuo file ☄️</h1>
+          <h1 className="text-3xl font-semibold tracking-tight">Carica il tuo file 🌊</h1>
           <p className="mt-2 text-sm text-[--color-muted-foreground]">
-            Carica il file XLS esportato dal portale del fondo pensione.
+            Carica il file XLS esportato dal portale del fondo pensione Fonte.
           </p>
         </header>
 
@@ -60,7 +53,7 @@ export default function Cometa() {
           className={file ? 'py-6' : undefined}
         />
 
-        {file && <CagrCalculator file={file} />}
+        {file && <CagrCalculator file={file} parser={parseFonte} />}
 
       </div>
     </div>

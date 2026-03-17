@@ -3,6 +3,7 @@ import { cn } from '@/lib/utils'
 
 const links = [
   { to: '/cometa', label: 'Cometa', emoji: '☄️' },
+  { to: '/fonte',  label: 'Fonte',  emoji: '🌊' },
 ]
 
 export function Nav() {

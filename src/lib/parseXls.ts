@@ -11,12 +11,14 @@ export interface Transaction {
 }
 
 function parseItalianNumber(s: string): number {
-  const cleaned = s
-    .replace(/\u00a0/g, '')
-    .replace(/\s/g, '')
-    .replace(/\./g, '')
-    .replace(',', '.')
-  const n = parseFloat(cleaned)
+  const trimmed = s.replace(/\u00a0/g, '').replace(/\s/g, '').trim()
+  if (!trimmed) return 0
+  if (trimmed.includes(',')) {
+    const cleaned = trimmed.replace(/\./g, '').replace(',', '.')
+    const n = parseFloat(cleaned)
+    return isNaN(n) ? 0 : n
+  }
+  const n = parseFloat(trimmed)
   return isNaN(n) ? 0 : n
 }
 
@@ -30,19 +32,13 @@ function parseItalianDate(s: string): Date | null {
   return isNaN(date.getTime()) ? null : date
 }
 
-export function parseXls(content: string): Transaction[] {
-  const parser = new DOMParser()
-  const doc = parser.parseFromString(content, 'text/html')
-  const rows = Array.from(doc.querySelectorAll('tbody tr'))
-
+export function parseXls(rows: string[][]): Transaction[] {
   const transactions: Transaction[] = []
 
-  for (const row of rows) {
-    const cells = Array.from(row.querySelectorAll('td'))
+  for (const cells of rows) {
     if (cells.length < 11) continue
 
-    const text = (i: number) =>
-      cells[i]?.textContent?.replace(/\u00a0/g, ' ').trim() ?? ''
+    const text = (i: number) => cells[i] ?? ''
 
     const dataOperazione = parseItalianDate(text(2))
     if (!dataOperazione) continue
