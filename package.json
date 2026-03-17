@@ -10,7 +10,8 @@
 		"preview": "vite preview",
 		"version:patch": "npm version patch && git push origin --tags",
 		"version:minor": "npm version minor && git push origin --tags",
-		"version:major": "npm version major && git push origin --tags"
+		"version:major": "npm version major && git push origin --tags",
+		"invalidate-cache": "vercel cache purge --type=cdn"
 	},
 	"dependencies": {
 		"chart.js": "^4.5.1",
