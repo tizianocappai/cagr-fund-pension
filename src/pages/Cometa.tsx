@@ -60,7 +60,7 @@ export default function Cometa() {
           className={file ? 'py-6' : undefined}
         />
 
-        {file && <CagrCalculator file={file} />}
+        {file && <CagrCalculator file={file} flow="cometa" />}
 
       </div>
     </div>

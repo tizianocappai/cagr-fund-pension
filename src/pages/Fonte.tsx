@@ -53,7 +53,7 @@ export default function Fonte() {
           className={file ? 'py-6' : undefined}
         />
 
-        {file && <CagrCalculator file={file} parser={parseFonte} />}
+        {file && <CagrCalculator file={file} flow="fonte" parser={parseFonte} />}
 
       </div>
     </div>

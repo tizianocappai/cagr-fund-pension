@@ -57,7 +57,7 @@ export function ContributionsChart({ yearRows }: Props) {
           tickLine={false}
         />
         <YAxis
-          tickFormatter={v => `€${(v / 1000).toFixed(0)}k`}
+          tickFormatter={v => `€${new Intl.NumberFormat('it-IT', { maximumFractionDigits: 0 }).format(v / 1000)}k`}
           tick={{ fontSize: 11, fill: '#737373' }}
           axisLine={false}
           tickLine={false}

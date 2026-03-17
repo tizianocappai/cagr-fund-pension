@@ -7,11 +7,12 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Input } from '@/components/ui/input'
 import { Separator } from '@/components/ui/separator'
 import { ContributionsChart } from '@/components/ContributionsChart'
-import { ForecastChart } from '@/components/ForecastChart'
+import { ForecastChart, type Flow } from '@/components/ForecastChart'
 import { Tooltip } from '@/components/ui/tooltip'
 
 interface Props {
   file: File
+  flow: Flow
   parser?: (rows: string[][]) => Transaction[]
 }
 
@@ -49,7 +50,7 @@ function parseItalianInput(s: string): number {
   return isNaN(n) ? NaN : n
 }
 
-export function CagrCalculator({ file, parser = parseXls }: Props) {
+export function CagrCalculator({ file, flow, parser = parseXls }: Props) {
   const [portfolioValue, setPortfolioValue] = React.useState('')
   const [results, setResults] = React.useState<Results | null>(null)
   const [error, setError] = React.useState<string | null>(null)
@@ -184,7 +185,7 @@ export function CagrCalculator({ file, parser = parseXls }: Props) {
         </div>
       )}
 
-      {results && <ResultsPanel results={results} />}
+      {results && <ResultsPanel results={results} flow={flow} />}
     </div>
   )
 }
@@ -193,18 +194,18 @@ function xirrEmoji(r: number) {
   return r >= 0.08 ? '🚀' : r >= 0.04 ? '📈' : r >= 0 ? '📊' : '📉'
 }
 
-function ResultsPanel({ results }: { results: Results }) {
+function ResultsPanel({ results, flow }: { results: Results; flow: Flow }) {
   const totalInvested = results.totalAderente + results.totalAzienda + results.totalTfr
 
   const stats = [
-    { emoji: xirrEmoji(results.xirr), label: 'CAGR (XIRR)', value: `${(results.xirr * 100).toFixed(2)}%`, note: 'per anno — tutti i contributi' },
+    { emoji: xirrEmoji(results.xirr), label: 'Tasso di crescita medio annuo', value: `${(results.xirr * 100).toFixed(2)}%`, note: 'per anno — tutti i contributi' },
     { emoji: '💰', label: 'Totale versato', value: fmt.format(totalInvested), note: `${results.transactionCount} operazioni` },
     { emoji: '🏦', label: 'Spese totali', value: fmt.format(Math.abs(results.totalFees)), note: 'commissioni e costi' },
     { emoji: '📅', label: 'Durata', value: `${results.years.toFixed(1)} anni`, note: `${fmtDate.format(results.firstDate)} → ${fmtDate.format(results.lastDate)}` },
   ]
 
   const bonusStats = [
-    { emoji: xirrEmoji(results.xirrNoAzienda), label: 'CAGR senza azienda', value: `${(results.xirrNoAzienda * 100).toFixed(2)}%`, note: 'per anno — solo tuo costo' },
+    { emoji: xirrEmoji(results.xirrNoAzienda), label: 'Tasso di crescita senza azienda', value: `${(results.xirrNoAzienda * 100).toFixed(2)}%`, note: 'per anno — solo tuo costo' },
     { emoji: '🎁', label: 'Contributo azienda', value: fmt.format(results.totalAzienda), note: 'non contato come tuo costo' },
     { emoji: '👤', label: 'Tuo contributo', value: fmt.format(results.totalAderente), note: 'versamenti aderente' },
     { emoji: '📦', label: 'TFR versato', value: fmt.format(results.totalTfr), note: 'trattamento fine rapporto' },
@@ -225,8 +226,8 @@ function ResultsPanel({ results }: { results: Results }) {
               <CardHeader className="pb-2">
                 <CardDescription>{s.emoji} {s.label}</CardDescription>
                 <CardTitle className="text-2xl">
-                  {s.label === 'CAGR (XIRR)' ? (
-                    <Tooltip content="Il CAGR è il tasso di crescita annuo medio del tuo investimento. In pratica ti dice: «se ogni anno il mio fondo fosse cresciuto sempre della stessa percentuale, di quanto sarebbe cresciuto?». Più è alto, meglio ha reso il tuo fondo nel tempo.">
+                  {s.label === 'Tasso di crescita medio annuo' ? (
+                    <Tooltip content="Il tasso di crescita medio annuo misura quanto è cresciuto il tuo investimento ogni anno in media. In pratica ti dice: «se ogni anno il mio fondo fosse cresciuto sempre della stessa percentuale, di quanto sarebbe cresciuto?». Più è alto, meglio ha reso il tuo fondo nel tempo.">
                       <span className="border-b border-dashed border-current cursor-help">{s.value}</span>
                     </Tooltip>
                   ) : s.value}
@@ -313,7 +314,7 @@ function ResultsPanel({ results }: { results: Results }) {
           Proiezione futura
         </p>
         <ForecastChart
-          currentValue={results.currentValue}
+          flow={flow}
           defaultAderente={results.totalAderente / results.years}
           defaultAzienda={results.totalAzienda / results.years}
           defaultTfr={results.totalTfr / results.years}
@@ -328,7 +329,7 @@ function ResultsPanel({ results }: { results: Results }) {
           Bonus
         </p>
         <p className="text-sm text-[--color-muted-foreground] mb-4">
-          Questo CAGR esclude il contributo del datore di lavoro dal costo base, perché quel denaro non è mai uscito dal tuo portafoglio:
+          Questo tasso di crescita medio annuo esclude il contributo del datore di lavoro dal costo base, perché quel denaro non è mai uscito dal tuo portafoglio:
           nel momento in cui versi la tua quota, l'azienda aggiunge immediatamente la propria — <strong className="text-[--color-foreground]">soldi gratis</strong> che entrano in automatico.
           Il risultato mostra quanto rende il capitale che hai <em>davvero</em> speso di tasca tua.
         </p>

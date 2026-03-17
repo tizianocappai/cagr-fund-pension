@@ -4,7 +4,6 @@ import {
   Legend,
   Line,
   LineChart,
-  ReferenceLine,
   ResponsiveContainer,
   Tooltip,
   XAxis,
@@ -12,8 +11,10 @@ import {
 } from 'recharts'
 import { Input } from '@/components/ui/input'
 
+export type Flow = 'cometa' | 'fonte'
+
 interface Props {
-  currentValue: number
+  flow: Flow
   defaultAderente: number
   defaultAzienda: number
   defaultTfr: number
@@ -22,32 +23,36 @@ interface Props {
 const fmt = new Intl.NumberFormat('it-IT', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 })
 
 /**
- * Year-by-year simulation:
- *   year 0 → currentValue
- *   year N → (prev + annualContrib) * (1 + r)
- * Contributions are added at the start of each year so they compound for the full year.
+ * Compound interest accumulation starting from 0.
+ * Each year: add annualContrib to the running balance, then apply rate.
+ * Returns an array of length (years + 1) where index 0 = 0.
  */
-function simulate(start: number, annualContrib: number, r: number, years: number): number[] {
-  const out = [Math.round(start)]
-  let v = start
-  for (let t = 1; t <= years; t++) {
-    v = (v + annualContrib) * (1 + r)
+function compound(annualContrib: number, rate: number, years: number): number[] {
+  const out: number[] = [0]
+  let v = 0
+  for (let y = 1; y <= years; y++) {
+    v = (v + annualContrib) * (1 + rate)
     out.push(Math.round(v))
   }
   return out
 }
 
-function parseNum(s: string): number {
+function parseRate(s: string): number {
+  const n = parseFloat(s.replace(',', '.'))
+  return isNaN(n) || n < 0 ? 0 : n / 100
+}
+
+function parseEur(s: string): number {
   const n = parseFloat(s.replace(/\./g, '').replace(',', '.'))
-  return isNaN(n) ? 0 : n
+  return isNaN(n) || n < 0 ? 0 : n
 }
 
 function CustomTooltip({ active, payload, label }: any) {
   if (!active || !payload?.length) return null
   return (
-    <div className="rounded-[--radius] border border-[--color-border] bg-[--color-card] px-3 py-2 text-xs shadow-sm min-w-45">
-      <p className="font-semibold mb-1.5">Anno +{label}</p>
-      {payload.map((p: any) => (
+    <div className="rounded-[--radius] border border-[--color-border] bg-[--color-card] px-3 py-2 text-xs shadow-sm min-w-44">
+      <p className="font-semibold mb-1.5">Anno {label}</p>
+      {[...payload].reverse().map((p: any) => (
         <p key={p.dataKey} className="flex justify-between gap-4" style={{ color: p.stroke }}>
           <span>{p.name}</span>
           <span className="font-mono">{fmt.format(p.value)}</span>
@@ -57,117 +62,155 @@ function CustomTooltip({ active, payload, label }: any) {
   )
 }
 
-const LINES = [
-  { key: '📈 Solo crescita', color: '#6366f1', width: 2   },
-  { key: '👤 + Aderente',    color: '#3b82f6', width: 2   },
-  { key: '🏢 + Azienda',     color: '#10b981', width: 2   },
-  { key: '📦 + TFR',         color: '#f59e0b', width: 2   },
-  { key: '💰 Totale',        color: '#e11d48', width: 3   },
-] as const
+const fmtTick = new Intl.NumberFormat('it-IT', { maximumFractionDigits: 0 })
+const fmtTickDec = new Intl.NumberFormat('it-IT', { minimumFractionDigits: 1, maximumFractionDigits: 1 })
 
-export function ForecastChart({ currentValue, defaultAderente, defaultAzienda, defaultTfr }: Props) {
-  const [years, setYears]       = React.useState('20')
-  const [rate, setRate]         = React.useState('3')
+function tickY(v: number) {
+  if (v >= 1_000_000) return `€${fmtTickDec.format(v / 1_000_000)}M`
+  if (v >= 1_000)     return `€${fmtTick.format(v / 1_000)}k`
+  return `€${fmtTick.format(v)}`
+}
+
+export function ForecastChart({ flow: _flow, defaultAderente, defaultAzienda, defaultTfr }: Props) {
+  const [rate,     setRate]     = React.useState('3')
   const [aderente, setAderente] = React.useState(() => String(Math.round(defaultAderente)))
-  const [azienda, setAzienda]   = React.useState(() => String(Math.round(defaultAzienda)))
-  const [tfr, setTfr]           = React.useState(() => String(Math.round(defaultTfr)))
+  const [azienda,  setAzienda]  = React.useState(() => String(Math.round(defaultAzienda)))
+  const [tfr,      setTfr]      = React.useState(() => String(Math.round(defaultTfr)))
+  const [years,    setYears]    = React.useState('20')
 
-  const forecastYears = Math.min(Math.max(1, parseInt(years) || 20), 50)
-  const r             = Math.max(0, parseNum(rate)) / 100
-  const cAderente     = parseNum(aderente)
-  const cAzienda      = parseNum(azienda)
-  const cTfr          = parseNum(tfr)
+  const r           = parseRate(rate)
+  const cAderente   = parseEur(aderente)
+  const cAzienda    = parseEur(azienda)
+  const cTfr        = parseEur(tfr)
+  const forecastYrs = Math.min(Math.max(1, parseInt(years) || 20), 50)
 
-  const s0 = simulate(currentValue, 0,                           r, forecastYears)
-  const s1 = simulate(currentValue, cAderente,                   r, forecastYears)
-  const s2 = simulate(currentValue, cAderente + cAzienda,        r, forecastYears)
-  const s3 = simulate(currentValue, cAderente + cAzienda + cTfr, r, forecastYears)
+  // Individual lines: linear accumulation (no interest), just cumulative contributions
+  // Totale: compound interest — each year adds all contributions then applies rate
+  const totalAnnual = cAderente + cAzienda + cTfr
+  const sTotal      = compound(totalAnnual, r, forecastYrs)
 
-  const data = s0.map((_, t) => ({
-    year: t,
-    '📈 Solo crescita': s0[t],
-    '👤 + Aderente':    s1[t],
-    '🏢 + Azienda':     s2[t],
-    '📦 + TFR':         s3[t],
-    '💰 Totale':        s3[t],
-  }))
-
-  const maxVal = data[data.length - 1]['📦 + TFR']
-  const yMax   = Math.ceil(maxVal / 10000) * 10000
-
-  function tickY(v: number) {
-    if (v >= 1_000_000) return `€${(v / 1_000_000).toFixed(1)}M`
-    if (v >= 1_000)     return `€${(v / 1_000).toFixed(0)}k`
-    return `€${v}`
+  const data: { anno: number; [k: string]: number }[] = []
+  for (let y = 0; y <= forecastYrs; y++) {
+    data.push({
+      anno:          y,
+      '👤 Aderente': Math.round(cAderente * y),
+      '🏢 Azienda':  Math.round(cAzienda  * y),
+      '📦 TFR':      Math.round(cTfr      * y),
+      '💰 Totale':   sTotal[y],
+    })
   }
+
+  const maxVal = sTotal[sTotal.length - 1]
+  const yMax   = Math.ceil(maxVal / 10_000) * 10_000 || 10_000
 
   return (
     <div className="flex flex-col gap-5">
 
-      {/* Controls */}
-      <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+      {/* ── Inputs ── */}
+      <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
         <div className="flex flex-col gap-1">
           <label htmlFor="fc-rate" className="text-xs text-[--color-muted-foreground]">
-            📊 Tasso annuo (%)
+            📊 Rendimento medio annuo (%)
           </label>
-          <Input id="fc-rate" value={rate} onChange={e => setRate(e.target.value)}
-            className="font-mono" placeholder="3" />
+          <Input
+            id="fc-rate"
+            value={rate}
+            onChange={e => setRate(e.target.value)}
+            placeholder="3"
+            className="font-mono"
+          />
         </div>
         <div className="flex flex-col gap-1">
-          <label htmlFor="fc-aderente" className="text-xs text-[--color-muted-foreground]">
-            👤 Contributo aderente/anno (€)
+          <label htmlFor="fc-years" className="text-xs text-[--color-muted-foreground]">
+            ⏳ Anni di proiezione
           </label>
-          <Input id="fc-aderente" value={aderente} onChange={e => setAderente(e.target.value)}
-            className="font-mono" placeholder="0" />
+          <Input
+            id="fc-years"
+            type="number"
+            min={1}
+            max={50}
+            value={years}
+            onChange={e => setYears(e.target.value)}
+            className="font-mono"
+          />
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+        <div className="flex flex-col gap-1">
+          <label htmlFor="fc-aderente" className="text-xs text-[--color-muted-foreground]">
+            👤 Contributo aderente / anno (€)
+          </label>
+          <Input
+            id="fc-aderente"
+            value={aderente}
+            onChange={e => setAderente(e.target.value)}
+            placeholder="0"
+            className="font-mono"
+          />
         </div>
         <div className="flex flex-col gap-1">
           <label htmlFor="fc-azienda" className="text-xs text-[--color-muted-foreground]">
-            🏢 Contributo datore/anno (€)
+            🏢 Contributo azienda / anno (€)
           </label>
-          <Input id="fc-azienda" value={azienda} onChange={e => setAzienda(e.target.value)}
-            className="font-mono" placeholder="0" />
+          <Input
+            id="fc-azienda"
+            value={azienda}
+            onChange={e => setAzienda(e.target.value)}
+            placeholder="0"
+            className="font-mono"
+          />
         </div>
         <div className="flex flex-col gap-1">
           <label htmlFor="fc-tfr" className="text-xs text-[--color-muted-foreground]">
-            📦 TFR/anno (€)
+            📦 TFR / anno (€)
           </label>
-          <Input id="fc-tfr" value={tfr} onChange={e => setTfr(e.target.value)}
-            className="font-mono" placeholder="0" />
+          <Input
+            id="fc-tfr"
+            value={tfr}
+            onChange={e => setTfr(e.target.value)}
+            placeholder="0"
+            className="font-mono"
+          />
         </div>
       </div>
 
-      <div className="flex items-center gap-3">
-        <label htmlFor="fc-years" className="text-xs text-[--color-muted-foreground] whitespace-nowrap">
-          ⏳ Anni di proiezione
-        </label>
-        <Input id="fc-years" type="number" min={1} max={50} value={years}
-          onChange={e => setYears(e.target.value)} className="w-24 font-mono" />
-        <span className="text-xs text-[--color-muted-foreground]">max 50</span>
-      </div>
-
       <p className="text-xs text-[--color-muted-foreground]">
-        Ogni anno i contributi vengono aggiunti al valore corrente e l'intero importo cresce al tasso impostato. I contributi sono pre-compilati con la media annua storica. Le linee sono cumulative: ogni curva aggiunge una voce alla precedente.
+        Ogni linea mostra come cresce nel tempo quella singola fonte di contributo, partendo da zero,
+        al tasso di rendimento impostato. La linea <strong className="text-[--color-foreground]">💰 Totale</strong> è
+        l'interesse composto applicato alla somma di tutti i contributi annui ed equivale al patrimonio
+        accumulato dai versamenti futuri.
       </p>
 
-      {/* Chart */}
-      <ResponsiveContainer width="100%" height={300}>
-        <LineChart data={data}>
+      {/* ── Chart ── */}
+      <ResponsiveContainer width="100%" height={320}>
+        <LineChart data={data} margin={{ top: 4, right: 8, bottom: 0, left: 0 }}>
           <CartesianGrid stroke="#e5e5e5" strokeDasharray="4 2" />
-          <XAxis dataKey="year" tickFormatter={v => `+${v}y`}
-            tick={{ fontSize: 11, fill: '#737373' }} axisLine={false} tickLine={false} />
-          <YAxis domain={[0, yMax]} tickFormatter={tickY}
-            tick={{ fontSize: 11, fill: '#737373' }} axisLine={false} tickLine={false} width={60} />
+          <XAxis
+            dataKey="anno"
+            tickFormatter={v => v === 0 ? 'Oggi' : `+${v}y`}
+            tick={{ fontSize: 11, fill: '#737373' }}
+            axisLine={false}
+            tickLine={false}
+          />
+          <YAxis
+            domain={[0, yMax]}
+            tickFormatter={tickY}
+            tick={{ fontSize: 11, fill: '#737373' }}
+            axisLine={false}
+            tickLine={false}
+            width={62}
+          />
           <Tooltip content={<CustomTooltip />} />
-          <Legend iconType="plainline" iconSize={16}
-            wrapperStyle={{ fontSize: 11, color: '#737373', paddingTop: 8 }} />
-          <ReferenceLine y={currentValue} stroke="#d4d4d4" strokeDasharray="3 3"
-            label={{ value: 'Oggi', position: 'insideTopLeft', fontSize: 10, fill: '#a3a3a3' }} />
-          {LINES.map(({ key, color, width }, i) => (
-            <Line key={key} type="monotone" dataKey={key}
-              stroke={color} strokeWidth={width}
-              strokeDasharray={i === 0 ? '5 3' : undefined}
-              dot={false} activeDot={{ r: 5, fill: color }} />
-          ))}
+          <Legend
+            iconType="plainline"
+            iconSize={16}
+            wrapperStyle={{ fontSize: 11, color: '#737373', paddingTop: 8 }}
+          />
+          <Line type="monotone" dataKey="👤 Aderente" stroke="#3b82f6" strokeWidth={2} dot={false} activeDot={{ r: 4 }} />
+          <Line type="monotone" dataKey="🏢 Azienda"  stroke="#10b981" strokeWidth={2} dot={false} activeDot={{ r: 4 }} />
+          <Line type="monotone" dataKey="📦 TFR"      stroke="#f59e0b" strokeWidth={2} dot={false} activeDot={{ r: 4 }} />
+          <Line type="monotone" dataKey="💰 Totale"   stroke="#e11d48" strokeWidth={3} dot={false} activeDot={{ r: 5 }} />
         </LineChart>
       </ResponsiveContainer>
     </div>

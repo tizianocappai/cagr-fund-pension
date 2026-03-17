@@ -51,7 +51,7 @@ const steps = [
         Torna sulla <strong>home page di Fondo Cometa</strong>: trovi il{' '}
         <strong>valore attuale della tua posizione individuale</strong> riepilogato in cima alla
         pagina. Inserisci questo importo nel campo apposito sul sito, poi clicca{' '}
-        <strong>Calcola CAGR</strong>.
+        <strong>Calcola Rendimento</strong>.
       </>
     ),
   },
@@ -65,7 +65,7 @@ export default function CometaGuide() {
         <header className="mb-8">
           <h1 className="text-3xl font-semibold tracking-tight">Guida all'utilizzo 📖</h1>
           <p className="mt-2 text-sm text-[--color-muted-foreground]">
-            Segui questi 5 passi per calcolare il CAGR del tuo fondo pensione Cometa.
+            Segui questi 5 passi per calcolare il tasso di crescita medio annuo del tuo fondo pensione Cometa.
           </p>
         </header>
 
