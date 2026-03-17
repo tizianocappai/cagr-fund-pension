@@ -46,7 +46,7 @@ export default function Cometa() {
         </p>
 
         <header className="mb-8">
-          <h1 className="text-3xl font-semibold tracking-tight">Upload your file ☄️</h1>
+          <h1 className="text-3xl font-semibold tracking-tight">Carica il tuo file ☄️</h1>
           <p className="mt-2 text-sm text-[--color-muted-foreground]">
             Carica il file XLS esportato dal portale del fondo pensione.
           </p>

@@ -9,7 +9,7 @@ export function Nav() {
   return (
     <nav className="border-b border-[--color-border] bg-[--color-card]">
       <div className="mx-auto flex max-w-2xl items-center gap-1 px-6 py-3">
-        <span className="mr-4 text-sm font-semibold tracking-tight">🗂️ Fund</span>
+        <span className="mr-4 text-sm font-semibold tracking-tight">🗂️ Fondo</span>
         {links.map(({ to, label, emoji }) => (
           <NavLink
             key={to}
