@@ -6,7 +6,7 @@ import { Footer } from './components/Footer.tsx';
 import { Nav } from './components/Nav.tsx';
 import Cometa from './pages/Cometa.tsx';
 import CometaGuide from './pages/CometaGuide.tsx';
-import { Analytics } from '@vercel/analytics/next';
+import { Analytics } from '@vercel/analytics/react';
 
 createRoot(document.getElementById('root')!).render(
 	<StrictMode>
