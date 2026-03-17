@@ -7,6 +7,7 @@ import { Input } from '@/components/ui/input'
 import { Separator } from '@/components/ui/separator'
 import { ContributionsChart } from '@/components/ContributionsChart'
 import { ForecastChart } from '@/components/ForecastChart'
+import { Tooltip } from '@/components/ui/tooltip'
 
 interface Props {
   file: File
@@ -175,7 +176,7 @@ export function CagrCalculator({ file }: Props) {
             aria-describedby="portfolio-value-hint"
           />
           <Button onClick={calculate} disabled={loading}>
-            {loading ? 'Calcolo…' : 'Calcola CAGR 📐'}
+            {loading ? 'Calcolo…' : 'Calcola Rendimento 📐'}
           </Button>
         </div>
         <p id="portfolio-value-hint" className="text-xs text-[--color-muted-foreground]">
@@ -229,7 +230,13 @@ function ResultsPanel({ results }: { results: Results }) {
             <Card key={s.label}>
               <CardHeader className="pb-2">
                 <CardDescription>{s.emoji} {s.label}</CardDescription>
-                <CardTitle className="text-2xl">{s.value}</CardTitle>
+                <CardTitle className="text-2xl">
+                  {s.label === 'CAGR (XIRR)' ? (
+                    <Tooltip content="Il CAGR è il tasso di crescita annuo medio del tuo investimento. In pratica ti dice: «se ogni anno il mio fondo fosse cresciuto sempre della stessa percentuale, di quanto sarebbe cresciuto?». Più è alto, meglio ha reso il tuo fondo nel tempo.">
+                      <span className="border-b border-dashed border-current cursor-help">{s.value}</span>
+                    </Tooltip>
+                  ) : s.value}
+                </CardTitle>
               </CardHeader>
               <CardContent>
                 <p className="text-xs text-[--color-muted-foreground]">{s.note}</p>
