@@ -1,6 +1,7 @@
 import * as React from 'react'
 import { Link } from 'react-router'
 import { CagrCalculator } from '@/components/CagrCalculator'
+import { columnsByProvider } from '@/lib/providerConfig'
 import { FileUploader } from '@/components/ui/file-uploader'
 import { clearFile, loadFile, saveFile } from '@/lib/fileStorage'
 
@@ -53,7 +54,7 @@ export default function Cometa() {
         className={file ? 'py-6' : undefined}
       />
 
-      {file && <CagrCalculator file={file} flow="cometa" />}
+      {file && <CagrCalculator file={file} flow="cometa" columns={columnsByProvider['cometa']} />}
 
     </div>
   )

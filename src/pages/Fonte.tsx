@@ -1,5 +1,6 @@
 import * as React from 'react'
 import { CagrCalculator } from '@/components/CagrCalculator'
+import { columnsByProvider } from '@/lib/providerConfig'
 import { FileUploader } from '@/components/ui/file-uploader'
 import { clearFile, loadFile, saveFile } from '@/lib/fileStorage'
 import { parseFonte } from '@/lib/parseFonte'
@@ -47,7 +48,7 @@ export default function Fonte() {
         className={file ? 'py-6' : undefined}
       />
 
-      {file && <CagrCalculator file={file} flow="fonte" parser={parseFonte} />}
+      {file && <CagrCalculator file={file} flow="fonte" parser={parseFonte} columns={columnsByProvider['fonte']} />}
 
     </div>
   )
