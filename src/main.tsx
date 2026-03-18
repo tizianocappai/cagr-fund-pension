@@ -1,6 +1,6 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
-import { BrowserRouter, Route, Routes } from 'react-router';
+import { BrowserRouter, Navigate, Route, Routes } from 'react-router';
 import './index.css';
 import { Footer } from './components/Footer.tsx';
 import { Nav } from './components/Nav.tsx';
@@ -23,15 +23,25 @@ createRoot(document.getElementById('root')!).render(
 					<Nav />
 					<main className='flex-1'>
 						<Routes>
-							<Route path='/' element={<RendimentoFondo />} />
+							<Route path='/' element={<Missione />} />
 							<Route
 								path='/cometa-guide'
 								element={<CometaGuide />}
 							/>
 							<Route path='/fp-vs-tfr' element={<FpVsTfr />} />
-							<Route path='/obiettivo' element={<CalcoloObiettivo />} />
-							<Route path='/rischio-rendimento' element={<RischioRendimento />} />
+							<Route
+								path='/obiettivo'
+								element={<CalcoloObiettivo />}
+							/>
+							<Route
+								path='/rischio-rendimento'
+								element={<RischioRendimento />}
+							/>
 							<Route path='/missione' element={<Missione />} />
+							<Route
+								path='*'
+								element={<Navigate to='/' replace />}
+							/>
 						</Routes>
 					</main>
 					<Footer />
