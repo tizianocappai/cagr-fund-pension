@@ -3,7 +3,7 @@ import { Separator } from '@/components/ui/separator'
 
 const features = [
   {
-    to: '/',
+    to: '/rendimento-fondo',
     label: 'Rendimento Fondo Pensione',
     description:
       'Carica il file del tuo fondo e scopri il tasso di crescita medio annuo reale, calcolato con il metodo XIRR. Vedi quanto ha reso ogni anno, quanto hai versato e quanto ti è costato in commissioni.',
