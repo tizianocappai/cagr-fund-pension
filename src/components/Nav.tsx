@@ -2,9 +2,10 @@ import { NavLink } from 'react-router'
 import { cn } from '@/lib/utils'
 
 const links = [
-  { to: '/cometa',   label: 'Cometa',   emoji: '☄️' },
-  { to: '/fonte',    label: 'Fonte',    emoji: '🌊' },
-  { to: '/missione', label: 'Missione', emoji: '🧭' },
+  { to: '/cometa',    label: 'Cometa',    emoji: '☄️' },
+  { to: '/fonte',     label: 'Fonte',     emoji: '🌊' },
+  { to: '/fp-vs-tfr', label: 'FP vs TFR', emoji: '⚖️' },
+  { to: '/missione',  label: 'Missione',  emoji: '🧭' },
 ]
 
 export function Nav() {
