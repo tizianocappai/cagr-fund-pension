@@ -67,6 +67,17 @@ export default function RendimentoFondo() {
         <p className="mt-2 text-muted-foreground">
           Calcola il tasso di crescita medio annuo del tuo fondo pensione complementare.
         </p>
+        <div className="mt-4 text-sm">
+          <p className="text-xs tracking-widest uppercase text-muted-foreground mb-2">Fondi supportati</p>
+          <ul className="flex flex-col gap-1">
+            {providers.map(p => (
+              <li key={p.value} className="flex items-center gap-2">
+                <span className="inline-block w-1.5 h-1.5 bg-primary shrink-0" />
+                {p.label}
+              </li>
+            ))}
+          </ul>
+        </div>
       </header>
 
       {/* Provider selector */}
