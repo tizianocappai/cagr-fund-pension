@@ -1,3 +1,5 @@
+import { parseItalianNumber } from './parse'
+
 export interface Transaction {
   tipoOperazione: string
   dataOperazione: Date
@@ -8,18 +10,6 @@ export interface Transaction {
   altro: number
   quotaSpese: number
   net: number
-}
-
-function parseItalianNumber(s: string): number {
-  const trimmed = s.replace(/\u00a0/g, '').replace(/\s/g, '').trim()
-  if (!trimmed) return 0
-  if (trimmed.includes(',')) {
-    const cleaned = trimmed.replace(/\./g, '').replace(',', '.')
-    const n = parseFloat(cleaned)
-    return isNaN(n) ? 0 : n
-  }
-  const n = parseFloat(trimmed)
-  return isNaN(n) ? 0 : n
 }
 
 function parseItalianDate(s: string): Date | null {
@@ -44,17 +34,12 @@ export function parseXls(rows: string[][]): Transaction[] {
     if (!dataOperazione) continue
 
     const importoLordoAderente = parseItalianNumber(text(6))
-    const importoLordoAzienda = parseItalianNumber(text(7))
-    const tfr = parseItalianNumber(text(8))
-    const altro = parseItalianNumber(text(9))
-    const quotaSpese = parseItalianNumber(text(10))
+    const importoLordoAzienda  = parseItalianNumber(text(7))
+    const tfr                  = parseItalianNumber(text(8))
+    const altro                = parseItalianNumber(text(9))
+    const quotaSpese           = parseItalianNumber(text(10))
 
-    const net =
-      importoLordoAderente +
-      importoLordoAzienda +
-      tfr +
-      altro +
-      quotaSpese
+    const net = importoLordoAderente + importoLordoAzienda + tfr + altro + quotaSpese
 
     transactions.push({
       tipoOperazione: text(0),

@@ -22,6 +22,10 @@ export function Tooltip({ content, children, className }: TooltipProps) {
         onMouseLeave={() => setVisible(false)}
         onFocus={() => setVisible(true)}
         onBlur={() => setVisible(false)}
+        onKeyDown={e => {
+          if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setVisible(v => !v) }
+          if (e.key === 'Escape') setVisible(false)
+        }}
       >
         {children}
       </span>

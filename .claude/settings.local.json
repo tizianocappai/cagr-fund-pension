@@ -6,7 +6,9 @@
       "Bash(npm run:*)",
       "Bash(grep -r \"from ''chart\\\\|from \"\"chart\\\\|react-chartjs\" src/ --include=\"*.ts\" --include=\"*.tsx\")",
       "Bash(npm uninstall:*)",
-      "Bash(grep -rn ''[^'']*[A-Z][^'']*'' src/pages/Cometa.tsx src/components/Nav.tsx src/components/Footer.tsx src/components/ui/file-uploader.tsx src/components/CagrCalculator.tsx src/components/ForecastChart.tsx src/components/ContributionsChart.tsx)"
+      "Bash(grep -rn ''[^'']*[A-Z][^'']*'' src/pages/Cometa.tsx src/components/Nav.tsx src/components/Footer.tsx src/components/ui/file-uploader.tsx src/components/CagrCalculator.tsx src/components/ForecastChart.tsx src/components/ContributionsChart.tsx)",
+      "Bash(grep -n any /Users/tiziano.cappai/Personale/Progetti/cagr-fund-pension/src/components/*.tsx /Users/tiziano.cappai/Personale/Progetti/cagr-fund-pension/src/components/ui/*.tsx)",
+      "Bash(grep -n \"const fmt\\\\|const fmtTick\\\\|const fmtDate\" /Users/tiziano.cappai/Personale/Progetti/cagr-fund-pension/src/**/*.tsx)"
     ]
   }
 }

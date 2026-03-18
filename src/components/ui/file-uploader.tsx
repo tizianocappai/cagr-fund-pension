@@ -91,7 +91,7 @@ export function FileUploader({ accept, initialFile, onFileSelect, onClear, class
             type="button"
             aria-label="Rimuovi file"
             onClick={handleClear}
-            onKeyDown={handleClear as unknown as React.KeyboardEventHandler}
+            onKeyDown={(e: React.KeyboardEvent) => handleClear(e)}
             className="absolute top-2 right-2 flex h-7 w-7 items-center justify-center bg-[#0b0c0c] text-white text-xs hover:bg-[#454a4b] transition-colors focus-visible:outline-3 focus-visible:outline-[#ffdd00]"
           >
             ✕

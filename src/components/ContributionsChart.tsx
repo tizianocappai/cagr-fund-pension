@@ -1,3 +1,4 @@
+import * as React from 'react'
 import {
   Bar,
   BarChart,
@@ -8,6 +9,8 @@ import {
   XAxis,
   YAxis,
 } from 'recharts'
+import { ChartTooltip } from '@/components/ui/chart-tooltip'
+import { tickY } from '@/lib/formatters'
 
 interface YearRow {
   year: number
@@ -21,38 +24,17 @@ interface Props {
   yearRows: YearRow[]
 }
 
-const fmt = new Intl.NumberFormat('it-IT', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 })
-const fmtTick = new Intl.NumberFormat('it-IT', { maximumFractionDigits: 0 })
-const fmtTickDec = new Intl.NumberFormat('it-IT', { minimumFractionDigits: 1, maximumFractionDigits: 1 })
-
-function tickY(v: number) {
-  if (v >= 1_000_000) return `€${fmtTickDec.format(v / 1_000_000)}M`
-  if (v >= 1_000)     return `€${fmtTick.format(v / 1_000)}k`
-  return `€${fmtTick.format(v)}`
-}
-
-function CustomTooltip({ active, payload, label }: any) {
-  if (!active || !payload?.length) return null
-  return (
-    <div className="border border-border bg-card px-3 py-2 text-xs shadow-sm">
-      <p className="font-bold mb-1">📅 {label}</p>
-      {payload.map((p: any) => (
-        <p key={p.dataKey} style={{ color: p.fill }}>
-          {p.name}: {fmt.format(p.value)}
-        </p>
-      ))}
-    </div>
+export const ContributionsChart = React.memo(function ContributionsChart({ yearRows }: Props) {
+  const data = React.useMemo(
+    () => yearRows.map(r => ({
+      year: r.year,
+      '👤 Aderente': Math.round(r.aderente),
+      '🏢 Azienda':  Math.round(r.azienda),
+      '📦 TFR':      Math.round(r.tfr),
+      '🏦 Spese':    Math.round(Math.abs(r.fees)),
+    })),
+    [yearRows],
   )
-}
-
-export function ContributionsChart({ yearRows }: Props) {
-  const data = yearRows.map(r => ({
-    year: r.year,
-    '👤 Aderente': Math.round(r.aderente),
-    '🏢 Azienda':  Math.round(r.azienda),
-    '📦 TFR':      Math.round(r.tfr),
-    '🏦 Spese':    Math.round(Math.abs(r.fees)),
-  }))
 
   return (
     <ResponsiveContainer width="100%" height={260}>
@@ -71,7 +53,10 @@ export function ContributionsChart({ yearRows }: Props) {
           tickLine={false}
           width={56}
         />
-        <Tooltip content={<CustomTooltip />} cursor={{ fill: '#f3f2f1' }} />
+        <Tooltip
+          content={<ChartTooltip labelPrefix="📅" colorProp="fill" />}
+          cursor={{ fill: '#f3f2f1' }}
+        />
         <Legend
           iconType="square"
           iconSize={10}
@@ -84,4 +69,4 @@ export function ContributionsChart({ yearRows }: Props) {
       </BarChart>
     </ResponsiveContainer>
   )
-}
+})

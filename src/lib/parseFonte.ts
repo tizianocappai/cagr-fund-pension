@@ -1,18 +1,5 @@
+import { parseItalianNumber } from './parse'
 import type { Transaction } from './parseXls'
-
-function parseItalianNumber(s: string): number {
-  const trimmed = s.replace(/\u00a0/g, '').replace(/\s/g, '').trim()
-  if (!trimmed) return 0
-  // Italian format uses . for thousands and , for decimal (e.g. "1.322,64" or "697,38")
-  if (trimmed.includes(',')) {
-    const cleaned = trimmed.replace(/\./g, '').replace(',', '.')
-    const n = parseFloat(cleaned)
-    return isNaN(n) ? 0 : n
-  }
-  // Standard decimal string from xlsx raw mode (e.g. "697.38" or "697")
-  const n = parseFloat(trimmed)
-  return isNaN(n) ? 0 : n
-}
 
 /**
  * Maps quarter number (1–4) and year to the last day of that quarter.
@@ -23,10 +10,10 @@ function parseItalianNumber(s: string): number {
  */
 function quarterToDate(quarter: number, year: number): Date {
   const map: Record<number, [number, number]> = {
-    1: [2, 31],  // marzo
-    2: [5, 30],  // giugno
-    3: [8, 30],  // settembre
-    4: [11, 31], // dicembre
+    1: [2, 31],
+    2: [5, 30],
+    3: [8, 30],
+    4: [11, 31],
   }
   const [month, day] = map[quarter] ?? [11, 31]
   return new Date(year, month, day)
@@ -42,10 +29,10 @@ export function parseFonte(rows: string[][]): Transaction[] {
 
     const quarter = parseInt(text(0))  // col A: quadrimestre 1–4
     const year    = parseInt(text(1))  // col B: anno
-    // col C: skip
-    const aziendaNome = text(3)        // col D: nome azienda
 
-    if (isNaN(quarter) || isNaN(year)) continue
+    if (isNaN(quarter) || isNaN(year) || quarter < 1 || quarter > 4) continue
+
+    const aziendaNome = text(3)        // col D: nome azienda
 
     const dataOperazione       = quarterToDate(quarter, year)
     const importoLordoAderente = parseItalianNumber(text(4))  // col E
@@ -69,7 +56,7 @@ export function parseFonte(rows: string[][]): Transaction[] {
       importoLordoAzienda,
       tfr,
       altro,
-      quotaSpese: 0, // Fonte non ha colonna spese
+      quotaSpese: 0,
       net,
     })
   }
