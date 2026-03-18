@@ -24,6 +24,7 @@ createRoot(document.getElementById('root')!).render(
 					<main className='flex-1'>
 						<Routes>
 							<Route path='/' element={<Missione />} />
+							<Route path='/rendimento-fondo' element={<RendimentoFondo />} />
 							<Route
 								path='/cometa-guide'
 								element={<CometaGuide />}
@@ -37,7 +38,6 @@ createRoot(document.getElementById('root')!).render(
 								path='/rischio-rendimento'
 								element={<RischioRendimento />}
 							/>
-							<Route path='/missione' element={<Missione />} />
 							<Route
 								path='*'
 								element={<Navigate to='/' replace />}
