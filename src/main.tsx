@@ -11,12 +11,14 @@ import Missione from './pages/Missione.tsx';
 import CalcoloObiettivo from './pages/CalcoloObiettivo.tsx';
 import { Analytics } from '@vercel/analytics/react';
 import { ErrorBoundary } from './components/ErrorBoundary.tsx';
+import { DisclaimerModal } from './components/DisclaimerModal.tsx';
 
 createRoot(document.getElementById('root')!).render(
 	<StrictMode>
 		<BrowserRouter>
 			<ErrorBoundary>
 				<div className='flex min-h-screen flex-col'>
+					<DisclaimerModal />
 					<Nav />
 					<main className='flex-1'>
 						<Routes>
