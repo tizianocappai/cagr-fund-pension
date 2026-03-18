@@ -2,10 +2,10 @@ import { NavLink } from 'react-router'
 import { cn } from '@/lib/utils'
 
 const links = [
-  { to: '/cometa',    label: 'Cometa',    emoji: '☄️' },
-  { to: '/fonte',     label: 'Fonte',     emoji: '🌊' },
-  { to: '/fp-vs-tfr', label: 'FP vs TFR', emoji: '⚖️' },
-  { to: '/missione',  label: 'Missione',  emoji: '🧭' },
+  { to: '/',          label: 'Rendimento'  },
+  { to: '/fp-vs-tfr', label: 'FP vs TFR'  },
+  { to: '/obiettivo', label: 'Come dovrei fare?'  },
+  { to: '/missione',  label: 'Missione'   },
 ]
 
 export function Nav() {
@@ -22,10 +22,11 @@ export function Nav() {
       {/* Navigation */}
       <nav className="border-b-2 border-[#0b0c0c] bg-white">
         <div className="mx-auto flex max-w-4xl px-6">
-          {links.map(({ to, label, emoji }) => (
+          {links.map(({ to, label }) => (
             <NavLink
               key={to}
               to={to}
+              end={to === '/'}
               className={({ isActive }) =>
                 cn(
                   'px-4 py-3 text-sm font-bold transition-colors no-underline border-b-4 -mb-0.5',
@@ -35,7 +36,7 @@ export function Nav() {
                 )
               }
             >
-              {emoji} {label}
+              {label}
             </NavLink>
           ))}
         </div>

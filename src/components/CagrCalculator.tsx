@@ -11,10 +11,12 @@ import { Separator } from '@/components/ui/separator'
 import { ContributionsChart } from '@/components/ContributionsChart'
 import { ForecastChart, type Flow } from '@/components/ForecastChart'
 import { Tooltip } from '@/components/ui/tooltip'
+import { type ContributionColumn } from '@/lib/providerConfig'
 
 interface Props {
   file: File
   flow: Flow
+  columns: ContributionColumn[]
   parser?: (rows: string[][]) => Transaction[]
 }
 
@@ -24,6 +26,7 @@ interface YearRow {
   aderente: number
   azienda: number
   tfr: number
+  altro: number
   fees: number
   net: number
 }
@@ -34,6 +37,7 @@ interface Results {
   totalAderente: number
   totalAzienda: number
   totalTfr: number
+  totalAltro: number
   totalFees: number
   firstDate: Date
   lastDate: Date
@@ -45,7 +49,7 @@ interface Results {
 
 const fmtDate = new Intl.DateTimeFormat('it-IT')
 
-export function CagrCalculator({ file, flow, parser = parseXls }: Props) {
+export function CagrCalculator({ file, flow, columns, parser = parseXls }: Props) {
   const [portfolioValue, setPortfolioValue] = React.useState('')
   const [results, setResults] = React.useState<Results | null>(null)
   const [error, setError]     = React.useState<string | null>(null)
@@ -60,7 +64,6 @@ export function CagrCalculator({ file, flow, parser = parseXls }: Props) {
     setError(null)
     setResults(null)
 
-    // Validate input before showing loading state
     const currentValue = parseItalianInput(portfolioValue)
     if (isNaN(currentValue) || currentValue <= 0) {
       setError('Inserisci un valore attuale del portafoglio valido (es. 15.000,00).')
@@ -87,14 +90,12 @@ export function CagrCalculator({ file, flow, parser = parseXls }: Props) {
         throw new Error('Intervallo temporale troppo breve per calcolare il rendimento.')
       }
 
-      // Standard XIRR: all components as contributions
       const cashFlows = transactions
         .filter(t => t.net !== 0)
         .map(t => ({ amount: -t.net, date: t.dataOperazione }))
       cashFlows.push({ amount: currentValue, date: terminalDate })
       const rate = computeXirr(cashFlows)
 
-      // Bonus XIRR: exclude azienda from cost basis
       const cashFlowsNoAzienda = transactions
         .filter(t => (t.importoLordoAderente + t.tfr + t.altro + t.quotaSpese) !== 0)
         .map(t => ({
@@ -104,21 +105,21 @@ export function CagrCalculator({ file, flow, parser = parseXls }: Props) {
       cashFlowsNoAzienda.push({ amount: currentValue, date: terminalDate })
       const rateNoAzienda = computeXirr(cashFlowsNoAzienda)
 
-      // Totals
       const totalAderente = transactions.reduce((s, t) => s + t.importoLordoAderente, 0)
       const totalAzienda  = transactions.reduce((s, t) => s + t.importoLordoAzienda, 0)
       const totalTfr      = transactions.reduce((s, t) => s + t.tfr, 0)
+      const totalAltro    = transactions.reduce((s, t) => s + t.altro, 0)
       const totalFees     = transactions.reduce((s, t) => s + t.quotaSpese, 0)
 
-      // Group by year
       const byYear = new Map<number, YearRow>()
       for (const t of transactions) {
         const year = t.dataOperazione.getFullYear()
-        const row = byYear.get(year) ?? { year, count: 0, aderente: 0, azienda: 0, tfr: 0, fees: 0, net: 0 }
+        const row = byYear.get(year) ?? { year, count: 0, aderente: 0, azienda: 0, tfr: 0, altro: 0, fees: 0, net: 0 }
         row.count    += 1
         row.aderente += t.importoLordoAderente
         row.azienda  += t.importoLordoAzienda
         row.tfr      += t.tfr
+        row.altro    += t.altro
         row.fees     += t.quotaSpese
         row.net      += t.net
         byYear.set(year, row)
@@ -130,6 +131,7 @@ export function CagrCalculator({ file, flow, parser = parseXls }: Props) {
         totalAderente,
         totalAzienda,
         totalTfr,
+        totalAltro,
         totalFees,
         firstDate,
         lastDate,
@@ -151,7 +153,7 @@ export function CagrCalculator({ file, flow, parser = parseXls }: Props) {
 
       <div className="flex flex-col gap-2">
         <label htmlFor="portfolio-value" className="text-xs tracking-widest uppercase text-muted-foreground">
-          💼 Valore attuale del portafoglio (€)
+          Valore attuale del portafoglio (€)
         </label>
         <div className="flex gap-3">
           <Input
@@ -163,7 +165,7 @@ export function CagrCalculator({ file, flow, parser = parseXls }: Props) {
             aria-describedby="portfolio-value-hint"
           />
           <Button onClick={calculate} disabled={loading}>
-            {loading ? 'Calcolo…' : 'Calcola Rendimento 📐'}
+            {loading ? 'Calcolo…' : 'Calcola Rendimento'}
           </Button>
         </div>
         <p id="portfolio-value-hint" className="text-xs text-muted-foreground">
@@ -173,34 +175,36 @@ export function CagrCalculator({ file, flow, parser = parseXls }: Props) {
 
       {error && (
         <div className="border-l-4 border-error bg-[#fde8e6] px-4 py-3 text-sm font-bold text-error">
-          ⚠️ {error}
+          {error}
         </div>
       )}
 
-      {results && <ResultsPanel results={results} flow={flow} />}
+      {results && <ResultsPanel results={results} flow={flow} columns={columns} />}
     </div>
   )
 }
 
-function xirrEmoji(r: number) {
-  return r >= 0.08 ? '🚀' : r >= 0.04 ? '📈' : r >= 0 ? '📊' : '📉'
-}
-
-function ResultsPanel({ results, flow }: { results: Results; flow: Flow }) {
-  const totalInvested = results.totalAderente + results.totalAzienda + results.totalTfr
+function ResultsPanel({ results, flow, columns }: { results: Results; flow: Flow; columns: ContributionColumn[] }) {
+  const totals: Record<ContributionColumn['key'], number> = {
+    aderente: results.totalAderente,
+    azienda:  results.totalAzienda,
+    tfr:      results.totalTfr,
+    altro:    results.totalAltro,
+  }
+  const totalInvested = columns.reduce((s, col) => s + totals[col.key], 0)
 
   const stats = [
-    { emoji: xirrEmoji(results.xirr), label: 'Tasso di crescita medio annuo', value: `${(results.xirr * 100).toFixed(2)}%`, note: 'per anno — tutti i contributi' },
-    { emoji: '💰', label: 'Totale versato', value: fmtEur.format(totalInvested), note: `${results.transactionCount} operazioni` },
-    { emoji: '🏦', label: 'Spese totali', value: fmtEur.format(Math.abs(results.totalFees)), note: 'commissioni e costi' },
-    { emoji: '📅', label: 'Durata', value: `${results.years.toFixed(1)} anni`, note: `${fmtDate.format(results.firstDate)} → ${fmtDate.format(results.lastDate)}` },
+    { label: 'Tasso di crescita medio annuo', value: `${(results.xirr * 100).toFixed(2)}%`,         note: 'per anno — tutti i contributi' },
+    { label: 'Totale versato',                value: fmtEur.format(totalInvested),                  note: `${results.transactionCount} operazioni` },
+    { label: 'Spese totali',                  value: fmtEur.format(Math.abs(results.totalFees)),    note: 'commissioni e costi' },
+    { label: 'Durata',                        value: `${results.years.toFixed(1)} anni`,             note: `${fmtDate.format(results.firstDate)} → ${fmtDate.format(results.lastDate)}` },
   ]
 
   const bonusStats = [
-    { emoji: xirrEmoji(results.xirrNoAzienda), label: 'Tasso di crescita senza azienda', value: `${(results.xirrNoAzienda * 100).toFixed(2)}%`, note: 'per anno — solo tuo costo' },
-    { emoji: '🎁', label: 'Contributo azienda', value: fmtEur.format(results.totalAzienda), note: 'non contato come tuo costo' },
-    { emoji: '👤', label: 'Tuo contributo', value: fmtEur.format(results.totalAderente), note: 'versamenti aderente' },
-    { emoji: '📦', label: 'TFR versato', value: fmtEur.format(results.totalTfr), note: 'trattamento fine rapporto' },
+    { label: 'Tasso di crescita senza azienda', value: `${(results.xirrNoAzienda * 100).toFixed(2)}%`, note: 'per anno — solo tuo costo' },
+    { label: 'Contributo azienda',              value: fmtEur.format(results.totalAzienda),            note: 'non contato come tuo costo' },
+    { label: 'Tuo contributo',                  value: fmtEur.format(results.totalAderente),           note: 'versamenti aderente' },
+    { label: 'TFR versato',                     value: fmtEur.format(results.totalTfr),                note: 'trattamento fine rapporto' },
   ]
 
   return (
@@ -214,7 +218,7 @@ function ResultsPanel({ results, flow }: { results: Results; flow: Flow }) {
           {stats.map(s => (
             <Card key={s.label}>
               <CardHeader className="pb-2">
-                <CardDescription>{s.emoji} {s.label}</CardDescription>
+                <CardDescription>{s.label}</CardDescription>
                 <CardTitle className="text-2xl">
                   {s.label === 'Tasso di crescita medio annuo' ? (
                     <Tooltip content="Il tasso di crescita medio annuo misura quanto è cresciuto il tuo investimento ogni anno in media. In pratica ti dice: «se ogni anno il mio fondo fosse cresciuto sempre della stessa percentuale, di quanto sarebbe cresciuto?». Più è alto, meglio ha reso il tuo fondo nel tempo.">
@@ -242,21 +246,23 @@ function ResultsPanel({ results, flow }: { results: Results; flow: Flow }) {
               <tr className="border-b border-border bg-muted">
                 <th className="px-3 py-2 text-left font-medium text-muted-foreground">Anno</th>
                 <th className="px-3 py-2 text-right font-medium text-muted-foreground">Op.</th>
-                <th className="px-3 py-2 text-right font-medium text-muted-foreground">👤 Aderente</th>
-                <th className="px-3 py-2 text-right font-medium text-muted-foreground">🏢 Azienda</th>
-                <th className="px-3 py-2 text-right font-medium text-muted-foreground">📦 TFR</th>
-                <th className="px-3 py-2 text-right font-medium text-muted-foreground">🏦 Spese</th>
+                {columns.map(col => (
+                  <th key={col.key} className="px-3 py-2 text-right font-medium text-muted-foreground">{col.label}</th>
+                ))}
+                <th className="px-3 py-2 text-right font-medium text-muted-foreground">Spese</th>
                 <th className="px-3 py-2 text-right font-medium text-muted-foreground">Netto</th>
               </tr>
             </thead>
             <tbody>
               {results.yearRows.map((row, i) => (
                 <tr key={row.year} className={i % 2 === 0 ? 'bg-card' : 'bg-muted'}>
-                  <td className="px-3 py-2 font-medium">📅 {row.year}</td>
+                  <td className="px-3 py-2 font-medium">{row.year}</td>
                   <td className="px-3 py-2 text-right font-mono text-muted-foreground">{row.count}</td>
-                  <td className="px-3 py-2 text-right font-mono">{fmtEur.format(row.aderente)}</td>
-                  <td className="px-3 py-2 text-right font-mono">{fmtEur.format(row.azienda)}</td>
-                  <td className="px-3 py-2 text-right font-mono">{row.tfr !== 0 ? fmtEur.format(row.tfr) : '—'}</td>
+                  {columns.map(col => (
+                    <td key={col.key} className="px-3 py-2 text-right font-mono">
+                      {row[col.key] !== 0 ? fmtEur.format(row[col.key]) : '—'}
+                    </td>
+                  ))}
                   <td className="px-3 py-2 text-right font-mono text-muted-foreground">
                     {row.fees !== 0 ? fmtEur.format(Math.abs(row.fees)) : '—'}
                   </td>
@@ -268,9 +274,9 @@ function ResultsPanel({ results, flow }: { results: Results; flow: Flow }) {
               <tr className="border-t border-border bg-muted">
                 <td className="px-3 py-2 font-semibold">Totale</td>
                 <td className="px-3 py-2 text-right font-mono font-semibold">{results.transactionCount}</td>
-                <td className="px-3 py-2 text-right font-mono font-semibold">{fmtEur.format(results.totalAderente)}</td>
-                <td className="px-3 py-2 text-right font-mono font-semibold">{fmtEur.format(results.totalAzienda)}</td>
-                <td className="px-3 py-2 text-right font-mono font-semibold">{fmtEur.format(results.totalTfr)}</td>
+                {columns.map(col => (
+                  <td key={col.key} className="px-3 py-2 text-right font-mono font-semibold">{fmtEur.format(totals[col.key])}</td>
+                ))}
                 <td className="px-3 py-2 text-right font-mono font-semibold">{fmtEur.format(Math.abs(results.totalFees))}</td>
                 <td className="px-3 py-2 text-right font-mono font-semibold">
                   {fmtEur.format(totalInvested + results.totalFees)}
@@ -286,7 +292,7 @@ function ResultsPanel({ results, flow }: { results: Results; flow: Flow }) {
       {/* Contributions chart */}
       <div>
         <p className="text-base font-bold mb-4 border-l-4 border-[#0b0c0c] pl-3">Contributi per anno</p>
-        <ContributionsChart yearRows={results.yearRows} />
+        <ContributionsChart yearRows={results.yearRows} columns={columns} />
       </div>
 
       <Separator />
@@ -316,7 +322,7 @@ function ResultsPanel({ results, flow }: { results: Results; flow: Flow }) {
           {bonusStats.map(s => (
             <Card key={s.label}>
               <CardHeader className="pb-2">
-                <CardDescription>{s.emoji} {s.label}</CardDescription>
+                <CardDescription>{s.label}</CardDescription>
                 <CardTitle className="text-2xl">{s.value}</CardTitle>
               </CardHeader>
               <CardContent>

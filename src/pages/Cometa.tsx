@@ -33,7 +33,7 @@ export default function Cometa() {
     <div className="mx-auto max-w-4xl px-6 py-10">
 
       <div className="mb-6 border-l-4 border-[#1d70b8] bg-[#e8f1f8] px-4 py-3 text-sm">
-        📖 Prima volta? Leggi la{' '}
+        Prima volta? Leggi la{' '}
         <Link to="/cometa-guide">guida passo passo</Link>{' '}
         per sapere come esportare il file dal portale Fondo Cometa.
       </div>

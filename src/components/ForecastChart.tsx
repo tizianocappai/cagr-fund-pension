@@ -63,19 +63,16 @@ export const ForecastChart = React.memo(function ForecastChart({
     const points: { anno: number; [k: string]: number }[] = []
     for (let y = 0; y <= forecastYrs; y++) {
       points.push({
-        anno:          y,
-        '👤 Aderente': Math.round(cAderente * y),
-        '🏢 Azienda':  Math.round(cAzienda  * y),
-        '📦 TFR':      Math.round(cTfr      * y),
-        '💰 Totale':   sTotal[y],
+        anno:      y,
+        Aderente:  Math.round(cAderente * y),
+        Azienda:   Math.round(cAzienda  * y),
+        TFR:       Math.round(cTfr      * y),
+        Totale:    sTotal[y],
       })
     }
 
     const maxVal = sTotal[sTotal.length - 1]
-    return {
-      data:  points,
-      yMax:  Math.ceil(maxVal / 10_000) * 10_000 || 10_000,
-    }
+    return { data: points, yMax: Math.ceil(maxVal / 10_000) * 10_000 || 10_000 }
   }, [r, cAderente, cAzienda, cTfr, forecastYrs])
 
   return (
@@ -84,43 +81,33 @@ export const ForecastChart = React.memo(function ForecastChart({
       {/* Inputs */}
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
         <div className="flex flex-col gap-1">
-          <label htmlFor="fc-rate" className="text-xs text-muted-foreground">
-            📊 Rendimento medio annuo (%)
-          </label>
+          <label htmlFor="fc-rate" className="text-xs text-muted-foreground">Rendimento medio annuo (%)</label>
           <Input id="fc-rate" value={rate} onChange={e => setRate(e.target.value)} placeholder="3" className="font-mono" />
         </div>
         <div className="flex flex-col gap-1">
-          <label htmlFor="fc-years" className="text-xs text-muted-foreground">
-            ⏳ Anni di proiezione
-          </label>
+          <label htmlFor="fc-years" className="text-xs text-muted-foreground">Anni di proiezione</label>
           <Input id="fc-years" type="number" min={1} max={50} value={years} onChange={e => setYears(e.target.value)} className="font-mono" />
         </div>
       </div>
 
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
         <div className="flex flex-col gap-1">
-          <label htmlFor="fc-aderente" className="text-xs text-muted-foreground">
-            👤 Contributo aderente / anno (€)
-          </label>
+          <label htmlFor="fc-aderente" className="text-xs text-muted-foreground">Contributo aderente / anno (€)</label>
           <Input id="fc-aderente" value={aderente} onChange={e => setAderente(e.target.value)} placeholder="0" className="font-mono" />
         </div>
         <div className="flex flex-col gap-1">
-          <label htmlFor="fc-azienda" className="text-xs text-muted-foreground">
-            🏢 Contributo azienda / anno (€)
-          </label>
+          <label htmlFor="fc-azienda" className="text-xs text-muted-foreground">Contributo azienda / anno (€)</label>
           <Input id="fc-azienda" value={azienda} onChange={e => setAzienda(e.target.value)} placeholder="0" className="font-mono" />
         </div>
         <div className="flex flex-col gap-1">
-          <label htmlFor="fc-tfr" className="text-xs text-muted-foreground">
-            📦 TFR / anno (€)
-          </label>
+          <label htmlFor="fc-tfr" className="text-xs text-muted-foreground">TFR / anno (€)</label>
           <Input id="fc-tfr" value={tfr} onChange={e => setTfr(e.target.value)} placeholder="0" className="font-mono" />
         </div>
       </div>
 
       <p className="text-xs text-muted-foreground">
         Ogni linea mostra come cresce nel tempo quella singola fonte di contributo, partendo da zero,
-        al tasso di rendimento impostato. La linea <strong className="text-foreground">💰 Totale</strong> è
+        al tasso di rendimento impostato. La linea <strong className="text-foreground">Totale</strong> è
         l'interesse composto applicato alla somma di tutti i contributi annui ed equivale al patrimonio
         accumulato dai versamenti futuri.
       </p>
@@ -146,10 +133,10 @@ export const ForecastChart = React.memo(function ForecastChart({
           />
           <Tooltip content={<ChartTooltip />} />
           <Legend iconType="plainline" iconSize={16} wrapperStyle={{ fontSize: 11, color: '#737373', paddingTop: 8 }} />
-          <Line type="monotone" dataKey="👤 Aderente" stroke="#3b82f6" strokeWidth={2} dot={false} activeDot={{ r: 4 }} />
-          <Line type="monotone" dataKey="🏢 Azienda"  stroke="#10b981" strokeWidth={2} dot={false} activeDot={{ r: 4 }} />
-          <Line type="monotone" dataKey="📦 TFR"      stroke="#f59e0b" strokeWidth={2} dot={false} activeDot={{ r: 4 }} />
-          <Line type="monotone" dataKey="💰 Totale"   stroke="#e11d48" strokeWidth={3} dot={false} activeDot={{ r: 5 }} />
+          <Line type="monotone" dataKey="Aderente" stroke="#3b82f6" strokeWidth={2} dot={false} activeDot={{ r: 4 }} />
+          <Line type="monotone" dataKey="Azienda"  stroke="#10b981" strokeWidth={2} dot={false} activeDot={{ r: 4 }} />
+          <Line type="monotone" dataKey="TFR"      stroke="#f59e0b" strokeWidth={2} dot={false} activeDot={{ r: 4 }} />
+          <Line type="monotone" dataKey="Totale"   stroke="#e11d48" strokeWidth={3} dot={false} activeDot={{ r: 5 }} />
         </LineChart>
       </ResponsiveContainer>
     </div>

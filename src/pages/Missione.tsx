@@ -27,30 +27,21 @@ const sections = [
         <p>
           Ogni mese sul fondo confluiscono (almeno) tre flussi distinti:
         </p>
-        <ul className="mt-3 flex flex-col gap-2 text-sm text-[--color-muted-foreground]">
-          <li className="flex gap-3">
-            <span className="text-base shrink-0">👤</span>
-            <span>
-              <strong className="text-[--color-foreground]">Quota aderente</strong> — quello che
-              versi tu, tipicamente una percentuale fissa del tuo stipendio lordo.
-            </span>
+        <ul className="mt-3 flex flex-col gap-2 text-sm text-muted-foreground">
+          <li>
+            <strong className="text-foreground">Quota aderente</strong> — quello che
+            versi tu, tipicamente una percentuale fissa del tuo stipendio lordo.
           </li>
-          <li className="flex gap-3">
-            <span className="text-base shrink-0">🏢</span>
-            <span>
-              <strong className="text-[--color-foreground]">Quota azienda</strong> — il contributo
-              aggiuntivo che il datore di lavoro è contrattualmente obbligato a versare nel momento
-              in cui tu versi la tua quota. Questi soldi <em>non li avresti mai ricevuti</em> in
-              busta paga.
-            </span>
+          <li>
+            <strong className="text-foreground">Quota azienda</strong> — il contributo
+            aggiuntivo che il datore di lavoro è contrattualmente obbligato a versare nel momento
+            in cui tu versi la tua quota. Questi soldi <em>non li avresti mai ricevuti</em> in
+            busta paga.
           </li>
-          <li className="flex gap-3">
-            <span className="text-base shrink-0">📦</span>
-            <span>
-              <strong className="text-[--color-foreground]">TFR</strong> — il trattamento di fine
-              rapporto, che invece di accumularsi in azienda (dove renderebbe pochissimo per legge)
-              viene investito nel fondo.
-            </span>
+          <li>
+            <strong className="text-foreground">TFR</strong> — il trattamento di fine
+            rapporto, che invece di accumularsi in azienda (dove renderebbe pochissimo per legge)
+            viene investito nel fondo.
           </li>
         </ul>
       </>
@@ -89,14 +80,14 @@ const sections = [
           anni di accumulo. Su questi orizzonti temporali, anche piccole differenze di rendimento
           producono risultati enormi grazie alla capitalizzazione composta.
         </p>
-        <div className="mt-4 overflow-x-auto rounded-[--radius] border border-[--color-border]">
+        <div className="mt-4 overflow-x-auto border border-border">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-[--color-border] bg-[--color-muted]">
-                <th className="px-3 py-2 text-left font-medium text-[--color-muted-foreground]">Tasso annuo</th>
-                <th className="px-3 py-2 text-right font-medium text-[--color-muted-foreground]">10 anni</th>
-                <th className="px-3 py-2 text-right font-medium text-[--color-muted-foreground]">20 anni</th>
-                <th className="px-3 py-2 text-right font-medium text-[--color-muted-foreground]">30 anni</th>
+              <tr className="border-b border-border bg-muted">
+                <th className="px-3 py-2 text-left font-medium text-muted-foreground">Tasso annuo</th>
+                <th className="px-3 py-2 text-right font-medium text-muted-foreground">10 anni</th>
+                <th className="px-3 py-2 text-right font-medium text-muted-foreground">20 anni</th>
+                <th className="px-3 py-2 text-right font-medium text-muted-foreground">30 anni</th>
               </tr>
             </thead>
             <tbody>
@@ -106,7 +97,7 @@ const sections = [
                 { rate: '6%', v10: '×1,79', v20: '×3,21', v30: '×5,74' },
                 { rate: '8%', v10: '×2,16', v20: '×4,66', v30: '×10,06' },
               ].map((row, i) => (
-                <tr key={row.rate} className={i % 2 === 0 ? 'bg-[--color-card]' : 'bg-[--color-muted]'}>
+                <tr key={row.rate} className={i % 2 === 0 ? 'bg-card' : 'bg-muted'}>
                   <td className="px-3 py-2 font-mono font-medium">{row.rate}</td>
                   <td className="px-3 py-2 text-right font-mono">{row.v10}</td>
                   <td className="px-3 py-2 text-right font-mono">{row.v20}</td>
@@ -116,7 +107,7 @@ const sections = [
             </tbody>
           </table>
         </div>
-        <p className="mt-3 text-xs text-[--color-muted-foreground]">
+        <p className="mt-3 text-xs text-muted-foreground">
           Moltiplicatore del capitale iniziale, senza contributi aggiuntivi.
         </p>
       </>
@@ -130,30 +121,21 @@ const sections = [
         <p>
           Sapere che il tuo fondo ha reso il <strong>5,3% annuo</strong> ti permette di:
         </p>
-        <ul className="mt-3 flex flex-col gap-2 text-sm text-[--color-muted-foreground]">
-          <li className="flex gap-3">
-            <span className="text-base shrink-0">⚖️</span>
-            <span>
-              <strong className="text-[--color-foreground]">Confrontare i comparti</strong> — il
-              tuo fondo offre solitamente più linee di investimento (garantita, bilanciata,
-              azionaria). Conoscere il rendimento storico ti aiuta a scegliere consapevolmente.
-            </span>
+        <ul className="mt-3 flex flex-col gap-2 text-sm text-muted-foreground">
+          <li>
+            <strong className="text-foreground">Confrontare i comparti</strong> — il
+            tuo fondo offre solitamente più linee di investimento (garantita, bilanciata,
+            azionaria). Conoscere il rendimento storico ti aiuta a scegliere consapevolmente.
           </li>
-          <li className="flex gap-3">
-            <span className="text-base shrink-0">📅</span>
-            <span>
-              <strong className="text-[--color-foreground]">Pianificare la pensione</strong> — con
-              un tasso realistico puoi usare la sezione "Proiezione futura" per stimare quanto avrai
-              accumulato al momento del ritiro.
-            </span>
+          <li>
+            <strong className="text-foreground">Pianificare la pensione</strong> — con
+            un tasso realistico puoi usare la sezione "Proiezione futura" per stimare quanto avrai
+            accumulato al momento del ritiro.
           </li>
-          <li className="flex gap-3">
-            <span className="text-base shrink-0">🧾</span>
-            <span>
-              <strong className="text-[--color-foreground]">Valutare i costi</strong> — le spese
-              (commissioni di gestione, quota spese) erodono il rendimento ogni anno. Renderle
-              visibili è il primo passo per capire se stai pagando troppo.
-            </span>
+          <li>
+            <strong className="text-foreground">Valutare i costi</strong> — le spese
+            (commissioni di gestione, quota spese) erodono il rendimento ogni anno. Renderle
+            visibili è il primo passo per capire se stai pagando troppo.
           </li>
         </ul>
       </>
@@ -212,7 +194,7 @@ export default function Missione() {
 
       <div className="border-l-4 border-[#1d70b8] bg-[#e8f1f8] px-5 py-4">
         <p className="text-sm leading-relaxed">
-          ℹ️ <strong>Nota:</strong> i dati e gli esempi riportati sono a scopo illustrativo.
+          <strong>Nota:</strong> i dati e gli esempi riportati sono a scopo illustrativo.
           Per decisioni finanziarie personali consulta sempre un consulente finanziario indipendente.
         </p>
       </div>

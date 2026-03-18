@@ -3,13 +3,11 @@ import { Separator } from '@/components/ui/separator'
 const steps = [
   {
     number: '01',
-    emoji: '🔐',
     title: 'Accedi a Fondo Cometa',
     description: 'Vai sul portale di Fondo Cometa e autenticati con le tue credenziali personali.',
   },
   {
     number: '02',
-    emoji: '📋',
     title: 'Apri l\'elenco completo delle operazioni',
     description: (
       <>
@@ -26,7 +24,6 @@ const steps = [
   },
   {
     number: '03',
-    emoji: '📥',
     title: 'Esporta il dettaglio delle operazioni',
     description: (
       <>
@@ -43,7 +40,6 @@ const steps = [
   },
   {
     number: '04',
-    emoji: '☄️',
     title: 'Carica il file su questo sito',
     description: (
       <>
@@ -54,7 +50,6 @@ const steps = [
   },
   {
     number: '05',
-    emoji: '💼',
     title: 'Inserisci il valore attuale della posizione',
     description: (
       <>
@@ -100,8 +95,7 @@ export default function CometaGuide() {
 
               {/* Right column: content */}
               <div className={i < steps.length - 1 ? 'pb-10' : 'pb-0'}>
-                <div className="flex items-center gap-2 mb-1">
-                  <span className="text-xl" aria-hidden="true">{step.emoji}</span>
+                <div className="mb-1">
                   <h2 className="font-semibold">{step.title}</h2>
                 </div>
                 <div className="text-sm text-[--color-muted-foreground] leading-relaxed">
@@ -116,7 +110,7 @@ export default function CometaGuide() {
 
         <div className="rounded-[--radius] border border-[--color-border] bg-[--color-muted] px-5 py-4">
           <p className="text-xs text-[--color-muted-foreground] leading-relaxed">
-            🔒 <strong className="text-[--color-foreground]">Privacy:</strong> il file che carichi
+            <strong className="text-[--color-foreground]">Privacy:</strong> il file che carichi
             non viene mai inviato a nessun server. Tutto il calcolo avviene interamente nel tuo
             browser — i tuoi dati rimangono sul tuo dispositivo.
           </p>

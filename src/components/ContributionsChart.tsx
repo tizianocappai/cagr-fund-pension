@@ -11,29 +11,31 @@ import {
 } from 'recharts'
 import { ChartTooltip } from '@/components/ui/chart-tooltip'
 import { tickY } from '@/lib/formatters'
+import { type ContributionColumn } from '@/lib/providerConfig'
 
 interface YearRow {
   year: number
   aderente: number
   azienda: number
   tfr: number
+  altro: number
   fees: number
 }
 
 interface Props {
   yearRows: YearRow[]
+  columns: ContributionColumn[]
 }
 
-export const ContributionsChart = React.memo(function ContributionsChart({ yearRows }: Props) {
+export const ContributionsChart = React.memo(function ContributionsChart({ yearRows, columns }: Props) {
   const data = React.useMemo(
-    () => yearRows.map(r => ({
-      year: r.year,
-      '👤 Aderente': Math.round(r.aderente),
-      '🏢 Azienda':  Math.round(r.azienda),
-      '📦 TFR':      Math.round(r.tfr),
-      '🏦 Spese':    Math.round(Math.abs(r.fees)),
-    })),
-    [yearRows],
+    () => yearRows.map(r => {
+      const entry: Record<string, number> = { year: r.year }
+      for (const col of columns) entry[col.label] = Math.round(r[col.key])
+      entry['Spese'] = Math.round(Math.abs(r.fees))
+      return entry
+    }),
+    [yearRows, columns],
   )
 
   return (
@@ -53,19 +55,12 @@ export const ContributionsChart = React.memo(function ContributionsChart({ yearR
           tickLine={false}
           width={56}
         />
-        <Tooltip
-          content={<ChartTooltip labelPrefix="📅" colorProp="fill" />}
-          cursor={{ fill: '#f3f2f1' }}
-        />
-        <Legend
-          iconType="square"
-          iconSize={10}
-          wrapperStyle={{ fontSize: 11, color: '#737373', paddingTop: 8 }}
-        />
-        <Bar dataKey="👤 Aderente" fill="#3b82f6" />
-        <Bar dataKey="🏢 Azienda"  fill="#10b981" />
-        <Bar dataKey="📦 TFR"      fill="#f59e0b" />
-        <Bar dataKey="🏦 Spese"    fill="#f43f5e" />
+        <Tooltip content={<ChartTooltip labelPrefix="" colorProp="fill" />} cursor={{ fill: '#f3f2f1' }} />
+        <Legend iconType="square" iconSize={10} wrapperStyle={{ fontSize: 11, color: '#737373', paddingTop: 8 }} />
+        {columns.map(col => (
+          <Bar key={col.key} dataKey={col.label} fill={col.chartFill} />
+        ))}
+        <Bar dataKey="Spese" fill="#f43f5e" />
       </BarChart>
     </ResponsiveContainer>
   )

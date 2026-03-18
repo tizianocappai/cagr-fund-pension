@@ -81,7 +81,6 @@ export function FileUploader({ accept, initialFile, onFileSelect, onClear, class
 
       {selectedFile ? (
         <>
-          <span className="text-3xl" aria-hidden="true">📄</span>
           <div>
             <p id={labelId} className="text-base font-bold">{selectedFile.name}</p>
             <p className="text-sm text-[#505a5f]">{(selectedFile.size / 1024).toFixed(1)} KB</p>
@@ -99,7 +98,6 @@ export function FileUploader({ accept, initialFile, onFileSelect, onClear, class
         </>
       ) : (
         <>
-          <span className="text-3xl" aria-hidden="true">📂</span>
           <div>
             <p id={labelId} className="text-base font-bold">Trascina qui il file o clicca per sfogliare</p>
             <p className="text-sm text-[#505a5f]">oppure premi Invio per aprire il selettore</p>

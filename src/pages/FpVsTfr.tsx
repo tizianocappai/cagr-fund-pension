@@ -30,16 +30,16 @@ const TfrSection = React.memo(function TfrSection({ ral, years, inflazione, setI
   const accrual = ral / 13.5
 
   const data = React.useMemo(() => {
-    const points: { anno: number; '📦 TFR accantonato': number }[] = [{ anno: 0, '📦 TFR accantonato': 0 }]
+    const points: { anno: number; 'TFR accantonato': number }[] = [{ anno: 0, 'TFR accantonato': 0 }]
     let balance = 0
     for (let y = 1; y <= years; y++) {
       balance = (balance + accrual) * (1 + tfrRate)
-      points.push({ anno: y, '📦 TFR accantonato': Math.round(balance) })
+      points.push({ anno: y, 'TFR accantonato': Math.round(balance) })
     }
     return points
   }, [accrual, tfrRate, years])
 
-  const finalValue  = data[data.length - 1]['📦 TFR accantonato']
+  const finalValue  = data[data.length - 1]['TFR accantonato']
   const yMax        = Math.ceil(finalValue / 10_000) * 10_000 || 10_000
   const rateDisplay = (tfrRate * 100).toLocaleString('it-IT', { minimumFractionDigits: 3, maximumFractionDigits: 3 })
   const infDisplay  = (infRate  * 100).toLocaleString('it-IT', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
@@ -60,7 +60,7 @@ const TfrSection = React.memo(function TfrSection({ ral, years, inflazione, setI
 
       <div className="flex flex-col gap-1">
         <label htmlFor="tfr-inf" className="text-xs text-muted-foreground">
-          📊 Inflazione ISTAT FOI (%)
+          Inflazione ISTAT FOI (%)
         </label>
         <Input
           id="tfr-inf"
@@ -92,7 +92,7 @@ const TfrSection = React.memo(function TfrSection({ ral, years, inflazione, setI
           />
           <Tooltip content={<ChartTooltip />} />
           <Legend iconType="plainline" iconSize={16} wrapperStyle={{ fontSize: 11, color: '#737373', paddingTop: 8 }} />
-          <Line type="monotone" dataKey="📦 TFR accantonato" stroke="#f59e0b" strokeWidth={2.5} dot={false} activeDot={{ r: 4 }} />
+          <Line type="monotone" dataKey="TFR accantonato" stroke="#f59e0b" strokeWidth={2.5} dot={false} activeDot={{ r: 4 }} />
         </LineChart>
       </ResponsiveContainer>
 
@@ -115,29 +115,32 @@ interface FpProps {
   setQuotaAderente: (v: string) => void
   quotaAzienda: string
   setQuotaAzienda: (v: string) => void
+  ulterioreContributo: string
+  setUlterioreContributo: (v: string) => void
 }
 
-const FpSection = React.memo(function FpSection({ ral, years, rendimento, setRendimento, quotaAderente, setQuotaAderente, quotaAzienda, setQuotaAzienda }: FpProps) {
+const FpSection = React.memo(function FpSection({ ral, years, rendimento, setRendimento, quotaAderente, setQuotaAderente, quotaAzienda, setQuotaAzienda, ulterioreContributo, setUlterioreContributo }: FpProps) {
   const r           = parseRate(rendimento)
   const pctAderente = parseRate(quotaAderente)
   const pctAzienda  = parseRate(quotaAzienda)
+  const extraAnnuo  = parseEur(ulterioreContributo)
 
   const tfrAnnuo   = ral / 13.5
   const aderAnnuo  = ral * pctAderente
   const aziAnnuo   = ral * pctAzienda
-  const totalAnnuo = tfrAnnuo + aderAnnuo + aziAnnuo
+  const totalAnnuo = tfrAnnuo + aderAnnuo + aziAnnuo + extraAnnuo
 
   const data = React.useMemo(() => {
-    const points: { anno: number; '🏦 Fondo pensione': number }[] = [{ anno: 0, '🏦 Fondo pensione': 0 }]
+    const points: { anno: number; 'Fondo pensione': number }[] = [{ anno: 0, 'Fondo pensione': 0 }]
     let balance = 0
     for (let y = 1; y <= years; y++) {
       balance = (balance + totalAnnuo) * (1 + r)
-      points.push({ anno: y, '🏦 Fondo pensione': Math.round(balance) })
+      points.push({ anno: y, 'Fondo pensione': Math.round(balance) })
     }
     return points
   }, [totalAnnuo, r, years])
 
-  const finalValue = data[data.length - 1]['🏦 Fondo pensione']
+  const finalValue = data[data.length - 1]['Fondo pensione']
   const yMax       = Math.ceil(finalValue / 10_000) * 10_000 || 10_000
   const rDisplay   = (r * 100).toLocaleString('it-IT', { minimumFractionDigits: 1, maximumFractionDigits: 2 })
 
@@ -146,24 +149,36 @@ const FpSection = React.memo(function FpSection({ ral, years, rendimento, setRen
       <div className="border-l-4 border-[#1d70b8] bg-[#e8f1f8] px-4 py-3 text-sm">
         <p>Versamento annuo totale: <strong>{fmtEurRound.format(Math.round(totalAnnuo))}</strong></p>
         <p className="mt-1 text-xs text-muted-foreground flex flex-col gap-0.5">
-          <span>📦 TFR: {fmtEurRound.format(Math.round(tfrAnnuo))} (RAL ÷ 13,5)</span>
-          <span>👤 Aderente: {fmtEurRound.format(Math.round(aderAnnuo))} ({(pctAderente * 100).toLocaleString('it-IT', { maximumFractionDigits: 2 })}% RAL)</span>
-          <span>🏢 Azienda: {fmtEurRound.format(Math.round(aziAnnuo))} ({(pctAzienda * 100).toLocaleString('it-IT', { maximumFractionDigits: 2 })}% RAL)</span>
+          <span>TFR: {fmtEurRound.format(Math.round(tfrAnnuo))} (RAL ÷ 13,5)</span>
+          <span>Aderente: {fmtEurRound.format(Math.round(aderAnnuo))} ({(pctAderente * 100).toLocaleString('it-IT', { maximumFractionDigits: 2 })}% RAL)</span>
+          <span>Azienda: {fmtEurRound.format(Math.round(aziAnnuo))} ({(pctAzienda * 100).toLocaleString('it-IT', { maximumFractionDigits: 2 })}% RAL)</span>
+          {extraAnnuo > 0 && <span>Ulteriore contributo: {fmtEurRound.format(Math.round(extraAnnuo))}</span>}
         </p>
       </div>
 
-      <div className="grid grid-cols-3 gap-3">
+      <p className="text-xs text-muted-foreground">
+        Non sai quale rendimento usare? Consulta i rendimenti ufficiali per fondo e comparto sul sito{' '}
+        <a href="https://www.covip.it/per-gli-operatori/fondi-pensione/costi-e-rendimenti-dei-fondi-pensione/elenco-dei-rendimenti" target="_blank" rel="noopener noreferrer">
+          COVIP — Elenco dei rendimenti
+        </a>.
+      </p>
+
+      <div className="grid grid-cols-2 gap-3">
         <div className="flex flex-col gap-1">
-          <label htmlFor="fp-rendimento" className="text-xs text-muted-foreground">📈 Rendimento annuo (%)</label>
+          <label htmlFor="fp-rendimento" className="text-xs text-muted-foreground">Rendimento annuo (%)</label>
           <Input id="fp-rendimento" value={rendimento} onChange={e => setRendimento(e.target.value)} placeholder="3" className="font-mono" />
         </div>
         <div className="flex flex-col gap-1">
-          <label htmlFor="fp-aderente" className="text-xs text-muted-foreground">👤 Quota aderente (% RAL)</label>
+          <label htmlFor="fp-aderente" className="text-xs text-muted-foreground">Quota aderente (% RAL)</label>
           <Input id="fp-aderente" value={quotaAderente} onChange={e => setQuotaAderente(e.target.value)} placeholder="1,2" className="font-mono" />
         </div>
         <div className="flex flex-col gap-1">
-          <label htmlFor="fp-azienda" className="text-xs text-muted-foreground">🏢 Quota azienda (% RAL)</label>
+          <label htmlFor="fp-azienda" className="text-xs text-muted-foreground">Quota azienda (% RAL)</label>
           <Input id="fp-azienda" value={quotaAzienda} onChange={e => setQuotaAzienda(e.target.value)} placeholder="2" className="font-mono" />
+        </div>
+        <div className="flex flex-col gap-1">
+          <label htmlFor="fp-extra" className="text-xs text-muted-foreground">Ulteriore contributo annuale (€)</label>
+          <Input id="fp-extra" value={ulterioreContributo} onChange={e => setUlterioreContributo(e.target.value)} placeholder="0" className="font-mono" />
         </div>
       </div>
 
@@ -187,7 +202,7 @@ const FpSection = React.memo(function FpSection({ ral, years, rendimento, setRen
           />
           <Tooltip content={<ChartTooltip />} />
           <Legend iconType="plainline" iconSize={16} wrapperStyle={{ fontSize: 11, color: '#737373', paddingTop: 8 }} />
-          <Line type="monotone" dataKey="🏦 Fondo pensione" stroke="#10b981" strokeWidth={2.5} dot={false} activeDot={{ r: 4 }} />
+          <Line type="monotone" dataKey="Fondo pensione" stroke="#10b981" strokeWidth={2.5} dot={false} activeDot={{ r: 4 }} />
         </LineChart>
       </ResponsiveContainer>
 
@@ -209,8 +224,8 @@ function simulateTfr(ral: number, years: number, infRate: number): number {
   return Math.round(v)
 }
 
-function simulateFp(ral: number, years: number, r: number, pctAderente: number, pctAzienda: number): number {
-  const totalAnnuo = ral / 13.5 + ral * pctAderente + ral * pctAzienda
+function simulateFp(ral: number, years: number, r: number, pctAderente: number, pctAzienda: number, extra: number): number {
+  const totalAnnuo = ral / 13.5 + ral * pctAderente + ral * pctAzienda + extra
   let v = 0
   for (let y = 1; y <= years; y++) v = (v + totalAnnuo) * (1 + r)
   return Math.round(v)
@@ -222,19 +237,22 @@ export default function FpVsTfr() {
   const [ralInput,  setRalInput]  = React.useState('30.000')
   const [anniInput, setAnniInput] = React.useState('30')
 
-  const [inflazione,    setInflazione]    = React.useState('1,1')
-  const [rendimento,    setRendimento]    = React.useState('3')
-  const [quotaAderente, setQuotaAderente] = React.useState('1,2')
-  const [quotaAzienda,  setQuotaAzienda]  = React.useState('2')
+  const [inflazione,          setInflazione]          = React.useState('1,1')
+  const [rendimento,          setRendimento]          = React.useState('3')
+  const [quotaAderente,       setQuotaAderente]       = React.useState('1,2')
+  const [quotaAzienda,        setQuotaAzienda]        = React.useState('2')
+  const [ulterioreContributo, setUlterioreContributo] = React.useState('')
 
   const ral   = parseEur(ralInput) || 30_000
   const years = Math.min(Math.max(1, parseInt(anniInput) || 30), 50)
 
+  const extra = parseEur(ulterioreContributo)
+
   const tfrFinal = simulateTfr(ral, years, parseRate(inflazione))
-  const fpFinal  = simulateFp(ral, years, parseRate(rendimento), parseRate(quotaAderente), parseRate(quotaAzienda))
+  const fpFinal  = simulateFp(ral, years, parseRate(rendimento), parseRate(quotaAderente), parseRate(quotaAzienda), extra)
 
   const tfrVersato = Math.round((ral / 13.5) * years)
-  const fpVersato  = Math.round((ral / 13.5 + ral * parseRate(quotaAderente) + ral * parseRate(quotaAzienda)) * years)
+  const fpVersato  = Math.round((ral / 13.5 + ral * parseRate(quotaAderente) + ral * parseRate(quotaAzienda) + extra) * years)
 
   const diff    = fpFinal - tfrFinal
   const diffPct = tfrFinal > 0 ? (diff / tfrFinal) * 100 : null
@@ -265,13 +283,13 @@ export default function FpVsTfr() {
       <div className="grid grid-cols-2 gap-4 mb-2 max-w-sm">
         <div className="flex flex-col gap-1">
           <label htmlFor="ral" className="text-xs tracking-widest uppercase text-muted-foreground">
-            💼 RAL di Gennaro (€)
+            RAL di Gennaro (€)
           </label>
           <Input id="ral" value={ralInput} onChange={e => setRalInput(e.target.value)} placeholder="30.000" className="font-mono" />
         </div>
         <div className="flex flex-col gap-1">
           <label htmlFor="orizzonte" className="text-xs tracking-widest uppercase text-muted-foreground">
-            ⏳ Anni alla pensione
+            Anni alla pensione
           </label>
           <Input id="orizzonte" type="number" min={1} max={50} value={anniInput} onChange={e => setAnniInput(e.target.value)} className="font-mono" />
         </div>
@@ -309,6 +327,8 @@ export default function FpVsTfr() {
           setQuotaAderente={setQuotaAderente}
           quotaAzienda={quotaAzienda}
           setQuotaAzienda={setQuotaAzienda}
+          ulterioreContributo={ulterioreContributo}
+          setUlterioreContributo={setUlterioreContributo}
         />
       </div>
 
@@ -328,13 +348,13 @@ export default function FpVsTfr() {
             </thead>
             <tbody>
               <tr className="bg-card">
-                <td className="px-3 py-2 font-medium">📦 TFR in azienda</td>
+                <td className="px-3 py-2 font-medium">TFR in azienda</td>
                 <td className="px-3 py-2 text-right font-mono">{fmtEurRound.format(tfrVersato)}</td>
                 <td className="px-3 py-2 text-right font-mono">{fmtEurRound.format(tfrFinal)}</td>
                 <td className="px-3 py-2 text-right font-mono">{fmtEurRound.format(tfrFinal - tfrVersato)}</td>
               </tr>
               <tr className="bg-muted">
-                <td className="px-3 py-2 font-medium">🏦 Fondo pensione</td>
+                <td className="px-3 py-2 font-medium">Fondo pensione</td>
                 <td className="px-3 py-2 text-right font-mono">{fmtEurRound.format(fpVersato)}</td>
                 <td className="px-3 py-2 text-right font-mono">{fmtEurRound.format(fpFinal)}</td>
                 <td className="px-3 py-2 text-right font-mono">{fmtEurRound.format(fpFinal - fpVersato)}</td>
