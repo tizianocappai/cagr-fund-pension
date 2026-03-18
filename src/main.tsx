@@ -10,6 +10,7 @@ import FpVsTfr from './pages/FpVsTfr.tsx';
 import Missione from './pages/Missione.tsx';
 import CalcoloObiettivo from './pages/CalcoloObiettivo.tsx';
 import RischioRendimento from './pages/RischioRendimento.tsx';
+import AnniPersi from './pages/AnniPersi.tsx';
 import { Analytics } from '@vercel/analytics/react';
 import { ErrorBoundary } from './components/ErrorBoundary.tsx';
 import { DisclaimerModal } from './components/DisclaimerModal.tsx';
@@ -24,12 +25,16 @@ createRoot(document.getElementById('root')!).render(
 					<main className='flex-1'>
 						<Routes>
 							<Route path='/' element={<Missione />} />
-							<Route path='/rendimento-fondo' element={<RendimentoFondo />} />
+							<Route
+								path='/rendimento-fondo'
+								element={<RendimentoFondo />}
+							/>
 							<Route
 								path='/cometa-guide'
 								element={<CometaGuide />}
 							/>
 							<Route path='/fp-vs-tfr' element={<FpVsTfr />} />
+							<Route path='/anni-persi' element={<AnniPersi />} />
 							<Route
 								path='/obiettivo'
 								element={<CalcoloObiettivo />}

@@ -5,6 +5,7 @@ const links = [
   { to: '/',                   label: 'Missione'          },
   { to: '/rendimento-fondo',   label: 'Rendimento'        },
   { to: '/fp-vs-tfr',          label: 'FP vs TFR'         },
+  { to: '/anni-persi',         label: 'Anni persi'        },
   { to: '/obiettivo',          label: 'Come dovrei fare?' },
   { to: '/rischio-rendimento', label: 'Devo rischiare?'   },
 ]
