@@ -279,19 +279,30 @@ export default function FpVsTfr() {
         </p>
       </header>
 
+      <div className="border-l-4 border-[#1d70b8] bg-[#e8f1f8] px-4 py-4 text-sm leading-relaxed mb-8">
+        <p>
+          In questa pagina simuleremo due scenari. Nel primo, <strong>Gennaro decide di non avere a
+          che fare con lo sbattimento di aprire un fondo pensione</strong> e decide di tenere tutto
+          in azienda — il suo TFR viene accantonato e rivalutato ogni anno secondo la formula di
+          legge. Nel secondo scenario invece <strong>Gennaro decide di aderire al fondo pensione</strong>,
+          aggiungendo anche una quota volontaria: il TFR, la quota aderente e la quota azienda
+          vengono investiti insieme e crescono al rendimento annuo del fondo.
+        </p>
+      </div>
+
       <Separator className="mb-8" />
 
       {/* RAL + Orizzonte */}
       <div className="grid grid-cols-2 gap-4 mb-2 max-w-sm">
         <div className="flex flex-col gap-1">
           <label htmlFor="ral" className="text-xs tracking-widest uppercase text-muted-foreground">
-            💼 RAL (€)
+            💼 RAL di Gennaro (€)
           </label>
           <Input id="ral" value={ralInput} onChange={e => setRalInput(e.target.value)} placeholder="30.000" className="font-mono" />
         </div>
         <div className="flex flex-col gap-1">
           <label htmlFor="orizzonte" className="text-xs tracking-widest uppercase text-muted-foreground">
-            ⏳ Anni
+            ⏳ Anni alla pensione
           </label>
           <Input id="orizzonte" type="number" min={1} max={50} value={anniInput} onChange={e => setAnniInput(e.target.value)} className="font-mono" />
         </div>
