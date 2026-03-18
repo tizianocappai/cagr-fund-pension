@@ -2,10 +2,11 @@ import { NavLink } from 'react-router'
 import { cn } from '@/lib/utils'
 
 const links = [
-  { to: '/',          label: 'Rendimento'  },
-  { to: '/fp-vs-tfr', label: 'FP vs TFR'  },
-  { to: '/obiettivo', label: 'Come dovrei fare?'  },
-  { to: '/missione',  label: 'Missione'   },
+  { to: '/missione',           label: 'Missione'          },
+  { to: '/',                   label: 'Rendimento'        },
+  { to: '/fp-vs-tfr',          label: 'FP vs TFR'         },
+  { to: '/obiettivo',          label: 'Come dovrei fare?' },
+  { to: '/rischio-rendimento', label: 'Devo rischiare?'   },
 ]
 
 export function Nav() {

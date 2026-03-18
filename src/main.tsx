@@ -9,6 +9,7 @@ import CometaGuide from './pages/CometaGuide.tsx';
 import FpVsTfr from './pages/FpVsTfr.tsx';
 import Missione from './pages/Missione.tsx';
 import CalcoloObiettivo from './pages/CalcoloObiettivo.tsx';
+import RischioRendimento from './pages/RischioRendimento.tsx';
 import { Analytics } from '@vercel/analytics/react';
 import { ErrorBoundary } from './components/ErrorBoundary.tsx';
 import { DisclaimerModal } from './components/DisclaimerModal.tsx';
@@ -29,6 +30,7 @@ createRoot(document.getElementById('root')!).render(
 							/>
 							<Route path='/fp-vs-tfr' element={<FpVsTfr />} />
 							<Route path='/obiettivo' element={<CalcoloObiettivo />} />
+							<Route path='/rischio-rendimento' element={<RischioRendimento />} />
 							<Route path='/missione' element={<Missione />} />
 						</Routes>
 					</main>
