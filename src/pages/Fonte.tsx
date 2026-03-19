@@ -34,7 +34,7 @@ export default function Fonte() {
     <div className="mx-auto max-w-4xl px-6 py-10">
 
       <header className="mb-8">
-        <h1 className="text-3xl font-bold">🌊 Fondo Fonte</h1>
+        <h1 className="text-3xl font-bold">Fondo Fonte</h1>
         <p className="mt-2 text-muted-foreground">
           Carica il file XLS esportato dal portale del fondo pensione Fonte.
         </p>

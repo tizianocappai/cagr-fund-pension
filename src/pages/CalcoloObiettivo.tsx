@@ -112,7 +112,7 @@ export default function CalcoloObiettivo() {
     <div className="mx-auto max-w-4xl px-6 py-10">
 
       <header className="mb-8">
-        <h1 className="text-3xl font-bold"><span aria-hidden="true">💸</span> Non avrò mai una pensione</h1>
+        <h1 className="text-3xl font-bold">Non avrò mai una pensione</h1>
         <p className="mt-2 text-muted-foreground">
           Quanto devo mettere da parte ogni anno per smettere di lavorare?
         </p>

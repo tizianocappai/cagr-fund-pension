@@ -383,7 +383,7 @@ export default function FpVsTfr() {
     <div className="mx-auto max-w-4xl px-6 py-10">
 
       <header className="mb-8">
-        <h1 className="text-3xl font-bold"><span aria-hidden="true">⚖️</span> FP vs TFR</h1>
+        <h1 className="text-3xl font-bold">FP vs TFR</h1>
         <p className="mt-2 text-muted-foreground">
           Confronta cosa succede al tuo TFR se rimane in azienda oppure viene versato nel fondo pensione.
         </p>

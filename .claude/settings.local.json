@@ -18,7 +18,12 @@
       "WebFetch(domain:laborability.com)",
       "WebFetch(domain:www.ciaoelsa.com)",
       "Bash(npm ls:*)",
-      "Bash(npm test:*)"
+      "Bash(npm test:*)",
+      "WebFetch(domain:www.ishareseurope.com)",
+      "WebFetch(domain:www.ishares.com)",
+      "WebFetch(domain:finance.yahoo.com)",
+      "Bash(npm list:*)",
+      "Bash(node -e \"require\\(''''yahoo-finance2''''\\)\")"
     ]
   }
 }

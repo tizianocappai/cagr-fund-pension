@@ -40,7 +40,7 @@ export default function Cometa() {
       </div>
 
       <header className="mb-8">
-        <h1 className="text-3xl font-bold">☄️ Fondo Cometa</h1>
+        <h1 className="text-3xl font-bold">Fondo Cometa</h1>
         <p className="mt-2 text-muted-foreground">
           Carica il file XLS esportato dal portale del fondo pensione Cometa.
         </p>

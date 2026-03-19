@@ -24,18 +24,20 @@ import { parseEur } from '@/lib/parse'
 
 const YEARS = [2010,2011,2012,2013,2014,2015,2016,2017,2018,2019,2020,2021,2022,2023,2024] as const
 
-// IE00B4L5Y983 — iShares Core MSCI World UCITS ETF USD Acc (EUR, non coperto)
+// IE00B4L5Y983 — iShares Core MSCI World UCITS ETF USD Acc (IWDA.AS)
+// Rendimenti annuali calcolati su NAV rettificato — fonte: Yahoo Finance (IWDA.AS)
 const R_EQUITY: number[] = [
-   0.140, -0.037,  0.140,  0.209,  0.202,
-   0.104,  0.106,  0.075, -0.041,  0.289,
-   0.063,  0.311, -0.128,  0.190,  0.220,
+   0.1826, -0.0276,  0.1184,  0.2281,  0.2041,
+   0.1032,  0.1087,  0.0749, -0.0416,  0.2958,
+   0.0620,  0.3254, -0.1354,  0.1989,  0.2723,
 ]
 
-// IE00B4WXJJ64 — iShares Core € Govt Bond UCITS ETF EUR Dist
+// IE00B4WXJJ64 — iShares Core € Govt Bond UCITS ETF EUR Dist (IEAG.AS)
+// Rendimenti annuali calcolati su NAV rettificato — fonte: Yahoo Finance (IEAG.AS)
 const R_BONDS: number[] = [
-   0.012,  0.038,  0.112,  0.020,  0.132,
-   0.014,  0.034,  0.007,  0.004,  0.068,
-   0.051, -0.023, -0.185,  0.073,  0.015,
+  -0.0041, -0.0006,  0.0800,  0.0062,  0.1122,
+   0.0160,  0.0325,  0.0038,  0.0027,  0.0577,
+   0.0381, -0.0303, -0.1713,  0.0695,  0.0253,
 ]
 
 // ── Profili di allocazione ────────────────────────────────────────────────────
@@ -681,11 +683,11 @@ export default function Alternative() {
       {/* Note finali */}
       <section className="mb-4 text-sm leading-relaxed flex flex-col gap-3 text-muted-foreground">
         <p>
-          <strong className="text-[#0b0c0c]">Fonti dati:</strong> I rendimenti storici dell'ETF azionario sono
-          basati sull'indice MSCI World Net Return EUR (2010–2024). I rendimenti dell'ETF
-          obbligazionario sono basati sull'indice Bloomberg Euro Aggregate Government Bond EUR.
-          I dati sono indicativi e potrebbero discostarsi leggermente dai NAV effettivi degli ETF
-          per effetto di tracking error, dividendi e modalità di calcolo.
+          <strong className="text-[#0b0c0c]">Fonti dati:</strong> I rendimenti annuali sono
+          calcolati sul NAV rettificato (adjusted close) degli ETF quotati su Euronext Amsterdam —
+          ticker IWDA.AS (IE00B4L5Y983) e IEAG.AS (IE00B4WXJJ64) — tramite Yahoo Finance.
+          I dati coprono il periodo 2010–2024, dall'anno successivo alla quotazione di entrambi
+          gli ETF (settembre–novembre 2009).
         </p>
         <p>
           <strong className="text-[#0b0c0c]">Limiti del modello:</strong> Gli scenari futuri assumono
