@@ -17,18 +17,18 @@ Supported funds: **Fondo Cometa**, **Fondo Fonte**.
 
 ## Stack
 
-| Layer | Technology |
-|---|---|
-| Framework | React 19 + TypeScript |
-| Build | Vite 8 |
-| Routing | react-router 7 |
-| Styling | Tailwind CSS v4 (`@tailwindcss/vite` plugin) |
-| Charts | Recharts |
+| Layer         | Technology                                         |
+| ------------- | -------------------------------------------------- |
+| Framework     | React 19 + TypeScript                              |
+| Build         | Vite 8                                             |
+| Routing       | react-router 7                                     |
+| Styling       | Tailwind CSS v4 (`@tailwindcss/vite` plugin)       |
+| Charts        | Recharts                                           |
 | Excel parsing | SheetJS (`xlsx`) for `.xlsx`; DOMParser for `.xls` |
-| XIRR solver | Newton-Raphson with bisection fallback |
-| Testing | Vitest 4 + @testing-library/react + jsdom |
-| Analytics | Vercel Analytics (conditional on cookie consent) |
-| Deployment | Vercel |
+| XIRR solver   | Newton-Raphson with bisection fallback             |
+| Testing       | Vitest 4 + @testing-library/react + jsdom          |
+| Analytics     | Vercel Analytics (conditional on cookie consent)   |
+| Deployment    | Vercel                                             |
 
 ## Getting started
 
@@ -68,7 +68,6 @@ src/
     MonteCarlo.tsx       # Monte Carlo simulation UI
     ContributionsChart.tsx
     CookieBanner.tsx
-    BmcWidget.tsx
     Nav.tsx
     Footer.tsx
     ui/                  # Design-system primitives (Button, Input, Card, ...)
@@ -108,11 +107,11 @@ Default parameters: real return 3.5%, volatility 11% (sourced from COVIP annual 
 
 **IRPEF 2026 brackets** applied to gross salary:
 
-| Income range | Rate |
-|---|---|
-| 0 – 28,000 | 23% |
-| 28,001 – 50,000 | 33% |
-| > 50,000 | 43% |
+| Income range    | Rate |
+| --------------- | ---- |
+| 0 – 28,000      | 23%  |
+| 28,001 – 50,000 | 33%  |
+| > 50,000        | 43%  |
 
 **TFR separate taxation** (`tassazione separata`): IRPEF is applied to `TFR / years_of_service` as the notional annual equivalent income to determine the marginal rate, then that rate is applied to the full TFR amount.
 
