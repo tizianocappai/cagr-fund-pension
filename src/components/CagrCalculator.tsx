@@ -200,7 +200,7 @@ function ResultsPanel({ results, flow, columns }: { results: Results; flow: Flow
     { label: 'Tasso di crescita medio annuo', value: `${(results.xirr * 100).toFixed(2)}%`,         note: 'per anno — tutti i contributi' },
     { label: 'Totale versato',                value: fmtEur.format(totalInvested),                  note: `${results.transactionCount} operazioni` },
     { label: 'Rendimento totale',             value: `${fmtEur.format(totalReturn)} (${((totalReturn / totalInvested) * 100).toFixed(1)}%)`, note: 'valore attuale − totale versato' },
-    { label: 'Spese totali',                  value: fmtEur.format(Math.abs(results.totalFees)),    note: 'commissioni e costi' },
+    { label: 'Spese totali',                  value: `${fmtEur.format(Math.abs(results.totalFees))} (${(Math.abs(results.totalFees) / totalInvested * 100).toFixed(2)}%)`, note: 'commissioni e costi sul totale versato' },
     { label: 'Durata',                        value: `${results.years.toFixed(1)} anni`,             note: `${fmtDate.format(results.firstDate)} → ${fmtDate.format(results.lastDate)}` },
   ]
 

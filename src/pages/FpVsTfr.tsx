@@ -15,6 +15,72 @@ import { ChartTooltip } from '@/components/ui/chart-tooltip'
 import { fmtEurRound, tickY } from '@/lib/formatters'
 import { parseEur, parseRate } from '@/lib/parse'
 
+// ── IRPEF 2026 ────────────────────────────────────────────────────────────────
+
+interface IrpefResult {
+  tax: number
+  effectiveRate: number
+  marginalRate: number
+  brackets: { label: string; base: number; rate: number; tax: number }[]
+}
+
+function calcIrpef(income: number): IrpefResult {
+  if (income <= 0) return { tax: 0, effectiveRate: 0, marginalRate: 0.23, brackets: [] }
+
+  const brackets: IrpefResult['brackets'] = []
+  let remaining = income
+  let tax = 0
+
+  if (remaining > 50_000) {
+    const base = remaining - 50_000
+    const t = base * 0.43
+    brackets.unshift({ label: 'Oltre €50.000', base, rate: 0.43, tax: t })
+    tax += t
+    remaining = 50_000
+  }
+  if (remaining > 28_000) {
+    const base = remaining - 28_000
+    const t = base * 0.33
+    brackets.unshift({ label: '€28.001 – €50.000', base, rate: 0.33, tax: t })
+    tax += t
+    remaining = 28_000
+  }
+  {
+    const base = remaining
+    const t = base * 0.23
+    brackets.unshift({ label: 'Fino a €28.000', base, rate: 0.23, tax: t })
+    tax += t
+  }
+
+  const marginalRate = income > 50_000 ? 0.43 : income > 28_000 ? 0.33 : 0.23
+
+  return { tax, effectiveRate: tax / income, marginalRate, brackets }
+}
+
+/**
+ * TFR tax: Italian "tassazione separata".
+ * The effective rate is computed by applying IRPEF to TFR_totale / years
+ * (the "base imponibile per anno di servizio"), then treating that rate as flat.
+ */
+function calcTfrTax(tfrGross: number, years: number): number {
+  if (years <= 0 || tfrGross <= 0) return 0
+  const annualBase = tfrGross / years
+  const { effectiveRate } = calcIrpef(annualBase)
+  return tfrGross * effectiveRate
+}
+
+/**
+ * Pension fund payout tax (tassazione agevolata).
+ * Rate = 15% for up to 15 years, then −0.3% per extra year, floor 9% at 35+ years.
+ */
+function calcFpTaxRate(years: number): number {
+  return Math.max(0.09, 0.15 - Math.max(0, years - 15) * 0.003)
+}
+
+function calcFpTax(fpGross: number, years: number): number {
+  return fpGross * calcFpTaxRate(years)
+}
+
 // ── TFR simulation ────────────────────────────────────────────────────────────
 
 interface TfrProps {
@@ -43,6 +109,10 @@ const TfrSection = React.memo(function TfrSection({ ral, years, inflazione, setI
   const yMax        = Math.ceil(finalValue / 10_000) * 10_000 || 10_000
   const rateDisplay = (tfrRate * 100).toLocaleString('it-IT', { minimumFractionDigits: 3, maximumFractionDigits: 3 })
   const infDisplay  = (infRate  * 100).toLocaleString('it-IT', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+
+  const tfrTax     = calcTfrTax(finalValue, years)
+  const tfrNetto   = finalValue - tfrTax
+  const tfrTaxRate = finalValue > 0 ? tfrTax / finalValue : 0
 
   return (
     <div className="flex flex-col gap-5">
@@ -96,10 +166,26 @@ const TfrSection = React.memo(function TfrSection({ ral, years, inflazione, setI
         </LineChart>
       </ResponsiveContainer>
 
-      <div className="border border-border px-4 py-3 text-sm">
-        Dopo <strong>{years} anni</strong> con RAL {fmtEurRound.format(ral)} e inflazione {infDisplay}%,
-        il TFR accumulato in azienda sarà circa <strong>{fmtEurRound.format(finalValue)}</strong>.
+      <div className="flex flex-col gap-0 border border-border text-sm divide-y divide-border">
+        <div className="flex justify-between px-4 py-2">
+          <span className="text-muted-foreground">TFR lordo dopo {years} anni</span>
+          <span className="font-mono font-medium">{fmtEurRound.format(finalValue)}</span>
+        </div>
+        <div className="flex justify-between px-4 py-2">
+          <span className="text-muted-foreground">
+            Tassazione separata stimata ({(tfrTaxRate * 100).toLocaleString('it-IT', { minimumFractionDigits: 1, maximumFractionDigits: 1 })}%)
+          </span>
+          <span className="font-mono text-error">−{fmtEurRound.format(tfrTax)}</span>
+        </div>
+        <div className="flex justify-between px-4 py-2 bg-muted">
+          <span className="font-semibold">TFR netto stimato</span>
+          <span className="font-mono font-semibold">{fmtEurRound.format(tfrNetto)}</span>
+        </div>
       </div>
+      <p className="text-xs text-muted-foreground">
+        La tassazione separata è stimata applicando gli scaglioni IRPEF 2026 alla quota annua (TFR ÷ anni di servizio).
+        Il calcolo è indicativo e non tiene conto di detrazioni o addizionali regionali/comunali.
+      </p>
     </div>
   )
 })
@@ -144,6 +230,10 @@ const FpSection = React.memo(function FpSection({ ral, years, rendimento, setRen
   const yMax       = Math.ceil(finalValue / 10_000) * 10_000 || 10_000
   const rDisplay   = (r * 100).toLocaleString('it-IT', { minimumFractionDigits: 1, maximumFractionDigits: 2 })
 
+  const fpTax      = calcFpTax(finalValue, years)
+  const fpNetto    = finalValue - fpTax
+  const fpTaxRate  = calcFpTaxRate(years)
+
   return (
     <div className="flex flex-col gap-5">
       <div className="border-l-4 border-[#1d70b8] bg-[#e8f1f8] px-4 py-3 text-sm">
@@ -178,7 +268,7 @@ const FpSection = React.memo(function FpSection({ ral, years, rendimento, setRen
         </div>
         <div className="flex flex-col gap-1">
           <label htmlFor="fp-extra" className="text-xs text-muted-foreground">Ulteriore contributo annuale (€)</label>
-          <Input id="fp-extra" value={ulterioreContributo} onChange={e => setUlterioreContributo(e.target.value)} placeholder="0" className="font-mono" />
+          <Input id="fp-extra" value={ulterioreContributo} onChange={e => setUlterioreContributo(e.target.value)} placeholder="5.300" className="font-mono" />
         </div>
       </div>
 
@@ -206,10 +296,27 @@ const FpSection = React.memo(function FpSection({ ral, years, rendimento, setRen
         </LineChart>
       </ResponsiveContainer>
 
-      <div className="border border-border px-4 py-3 text-sm">
-        Dopo <strong>{years} anni</strong> con RAL {fmtEurRound.format(ral)} e rendimento {rDisplay}%,
-        il capitale accumulato nel fondo pensione sarà circa <strong>{fmtEurRound.format(finalValue)}</strong>.
+      <div className="flex flex-col gap-0 border border-border text-sm divide-y divide-border">
+        <div className="flex justify-between px-4 py-2">
+          <span className="text-muted-foreground">Capitale lordo dopo {years} anni (rendimento {rDisplay}%)</span>
+          <span className="font-mono font-medium">{fmtEurRound.format(finalValue)}</span>
+        </div>
+        <div className="flex justify-between px-4 py-2">
+          <span className="text-muted-foreground">
+            Tassazione agevolata ({(fpTaxRate * 100).toLocaleString('it-IT', { minimumFractionDigits: 1, maximumFractionDigits: 1 })}%
+            {years <= 15 ? ' — max, meno di 15 anni' : years >= 35 ? ' — min, 35+ anni' : ` — 15% − 0,3% × ${years - 15} anni = ${(fpTaxRate * 100).toLocaleString('it-IT', { minimumFractionDigits: 1, maximumFractionDigits: 1 })}%`})
+          </span>
+          <span className="font-mono text-error">−{fmtEurRound.format(fpTax)}</span>
+        </div>
+        <div className="flex justify-between px-4 py-2 bg-muted">
+          <span className="font-semibold">Capitale netto stimato</span>
+          <span className="font-mono font-semibold">{fmtEurRound.format(fpNetto)}</span>
+        </div>
       </div>
+      <p className="text-xs text-muted-foreground">
+        Tassazione agevolata: 15% fino a 15 anni di adesione, poi −0,3% per ogni anno aggiuntivo, minimo 9% oltre i 35 anni.
+        Il calcolo è indicativo e si applica alla prestazione in capitale a scadenza.
+      </p>
     </div>
   )
 })
@@ -248,14 +355,25 @@ export default function FpVsTfr() {
 
   const extra = parseEur(ulterioreContributo)
 
+  React.useEffect(() => {
+    const aderAnnuo = ral * parseRate(quotaAderente)
+    const aziAnnuo  = ral * parseRate(quotaAzienda)
+    const residuo = Math.max(0, Math.round(5300 - aderAnnuo - aziAnnuo))
+    setUlterioreContributo(residuo.toLocaleString('it-IT'))
+  }, [ral, quotaAderente, quotaAzienda])
+
   const tfrFinal = simulateTfr(ral, years, parseRate(inflazione))
   const fpFinal  = simulateFp(ral, years, parseRate(rendimento), parseRate(quotaAderente), parseRate(quotaAzienda), extra)
 
   const tfrVersato = Math.round((ral / 13.5) * years)
   const fpVersato  = Math.round((ral / 13.5 + ral * parseRate(quotaAderente) + ral * parseRate(quotaAzienda) + extra) * years)
 
-  const diff    = fpFinal - tfrFinal
-  const diffPct = tfrFinal > 0 ? (diff / tfrFinal) * 100 : null
+  const irpef         = calcIrpef(ral)
+  const tfrNettoFinal = tfrFinal - calcTfrTax(tfrFinal, years)
+  const fpNettoFinal  = fpFinal  - calcFpTax(fpFinal, years)
+
+  const diff    = fpNettoFinal - tfrNettoFinal
+  const diffPct = tfrNettoFinal > 0 ? (diff / tfrNettoFinal) * 100 : null
 
   return (
     <div className="mx-auto max-w-4xl px-6 py-10">
@@ -294,9 +412,40 @@ export default function FpVsTfr() {
           <Input id="orizzonte" type="number" min={1} max={50} value={anniInput} onChange={e => setAnniInput(e.target.value)} className="font-mono" />
         </div>
       </div>
-      <p className="text-xs text-muted-foreground mb-8">
+      <p className="text-xs text-muted-foreground mb-4">
         Usa il formato italiano per la RAL: punto come separatore migliaia.
       </p>
+
+      {ral > 0 && (
+        <div className="border-l-4 border-[#0b0c0c] bg-muted px-4 py-3 text-sm mb-8">
+          <p className="font-semibold mb-2">IRPEF 2026 sulla tua RAL</p>
+          <div className="flex flex-col gap-1 text-xs">
+            {irpef.brackets.map(b => b.base > 0 && (
+              <div key={b.label} className="flex justify-between">
+                <span className="text-muted-foreground">{b.label} × {(b.rate * 100).toFixed(0)}%</span>
+                <span className="font-mono">{fmtEurRound.format(b.tax)}</span>
+              </div>
+            ))}
+            <div className="flex justify-between border-t border-border pt-1 mt-1 font-semibold">
+              <span>Totale IRPEF</span>
+              <span className="font-mono text-error">{fmtEurRound.format(irpef.tax)}</span>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-muted-foreground">Aliquota effettiva</span>
+              <span className="font-mono">{(irpef.effectiveRate * 100).toLocaleString('it-IT', { minimumFractionDigits: 1, maximumFractionDigits: 1 })}%</span>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-muted-foreground">Aliquota marginale</span>
+              <span className="font-mono">{(irpef.marginalRate * 100).toFixed(0)}%</span>
+            </div>
+            <div className="flex justify-between font-semibold">
+              <span>RAL netta stimata</span>
+              <span className="font-mono">{fmtEurRound.format(ral - irpef.tax)}</span>
+            </div>
+          </div>
+          <p className="text-xs text-muted-foreground mt-2">Stima indicativa — non include detrazioni, addizionali regionali/comunali o altri contributi.</p>
+        </div>
+      )}
 
       <Separator className="mb-8" />
 
@@ -342,7 +491,8 @@ export default function FpVsTfr() {
               <tr className="border-b border-border bg-muted">
                 <th className="px-3 py-2 text-left font-medium text-muted-foreground">Scenario</th>
                 <th className="px-3 py-2 text-right font-medium text-muted-foreground">Versato totale</th>
-                <th className="px-3 py-2 text-right font-medium text-muted-foreground">Capitale finale</th>
+                <th className="px-3 py-2 text-right font-medium text-muted-foreground">Capitale lordo</th>
+                <th className="px-3 py-2 text-right font-medium text-muted-foreground">Capitale netto</th>
                 <th className="px-3 py-2 text-right font-medium text-muted-foreground">Rendita maturata</th>
               </tr>
             </thead>
@@ -350,19 +500,21 @@ export default function FpVsTfr() {
               <tr className="bg-card">
                 <td className="px-3 py-2 font-medium">TFR in azienda</td>
                 <td className="px-3 py-2 text-right font-mono">{fmtEurRound.format(tfrVersato)}</td>
-                <td className="px-3 py-2 text-right font-mono">{fmtEurRound.format(tfrFinal)}</td>
-                <td className="px-3 py-2 text-right font-mono">{fmtEurRound.format(tfrFinal - tfrVersato)}</td>
+                <td className="px-3 py-2 text-right font-mono text-muted-foreground">{fmtEurRound.format(tfrFinal)}</td>
+                <td className="px-3 py-2 text-right font-mono">{fmtEurRound.format(tfrNettoFinal)}</td>
+                <td className="px-3 py-2 text-right font-mono">{fmtEurRound.format(tfrNettoFinal - tfrVersato)}</td>
               </tr>
               <tr className="bg-muted">
                 <td className="px-3 py-2 font-medium">Fondo pensione</td>
                 <td className="px-3 py-2 text-right font-mono">{fmtEurRound.format(fpVersato)}</td>
-                <td className="px-3 py-2 text-right font-mono">{fmtEurRound.format(fpFinal)}</td>
-                <td className="px-3 py-2 text-right font-mono">{fmtEurRound.format(fpFinal - fpVersato)}</td>
+                <td className="px-3 py-2 text-right font-mono text-muted-foreground">{fmtEurRound.format(fpFinal)}</td>
+                <td className="px-3 py-2 text-right font-mono">{fmtEurRound.format(fpNettoFinal)}</td>
+                <td className="px-3 py-2 text-right font-mono">{fmtEurRound.format(fpNettoFinal - fpVersato)}</td>
               </tr>
             </tbody>
             <tfoot>
               <tr className="border-t border-border bg-muted">
-                <td className="px-3 py-2 font-semibold" colSpan={2}>Vantaggio fondo pensione</td>
+                <td className="px-3 py-2 font-semibold" colSpan={3}>Vantaggio fondo pensione (netto)</td>
                 <td className="px-3 py-2 text-right font-mono font-semibold" style={{ color: diff >= 0 ? '#00703c' : '#d4351c' }}>
                   {diff >= 0 ? '+' : ''}{fmtEurRound.format(diff)}
                 </td>
