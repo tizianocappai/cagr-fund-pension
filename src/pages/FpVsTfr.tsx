@@ -142,6 +142,7 @@ const TfrSection = React.memo(function TfrSection({ ral, years, inflazione, setI
         <p className="text-xs text-muted-foreground">Valore FOI ISTAT dicembre 2024: ~1,1%</p>
       </div>
 
+      <div role="img" aria-label="Grafico: crescita del TFR nel tempo">
       <ResponsiveContainer width="100%" height={320}>
         <LineChart data={data} margin={{ top: 4, right: 8, bottom: 0, left: 0 }}>
           <CartesianGrid stroke="#e5e5e5" strokeDasharray="4 2" />
@@ -165,6 +166,7 @@ const TfrSection = React.memo(function TfrSection({ ral, years, inflazione, setI
           <Line type="monotone" dataKey="TFR accantonato" stroke="#f59e0b" strokeWidth={2.5} dot={false} activeDot={{ r: 4 }} />
         </LineChart>
       </ResponsiveContainer>
+      </div>
 
       <div className="flex flex-col gap-0 border border-border text-sm divide-y divide-border">
         <div className="flex justify-between px-4 py-2">
@@ -272,6 +274,7 @@ const FpSection = React.memo(function FpSection({ ral, years, rendimento, setRen
         </div>
       </div>
 
+      <div role="img" aria-label="Grafico: crescita del fondo pensione nel tempo">
       <ResponsiveContainer width="100%" height={320}>
         <LineChart data={data} margin={{ top: 4, right: 8, bottom: 0, left: 0 }}>
           <CartesianGrid stroke="#e5e5e5" strokeDasharray="4 2" />
@@ -295,6 +298,7 @@ const FpSection = React.memo(function FpSection({ ral, years, rendimento, setRen
           <Line type="monotone" dataKey="Fondo pensione" stroke="#10b981" strokeWidth={2.5} dot={false} activeDot={{ r: 4 }} />
         </LineChart>
       </ResponsiveContainer>
+      </div>
 
       <div className="flex flex-col gap-0 border border-border text-sm divide-y divide-border">
         <div className="flex justify-between px-4 py-2">
@@ -379,7 +383,7 @@ export default function FpVsTfr() {
     <div className="mx-auto max-w-4xl px-6 py-10">
 
       <header className="mb-8">
-        <h1 className="text-3xl font-bold">⚖️ FP vs TFR</h1>
+        <h1 className="text-3xl font-bold"><span aria-hidden="true">⚖️</span> FP vs TFR</h1>
         <p className="mt-2 text-muted-foreground">
           Confronta cosa succede al tuo TFR se rimane in azienda oppure viene versato nel fondo pensione.
         </p>

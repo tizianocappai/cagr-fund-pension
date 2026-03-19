@@ -39,6 +39,7 @@ export const ContributionsChart = React.memo(function ContributionsChart({ yearR
   )
 
   return (
+    <div role="img" aria-label="Grafico: contributi versati per anno">
     <ResponsiveContainer width="100%" height={260}>
       <BarChart data={data} barCategoryGap="30%" barGap={2}>
         <CartesianGrid vertical={false} stroke="#e5e5e5" />
@@ -63,5 +64,6 @@ export const ContributionsChart = React.memo(function ContributionsChart({ yearR
         <Bar dataKey="Spese" fill="#f43f5e" />
       </BarChart>
     </ResponsiveContainer>
+    </div>
   )
 })

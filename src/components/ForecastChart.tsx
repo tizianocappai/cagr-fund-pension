@@ -117,6 +117,7 @@ export const ForecastChart = React.memo(function ForecastChart({
       </p>
 
       {/* Chart */}
+      <div role="img" aria-label="Grafico: proiezione futura del capitale">
       <ResponsiveContainer width="100%" height={320} className="print:hidden">
         <LineChart data={data} margin={{ top: 4, right: 8, bottom: 0, left: 0 }}>
           <CartesianGrid stroke="#e5e5e5" strokeDasharray="4 2" />
@@ -143,6 +144,7 @@ export const ForecastChart = React.memo(function ForecastChart({
           <Line type="monotone" dataKey="Totale"   stroke="#e11d48" strokeWidth={3} dot={false} activeDot={{ r: 5 }} />
         </LineChart>
       </ResponsiveContainer>
+      </div>
 
       {/* Year-by-year table */}
       <div className="border border-border overflow-x-auto">

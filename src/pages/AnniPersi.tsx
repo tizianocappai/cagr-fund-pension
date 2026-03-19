@@ -57,6 +57,7 @@ const GapChart = React.memo(function GapChart({ annualContrib, r, anniAlPensiona
   const yMax = Math.ceil(data[data.length - 1]['Se avessi iniziato prima'] / 10_000) * 10_000 || 10_000
 
   return (
+    <div role="img" aria-label="Grafico: crescita del capitale con e senza anticipo">
     <ResponsiveContainer width="100%" height={320}>
       <AreaChart data={data} margin={{ top: 4, right: 8, bottom: 0, left: 0 }}>
         <defs>
@@ -91,6 +92,7 @@ const GapChart = React.memo(function GapChart({ annualContrib, r, anniAlPensiona
         <Area type="monotone" dataKey="Partendo da oggi"         stroke="#3b82f6" strokeWidth={2.5} fill="url(#gradReale)"  dot={false} activeDot={{ r: 4 }} />
       </AreaChart>
     </ResponsiveContainer>
+    </div>
   )
 })
 
@@ -128,7 +130,7 @@ export default function AnniPersi() {
     <div className="mx-auto max-w-4xl px-6 py-10">
 
       <header className="mb-8">
-        <h1 className="text-3xl font-bold">⏳ Anni persi</h1>
+        <h1 className="text-3xl font-bold"><span aria-hidden="true">⏳</span> Anni persi</h1>
         <p className="mt-2 text-muted-foreground">
           Ogni anno senza fondo pensione ha un costo reale. Scopri quanto ti è costato aspettare.
         </p>

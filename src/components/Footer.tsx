@@ -1,3 +1,5 @@
+import { Link } from 'react-router'
+
 export function Footer() {
 	return (
 		<footer className='border-t-2 border-[#0b0c0c] bg-[#f3f2f1] mt-12 print:hidden'>
@@ -9,6 +11,9 @@ export function Footer() {
 				<p className='text-sm text-muted-foreground mb-4'>
 					Nessun dato viene inviato a server esterni. Tutto il calcolo
 					avviene localmente nel tuo browser.
+				</p>
+				<p className='text-sm text-muted-foreground mb-1'>
+					<Link to='/privacy'>Privacy Policy</Link>
 				</p>
 				<p className='text-sm text-muted-foreground'>
 					Sviluppato da{' '}

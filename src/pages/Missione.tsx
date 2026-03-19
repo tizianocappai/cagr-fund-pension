@@ -39,7 +39,7 @@ export default function Missione() {
     <div className="mx-auto max-w-4xl px-6 py-10">
 
       <header className="mb-8">
-        <h1 className="text-3xl font-bold">🧭 Missione</h1>
+        <h1 className="text-3xl font-bold"><span aria-hidden="true">🧭</span> Missione</h1>
         <p className="mt-2 text-muted-foreground">
           Tutto quello che trovi su questo sito, spiegato in due righe.
         </p>

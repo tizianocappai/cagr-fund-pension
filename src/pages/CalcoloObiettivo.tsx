@@ -62,6 +62,7 @@ const AccumuloChart = React.memo(function AccumuloChart({ versamento, r, n, fv }
   const yMax = Math.ceil(fv / 10_000) * 10_000 || 10_000
 
   return (
+    <div role="img" aria-label="Grafico: accumulo del capitale nel tempo">
     <ResponsiveContainer width="100%" height={320}>
       <LineChart data={data} margin={{ top: 4, right: 8, bottom: 0, left: 0 }}>
         <CartesianGrid stroke="#e5e5e5" strokeDasharray="4 2" />
@@ -87,6 +88,7 @@ const AccumuloChart = React.memo(function AccumuloChart({ versamento, r, n, fv }
         <Line type="monotone" dataKey="Capitale accumulato" stroke="#10b981" strokeWidth={2.5} dot={false} activeDot={{ r: 4 }} />
       </LineChart>
     </ResponsiveContainer>
+    </div>
   )
 })
 
@@ -110,7 +112,7 @@ export default function CalcoloObiettivo() {
     <div className="mx-auto max-w-4xl px-6 py-10">
 
       <header className="mb-8">
-        <h1 className="text-3xl font-bold">💸 Non avrò mai una pensione</h1>
+        <h1 className="text-3xl font-bold"><span aria-hidden="true">💸</span> Non avrò mai una pensione</h1>
         <p className="mt-2 text-muted-foreground">
           Quanto devo mettere da parte ogni anno per smettere di lavorare?
         </p>
