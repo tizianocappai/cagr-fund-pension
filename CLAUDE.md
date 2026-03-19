@@ -19,18 +19,18 @@ npm run test:watch # run tests in watch mode
 
 ## Stack
 
-| Layer | Choice |
-|---|---|
-| Framework | React 19 + TypeScript |
-| Build | Vite 8 |
-| Routing | react-router 7 |
-| Styling | Tailwind CSS v4 (via `@tailwindcss/vite` plugin — no `postcss.config.js`) |
-| UI components | Hand-rolled components in `src/components/ui/` |
-| Charts | Recharts |
-| Utilities | clsx + tailwind-merge + class-variance-authority |
-| Analytics | `@vercel/analytics/react` (NOT `/next`) |
-| Excel parsing | SheetJS (`xlsx`) for `.xlsx`; DOMParser for `.xls` (HTML tables) |
-| Testing | Vitest 4 + @testing-library/react + jsdom |
+| Layer         | Choice                                                                    |
+| ------------- | ------------------------------------------------------------------------- |
+| Framework     | React 19 + TypeScript                                                     |
+| Build         | Vite 8                                                                    |
+| Routing       | react-router 7                                                            |
+| Styling       | Tailwind CSS v4 (via `@tailwindcss/vite` plugin — no `postcss.config.js`) |
+| UI components | Hand-rolled components in `src/components/ui/`                            |
+| Charts        | Recharts                                                                  |
+| Utilities     | clsx + tailwind-merge + class-variance-authority                          |
+| Analytics     | `@vercel/analytics/react` (NOT `/next`)                                   |
+| Excel parsing | SheetJS (`xlsx`) for `.xlsx`; DOMParser for `.xls` (HTML tables)          |
+| Testing       | Vitest 4 + @testing-library/react + jsdom                                 |
 
 ## Project structure
 
@@ -56,7 +56,6 @@ src/
     Nav.tsx              # Black service banner + tab navigation
     Footer.tsx           # GOV.UK-style footer with beta disclaimer
     CookieBanner.tsx     # GDPR cookie consent banner (localStorage)
-    BmcWidget.tsx        # Buy Me a Coffee widget (conditional on consent)
     CagrCalculator.tsx   # Main calculator: file → parse → XIRR → results
     ContributionsChart.tsx   # Recharts bar chart (contributions by year)
     ForecastChart.tsx        # Recharts line chart (future projection, starts from 0)
@@ -83,19 +82,20 @@ Visual style inspired by [GOV.UK Design System](https://design-system.service.go
 
 Key CSS custom properties defined in `src/index.css` via `@theme`:
 
-| Token | Value | Usage |
-|---|---|---|
-| `--color-background` | `#ffffff` | Page background |
-| `--color-foreground` | `#0b0c0c` | Primary text |
-| `--color-muted` | `#f3f2f1` | Subtle surfaces |
-| `--color-muted-foreground` | `#505a5f` | Secondary text |
-| `--color-border` | `#b1b4b6` | Card/separator borders |
-| `--color-primary` | `#00703c` | Primary button background |
-| `--color-focus` | `#ffdd00` | Focus ring (yellow) |
-| `--color-error` | `#d4351c` | Error states |
-| `--radius` | `0rem` | No border radius (sharp corners) |
+| Token                      | Value     | Usage                            |
+| -------------------------- | --------- | -------------------------------- |
+| `--color-background`       | `#ffffff` | Page background                  |
+| `--color-foreground`       | `#0b0c0c` | Primary text                     |
+| `--color-muted`            | `#f3f2f1` | Subtle surfaces                  |
+| `--color-muted-foreground` | `#505a5f` | Secondary text                   |
+| `--color-border`           | `#b1b4b6` | Card/separator borders           |
+| `--color-primary`          | `#00703c` | Primary button background        |
+| `--color-focus`            | `#ffdd00` | Focus ring (yellow)              |
+| `--color-error`            | `#d4351c` | Error states                     |
+| `--radius`                 | `0rem`    | No border radius (sharp corners) |
 
 **Key rules:**
+
 - Use Tailwind canonical classes (`text-muted-foreground`, `border-border`, `bg-muted`) — do NOT use `bg-[--color-*]` arbitrary values
 - `bg-black` / `text-white` only for the service name header bar
 - Inputs: `border-2 border-[#0b0c0c]`, yellow `focus-visible:outline-[#ffdd00]`
@@ -111,12 +111,16 @@ Key CSS custom properties defined in `src/index.css` via `@theme`:
 ## Key implementation details
 
 ### File reading (`src/lib/readExcel.ts`)
+
 Unified entry point for both file types:
+
 - `.xlsx` → SheetJS `XLSX.read(arrayBuffer, {type:'array'})` + `sheet_to_json({header:1, raw:true})`. Numbers come as JS numbers; convert with `.toString()` to avoid locale formatting issues.
 - `.xls` → DOMParser as `text/html`; Italian portals export HTML tables disguised as XLS.
 
 ### Number parsing
+
 Both parsers use locale-aware `parseItalianNumber(s)`:
+
 - If string contains `,` → Italian format (`1.234,56`): strip `.`, replace `,` with `.`
 - Otherwise → standard decimal (`55.53` from SheetJS raw mode): plain `parseFloat`
 
@@ -148,31 +152,34 @@ Both parsers use locale-aware `parseItalianNumber(s)`:
 Date for Fonte is derived from quarter: Q1→Mar31, Q2→Jun30, Q3→Sep30, Q4→Dec31.
 
 ### XIRR (`src/lib/xirr.ts`)
+
 Solves `Σ [ CF_i / (1+r)^((d_i - d_0) / 365.25) ] = 0` using Newton-Raphson + bisection fallback.
 
 Cash flow convention: contributions are **negated** (money into fund = negative); current portfolio value = positive terminal cash flow.
 
 ### Forecast chart (`src/components/ForecastChart.tsx`)
+
 - Starts from **zero** (not from current portfolio value)
 - Individual lines (aderente, azienda, TFR): **linear** — `cX × year` (raw accumulation, no interest)
 - **Totale** line: compound interest — `v = (v + cAderente + cAzienda + cTfr) × (1 + r)` each year
 - `flow` prop (`'cometa' | 'fonte'`) is passed for clarity and future differentiation
 
 ### `flow` prop
+
 Both `CagrCalculator` and `ForecastChart` accept `flow: 'cometa' | 'fonte'`. Pages pass it explicitly to prevent mapping mistakes. `ResultsPanel` inside `CagrCalculator` also receives it to thread it down.
 
 ## Routing
 
-| Path | Page |
-|---|---|
-| `/` | Missione |
-| `/rendimento-fondo` | RendimentoFondo (Cometa + Fonte flows) |
-| `/cometa-guide` | CometaGuide |
-| `/fp-vs-tfr` | FpVsTfr |
-| `/anni-persi` | AnniPersi |
-| `/obiettivo` | CalcoloObiettivo |
-| `/rischio-rendimento` | RischioRendimento |
-| `/privacy` | PrivacyPolicy |
+| Path                  | Page                                   |
+| --------------------- | -------------------------------------- |
+| `/`                   | Missione                               |
+| `/rendimento-fondo`   | RendimentoFondo (Cometa + Fonte flows) |
+| `/cometa-guide`       | CometaGuide                            |
+| `/fp-vs-tfr`          | FpVsTfr                                |
+| `/anni-persi`         | AnniPersi                              |
+| `/obiettivo`          | CalcoloObiettivo                       |
+| `/rischio-rendimento` | RischioRendimento                      |
+| `/privacy`            | PrivacyPolicy                          |
 
 Adding a new route: create `src/pages/NewPage.tsx`, add to `links` array in `Nav.tsx`, add `<Route>` in `main.tsx`.
 
@@ -186,10 +193,10 @@ Setup file: `src/test/setup.ts` (imports `@testing-library/jest-dom` matchers).
 
 ### Test locations
 
-| File | What it covers |
-|---|---|
-| `src/lib/monteCarlo.test.ts` | `randn()` distribution, `runSimulation()` structure, deterministic zero-volatility, edge cases, statistical properties |
-| `src/components/MonteCarlo.test.tsx` | Render, input state, button enable/disable, results after simulation |
+| File                                 | What it covers                                                                                                         |
+| ------------------------------------ | ---------------------------------------------------------------------------------------------------------------------- |
+| `src/lib/monteCarlo.test.ts`         | `randn()` distribution, `runSimulation()` structure, deterministic zero-volatility, edge cases, statistical properties |
+| `src/components/MonteCarlo.test.tsx` | Render, input state, button enable/disable, results after simulation                                                   |
 
 ### Key conventions
 
