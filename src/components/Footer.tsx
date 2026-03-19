@@ -1,6 +1,6 @@
 export function Footer() {
 	return (
-		<footer className='border-t-2 border-[#0b0c0c] bg-[#f3f2f1] mt-12'>
+		<footer className='border-t-2 border-[#0b0c0c] bg-[#f3f2f1] mt-12 print:hidden'>
 			<div className='mx-auto max-w-4xl px-6 py-8'>
 				<p className='text-sm text-muted-foreground mb-1'>
 					I risultati hanno scopo puramente indicativo e non

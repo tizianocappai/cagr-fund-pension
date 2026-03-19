@@ -78,6 +78,11 @@ export default function RendimentoFondo() {
             ))}
           </ul>
         </div>
+        <p className="mt-3 text-xs text-muted-foreground">
+          Non trovi il tuo fondo?{' '}
+          <a href="mailto:tiziano.cappai1999@gmail.com">Scrivimi</a>
+          {' '}per richiedere il supporto.
+        </p>
       </header>
 
       {/* Provider selector */}

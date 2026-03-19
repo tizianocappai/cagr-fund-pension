@@ -151,7 +151,7 @@ export function CagrCalculator({ file, flow, columns, parser = parseXls }: Props
     <div className="mt-8 flex flex-col gap-6">
       <Separator />
 
-      <div className="flex flex-col gap-2">
+      <div className="flex flex-col gap-2 print:hidden">
         <label htmlFor="portfolio-value" className="text-xs tracking-widest uppercase text-muted-foreground">
           Valore attuale del portafoglio (€)
         </label>
@@ -193,23 +193,46 @@ function ResultsPanel({ results, flow, columns }: { results: Results; flow: Flow
   }
   const totalInvested = columns.reduce((s, col) => s + totals[col.key], 0)
 
+  const totalReturn = results.currentValue - totalInvested
+  const totalReturnBonus = results.currentValue - (results.totalAderente + results.totalTfr)
+
   const stats = [
     { label: 'Tasso di crescita medio annuo', value: `${(results.xirr * 100).toFixed(2)}%`,         note: 'per anno — tutti i contributi' },
     { label: 'Totale versato',                value: fmtEur.format(totalInvested),                  note: `${results.transactionCount} operazioni` },
+    { label: 'Rendimento totale',             value: `${fmtEur.format(totalReturn)} (${((totalReturn / totalInvested) * 100).toFixed(1)}%)`, note: 'valore attuale − totale versato' },
     { label: 'Spese totali',                  value: fmtEur.format(Math.abs(results.totalFees)),    note: 'commissioni e costi' },
     { label: 'Durata',                        value: `${results.years.toFixed(1)} anni`,             note: `${fmtDate.format(results.firstDate)} → ${fmtDate.format(results.lastDate)}` },
   ]
 
   const bonusStats = [
     { label: 'Tasso di crescita senza azienda', value: `${(results.xirrNoAzienda * 100).toFixed(2)}%`, note: 'per anno — solo tuo costo' },
-    { label: 'Contributo azienda',              value: fmtEur.format(results.totalAzienda),            note: 'non contato come tuo costo' },
-    { label: 'Tuo contributo',                  value: fmtEur.format(results.totalAderente),           note: 'versamenti aderente' },
-    { label: 'TFR versato',                     value: fmtEur.format(results.totalTfr),                note: 'trattamento fine rapporto' },
+    { label: 'Rendimento sul tuo costo',         value: `${fmtEur.format(totalReturnBonus)} (${((totalReturnBonus / (results.totalAderente + results.totalTfr)) * 100).toFixed(1)}%)`, note: 'valore attuale − (tuo contributo + TFR)' },
+    { label: 'Contributo azienda',               value: fmtEur.format(results.totalAzienda),           note: 'non contato come tuo costo' },
+    { label: 'Tuo contributo',                   value: fmtEur.format(results.totalAderente),          note: 'versamenti aderente' },
+    { label: 'TFR versato',                      value: fmtEur.format(results.totalTfr),               note: 'trattamento fine rapporto' },
   ]
+
+  const exportDate = new Intl.DateTimeFormat('it-IT', { dateStyle: 'long' }).format(new Date())
 
   return (
     <div className="flex flex-col gap-6">
       <Separator />
+
+      {/* Print header — visible only when printing */}
+      <div className="hidden print:flex print:items-center print:gap-3 print:pb-4 print:border-b-2 print:border-[#0b0c0c]">
+        <img src="/gennaro-logo.png" alt="" aria-hidden="true" className="h-8 w-8 object-contain" />
+        <div>
+          <p className="text-lg font-bold leading-tight">Gennaro — Rendimento Fondo Pensione</p>
+          <p className="text-sm text-muted-foreground">Report generato il {exportDate}</p>
+        </div>
+      </div>
+
+      {/* Export button — hidden when printing */}
+      <div className="flex justify-end print:hidden">
+        <Button variant="secondary" onClick={() => window.print()}>
+          Esporta PDF
+        </Button>
+      </div>
 
       {/* Main results */}
       <div>
@@ -300,12 +323,19 @@ function ResultsPanel({ results, flow, columns }: { results: Results; flow: Flow
       {/* Forecast chart */}
       <div>
         <p className="text-base font-bold mb-4 border-l-4 border-[#0b0c0c] pl-3">Proiezione futura</p>
-        <ForecastChart
-          flow={flow}
-          defaultAderente={results.totalAderente / results.years}
-          defaultAzienda={results.totalAzienda / results.years}
-          defaultTfr={results.totalTfr / results.years}
-        />
+        {(() => {
+          const prevYear = new Date().getFullYear() - 1
+          const row = results.yearRows.find(r => r.year === prevYear) ?? results.yearRows[results.yearRows.length - 1]
+          return (
+            <ForecastChart
+              flow={flow}
+              defaultAderente={row.aderente}
+              defaultAzienda={row.azienda}
+              defaultTfr={row.tfr}
+              defaultRate={results.xirr}
+            />
+          )
+        })()}
       </div>
 
       <Separator />

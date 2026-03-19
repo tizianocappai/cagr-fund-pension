@@ -11,7 +11,7 @@ import {
 } from 'recharts'
 import { Input } from '@/components/ui/input'
 import { ChartTooltip } from '@/components/ui/chart-tooltip'
-import { tickY } from '@/lib/formatters'
+import { fmtEurRound, tickY } from '@/lib/formatters'
 import { parseEur, parseRate } from '@/lib/parse'
 
 export type Flow = 'cometa' | 'fonte'
@@ -21,6 +21,7 @@ interface Props {
   defaultAderente: number
   defaultAzienda: number
   defaultTfr: number
+  defaultRate?: number
 }
 
 /**
@@ -43,8 +44,11 @@ export const ForecastChart = React.memo(function ForecastChart({
   defaultAderente,
   defaultAzienda,
   defaultTfr,
+  defaultRate,
 }: Props) {
-  const [rate,     setRate]     = React.useState('3')
+  const [rate,     setRate]     = React.useState(() =>
+    defaultRate != null ? (defaultRate * 100).toFixed(2) : '3'
+  )
   const [aderente, setAderente] = React.useState(() => String(Math.round(defaultAderente)))
   const [azienda,  setAzienda]  = React.useState(() => String(Math.round(defaultAzienda)))
   const [tfr,      setTfr]      = React.useState(() => String(Math.round(defaultTfr)))
@@ -113,7 +117,7 @@ export const ForecastChart = React.memo(function ForecastChart({
       </p>
 
       {/* Chart */}
-      <ResponsiveContainer width="100%" height={320}>
+      <ResponsiveContainer width="100%" height={320} className="print:hidden">
         <LineChart data={data} margin={{ top: 4, right: 8, bottom: 0, left: 0 }}>
           <CartesianGrid stroke="#e5e5e5" strokeDasharray="4 2" />
           <XAxis
@@ -139,6 +143,52 @@ export const ForecastChart = React.memo(function ForecastChart({
           <Line type="monotone" dataKey="Totale"   stroke="#e11d48" strokeWidth={3} dot={false} activeDot={{ r: 5 }} />
         </LineChart>
       </ResponsiveContainer>
+
+      {/* Year-by-year table */}
+      <div className="border border-border overflow-x-auto">
+        <table className="w-full text-sm">
+          <thead>
+            <tr className="border-b border-border bg-muted">
+              <th className="px-3 py-2 text-left font-medium text-muted-foreground">Anno</th>
+              <th className="px-3 py-2 text-right font-medium text-muted-foreground">Versato annuo</th>
+              <th className="px-3 py-2 text-right font-medium text-muted-foreground">Versato cumulato</th>
+              <th className="px-3 py-2 text-right font-medium text-muted-foreground">Interessi maturati</th>
+              <th className="px-3 py-2 text-right font-medium text-muted-foreground">Capitale totale</th>
+            </tr>
+          </thead>
+          <tbody>
+            {data.slice(1).map((row, i) => {
+              const versatoAnnuo     = cAderente + cAzienda + cTfr
+              const versatoCumulato  = versatoAnnuo * row.anno
+              const interessiMaturati = row.Totale - versatoCumulato
+              return (
+                <tr key={row.anno} className={i % 2 === 0 ? 'bg-card' : 'bg-muted'}>
+                  <td className="px-3 py-2 font-medium">+{row.anno}y</td>
+                  <td className="px-3 py-2 text-right font-mono text-muted-foreground">{fmtEurRound.format(versatoAnnuo)}</td>
+                  <td className="px-3 py-2 text-right font-mono">{fmtEurRound.format(versatoCumulato)}</td>
+                  <td className="px-3 py-2 text-right font-mono text-[#10b981]">{fmtEurRound.format(interessiMaturati)}</td>
+                  <td className="px-3 py-2 text-right font-mono font-semibold">{fmtEurRound.format(row.Totale)}</td>
+                </tr>
+              )
+            })}
+          </tbody>
+          <tfoot>
+            <tr className="border-t border-border bg-muted">
+              <td className="px-3 py-2 font-semibold">Totale</td>
+              <td className="px-3 py-2" />
+              <td className="px-3 py-2 text-right font-mono font-semibold">
+                {fmtEurRound.format((cAderente + cAzienda + cTfr) * forecastYrs)}
+              </td>
+              <td className="px-3 py-2 text-right font-mono font-semibold text-[#10b981]">
+                {fmtEurRound.format(data[forecastYrs].Totale - (cAderente + cAzienda + cTfr) * forecastYrs)}
+              </td>
+              <td className="px-3 py-2 text-right font-mono font-semibold">
+                {fmtEurRound.format(data[forecastYrs].Totale)}
+              </td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
     </div>
   )
 })

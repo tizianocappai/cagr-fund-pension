@@ -23,6 +23,23 @@
   --font-mono: ui-monospace, "Courier New", monospace;
 }
 
+@media print {
+  @page {
+    margin: 1.5cm 1.8cm;
+  }
+
+  body {
+    font-size: 13px;
+  }
+
+  /* Prevent charts and cards from being split across pages */
+  .recharts-responsive-container,
+  table,
+  [class*="grid"] > * {
+    break-inside: avoid;
+  }
+}
+
 @layer base {
   * {
     border-color: var(--color-border);

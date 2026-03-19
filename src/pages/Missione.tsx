@@ -15,6 +15,12 @@ const features = [
       'Confronta cosa succede al tuo TFR se rimane in azienda oppure viene versato nel fondo pensione. Simula i due scenari con i tuoi numeri reali e vedi la differenza nel lungo periodo.',
   },
   {
+    to: '/anni-persi',
+    label: 'Anni persi',
+    description:
+      'Ogni anno senza fondo pensione ha un costo reale. Scopri quanto ti è costato aspettare, tra contributi mai versati e interessi composti perduti per sempre.',
+  },
+  {
     to: '/obiettivo',
     label: 'Come dovrei fare?',
     description:

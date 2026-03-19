@@ -27,7 +27,7 @@ export function DisclaimerModal() {
       aria-modal="true"
       aria-labelledby="disclaimer-title"
       aria-describedby="disclaimer-body"
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 px-4"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 px-4 print:hidden"
     >
       <div className="w-full max-w-lg border-2 border-[#0b0c0c] bg-white">
         {/* Header */}

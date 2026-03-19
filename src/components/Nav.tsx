@@ -12,7 +12,7 @@ const links = [
 
 export function Nav() {
   return (
-    <header>
+    <header className="print:hidden">
       {/* Service name bar */}
       <div className="bg-[#0b0c0c] text-white">
         <div className="mx-auto max-w-4xl px-6 py-4">
