@@ -12,6 +12,7 @@ import CalcoloObiettivo from './pages/CalcoloObiettivo.tsx'
 import RischioRendimento from './pages/RischioRendimento.tsx'
 import AnniPersi from './pages/AnniPersi.tsx'
 import PrivacyPolicy from './pages/PrivacyPolicy.tsx'
+import Alternative from './pages/Alternative.tsx'
 import { Analytics } from '@vercel/analytics/react'
 import { ErrorBoundary } from './components/ErrorBoundary.tsx'
 import { DisclaimerModal } from './components/DisclaimerModal.tsx'
@@ -40,6 +41,7 @@ function App() {
               <Route path='/anni-persi' element={<AnniPersi />} />
               <Route path='/obiettivo' element={<CalcoloObiettivo />} />
               <Route path='/rischio-rendimento' element={<RischioRendimento />} />
+              <Route path='/alternative' element={<Alternative />} />
               <Route path='/privacy' element={<PrivacyPolicy />} />
               <Route path='*' element={<Navigate to='/' replace />} />
             </Routes>
