@@ -10,7 +10,11 @@
       "Bash(grep -n any /Users/tiziano.cappai/Personale/Progetti/cagr-fund-pension/src/components/*.tsx /Users/tiziano.cappai/Personale/Progetti/cagr-fund-pension/src/components/ui/*.tsx)",
       "Bash(grep -n \"const fmt\\\\|const fmtTick\\\\|const fmtDate\" /Users/tiziano.cappai/Personale/Progetti/cagr-fund-pension/src/**/*.tsx)",
       "Bash(npx tsc:*)",
-      "Bash(node -e \":*)"
+      "Bash(node -e \":*)",
+      "Bash(mv \"Screenshot 2026-03-18 at 12.05.08.png\" \"cometa-guide-step-2.png\")",
+      "Bash(mv \"Screenshot 2026-03-18 at 12.08.39.png\" \"cometa-guide-step-3.png\")",
+      "Bash(mv \"Screenshot 2026-03-18 at 12.10.59.png\" \"cometa-guide-step-5.png\")",
+      "Bash(mv \"Screenshot 2026-03-19 at 10.50 Background Removed.16.png\" \"gennaro-logo.png\")"
     ]
   }
 }

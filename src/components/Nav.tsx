@@ -16,7 +16,10 @@ export function Nav() {
       {/* Service name bar */}
       <div className="bg-[#0b0c0c] text-white">
         <div className="mx-auto max-w-4xl px-6 py-4">
-          <p className="text-xl font-bold leading-tight">🕵️ Gennaro</p>
+          <div className="flex items-center gap-2">
+            <img src="/gennaro-logo.png" alt="" aria-hidden="true" className="h-8 w-8 object-contain" />
+            <p className="text-xl font-bold leading-tight">Gennaro</p>
+          </div>
           <p className="text-sm text-[#b1b4b6] mt-0.5">Il detective del tuo fondo pensione</p>
         </div>
       </div>

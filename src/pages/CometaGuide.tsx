@@ -15,7 +15,7 @@ const steps = [
         pulsante <strong>"Clicca qui per l'elenco completo"</strong>. Verrai reindirizzato alla
         pagina con tutte le operazioni del tuo fondo.
         <img
-          src="/Screenshot 2026-03-18 at 12.05.08.png"
+          src="/cometa-guide-step-2.png"
           alt="Screenshot del portale Cometa — pulsante Clicca qui per l'elenco completo"
           className="mt-4 border border-border w-full max-w-lg"
         />
@@ -31,7 +31,7 @@ const steps = [
         contrassegnato dall'icona verde. Il file <code className="text-xs bg-[--color-muted] px-1.5 py-0.5 rounded font-mono">.xls</code> verrà
         scaricato automaticamente sul tuo dispositivo.
         <img
-          src="/Screenshot 2026-03-18 at 12.08.39.png"
+          src="/cometa-guide-step-3.png"
           alt="Screenshot del portale Cometa — pulsante Esporta il dettaglio delle operazioni"
           className="mt-4 border border-border w-full max-w-lg"
         />
@@ -58,7 +58,7 @@ const steps = [
         pagina. Inserisci questo importo nel campo apposito sul sito, poi clicca{' '}
         <strong>Calcola Rendimento</strong>.
         <img
-          src="/Screenshot 2026-03-18 at 12.10.59.png"
+          src="/cometa-guide-step-5.png"
           alt="Screenshot del portale Cometa — valore attuale della posizione individuale"
           className="mt-4 border border-border w-full max-w-lg"
         />
