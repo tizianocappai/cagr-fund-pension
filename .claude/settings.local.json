@@ -17,7 +17,8 @@
       "Bash(mv \"Screenshot 2026-03-19 at 10.50 Background Removed.16.png\" \"gennaro-logo.png\")",
       "WebFetch(domain:laborability.com)",
       "WebFetch(domain:www.ciaoelsa.com)",
-      "Bash(npm ls:*)"
+      "Bash(npm ls:*)",
+      "Bash(npm test:*)"
     ]
   }
 }

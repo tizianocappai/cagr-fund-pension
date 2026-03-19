@@ -1,4 +1,5 @@
 import { Separator } from '@/components/ui/separator'
+import { MonteCarlo } from '@/components/MonteCarlo'
 
 interface Comparto {
   titolo: string
@@ -290,6 +291,18 @@ export default function RischioRendimento() {
           finanziari non sono indicative di quelle future. Questo contenuto ha scopo puramente
           educativo e non costituisce consulenza finanziaria.
         </div>
+      </div>
+
+      <Separator className="mb-8" />
+
+      {/* Monte Carlo simulation */}
+      <div>
+        <p className="text-base font-bold mb-1 border-l-4 border-[#0b0c0c] pl-3">Simulazione Monte Carlo</p>
+        <p className="text-sm text-muted-foreground mb-5">
+          Inserisci i tuoi dati per simulare migliaia di possibili traiettorie di crescita del tuo fondo
+          pensione e scoprire la probabilità di raggiungere il tuo obiettivo di capitale.
+        </p>
+        <MonteCarlo />
       </div>
 
     </div>

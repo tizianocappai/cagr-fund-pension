@@ -4,15 +4,17 @@
 
 **Gennaro** is a React + TypeScript SPA that calculates the real annual growth rate of an Italian pension fund portfolio using the **XIRR** method. The user uploads an `.xls` or `.xlsx` file exported from an Italian pension portal, enters the current portfolio value, and receives a full breakdown of returns, contributions, fees, and future projections.
 
-Supported funds: **Cometa** (`/cometa`) and **Fonte** (`/fonte`).
+Supported funds: **Cometa** and **Fonte** (`/rendimento-fondo`).
 
 ## Commands
 
 ```bash
-npm run dev       # start dev server (Vite, port 5173)
-npm run build     # tsc type-check + Vite production build
-npm run lint      # ESLint
-npm run preview   # preview production build locally
+npm run dev        # start dev server (Vite, port 5173)
+npm run build      # tsc type-check + Vite production build
+npm run lint       # ESLint
+npm run preview    # preview production build locally
+npm run test       # run unit tests (Vitest, single pass)
+npm run test:watch # run tests in watch mode
 ```
 
 ## Stack
@@ -28,38 +30,51 @@ npm run preview   # preview production build locally
 | Utilities | clsx + tailwind-merge + class-variance-authority |
 | Analytics | `@vercel/analytics/react` (NOT `/next`) |
 | Excel parsing | SheetJS (`xlsx`) for `.xlsx`; DOMParser for `.xls` (HTML tables) |
+| Testing | Vitest 4 + @testing-library/react + jsdom |
 
 ## Project structure
 
 ```
 src/
   lib/
-    utils.ts          # cn() helper (clsx + twMerge)
-    parseXls.ts       # HTML-table parser for Cometa .xls export → string[][]
-    parseFonte.ts     # Column parser for Fonte .xls/.xlsx → string[][]
-    readExcel.ts      # Unified file reader: .xlsx via SheetJS, .xls via DOMParser
-    xirr.ts           # XIRR solver (Newton-Raphson + bisection fallback)
-    fileStorage.ts    # IndexedDB save/load/clear with per-page key
+    utils.ts             # cn() helper (clsx + twMerge)
+    parseXls.ts          # HTML-table parser for Cometa .xls export → string[][]
+    parseFonte.ts        # Column parser for Fonte .xls/.xlsx → string[][]
+    readExcel.ts         # Unified file reader: .xlsx via SheetJS, .xls via DOMParser
+    xirr.ts              # XIRR solver (Newton-Raphson + bisection fallback)
+    fileStorage.ts       # IndexedDB save/load/clear with per-page key
+    monteCarlo.ts        # Monte Carlo simulation engine (randn, runSimulation)
+    monteCarlo.test.ts   # Unit tests for simulation pure functions
   components/
     ui/
-      button.tsx        # GOV.UK green primary button, variant prop
-      card.tsx          # Sharp-cornered card with border
-      input.tsx         # 2px border, yellow focus ring
+      button.tsx         # GOV.UK green primary button, variant prop
+      card.tsx           # Sharp-cornered card with border
+      input.tsx          # 2px border, yellow focus ring
       separator.tsx
-      file-uploader.tsx # Drag & drop, keyboard accessible
-      tooltip.tsx       # Hover/focus tooltip with black border
-    Nav.tsx             # Black service banner + tab navigation
-    Footer.tsx          # GOV.UK-style footer with beta disclaimer
-    CagrCalculator.tsx  # Main calculator: file → parse → XIRR → results
-    ContributionsChart.tsx  # Recharts bar chart (contributions by year)
-    ForecastChart.tsx       # Recharts line chart (future projection, starts from 0)
+      file-uploader.tsx  # Drag & drop, keyboard accessible
+      tooltip.tsx        # Hover/focus tooltip with black border
+    Nav.tsx              # Black service banner + tab navigation
+    Footer.tsx           # GOV.UK-style footer with beta disclaimer
+    CookieBanner.tsx     # GDPR cookie consent banner (localStorage)
+    BmcWidget.tsx        # Buy Me a Coffee widget (conditional on consent)
+    CagrCalculator.tsx   # Main calculator: file → parse → XIRR → results
+    ContributionsChart.tsx   # Recharts bar chart (contributions by year)
+    ForecastChart.tsx        # Recharts line chart (future projection, starts from 0)
+    MonteCarlo.tsx           # Monte Carlo simulation UI
+    MonteCarlo.test.tsx      # Component tests for MonteCarlo
   pages/
-    Cometa.tsx          # /cometa — Fondo Cometa flow
-    Fonte.tsx           # /fonte  — Fondo Fonte flow
-    CometaGuide.tsx     # /cometa-guide — step-by-step guide
-    Missione.tsx        # /missione — mission / educational content
-  main.tsx              # BrowserRouter + Routes
-  index.css             # Tailwind v4 @import + @theme design tokens
+    Missione.tsx             # / — mission / educational content
+    RendimentoFondo.tsx      # /rendimento-fondo — Cometa + Fonte calculator flows
+    CometaGuide.tsx          # /cometa-guide — step-by-step export guide
+    FpVsTfr.tsx              # /fp-vs-tfr — pension fund vs TFR comparison + tax
+    AnniPersi.tsx            # /anni-persi — cost of delaying contributions
+    CalcoloObiettivo.tsx     # /obiettivo — target capital calculator
+    RischioRendimento.tsx    # /rischio-rendimento — risk/return + Monte Carlo
+    PrivacyPolicy.tsx        # /privacy — GDPR privacy policy
+  test/
+    setup.ts                 # Vitest setup: @testing-library/jest-dom matchers
+  main.tsx                   # App component: BrowserRouter + Routes + consent state
+  index.css                  # Tailwind v4 @import + @theme design tokens
 ```
 
 ## Design system — GOV.UK inspired
@@ -150,13 +165,38 @@ Both `CagrCalculator` and `ForecastChart` accept `flow: 'cometa' | 'fonte'`. Pag
 
 | Path | Page |
 |---|---|
-| `/` | Cometa |
-| `/cometa` | Cometa |
+| `/` | Missione |
+| `/rendimento-fondo` | RendimentoFondo (Cometa + Fonte flows) |
 | `/cometa-guide` | CometaGuide |
-| `/fonte` | Fonte |
-| `/missione` | Missione |
+| `/fp-vs-tfr` | FpVsTfr |
+| `/anni-persi` | AnniPersi |
+| `/obiettivo` | CalcoloObiettivo |
+| `/rischio-rendimento` | RischioRendimento |
+| `/privacy` | PrivacyPolicy |
 
 Adding a new route: create `src/pages/NewPage.tsx`, add to `links` array in `Nav.tsx`, add `<Route>` in `main.tsx`.
+
+## Testing
+
+Framework: **Vitest 4** + **@testing-library/react** + **jsdom**.
+
+Setup file: `src/test/setup.ts` (imports `@testing-library/jest-dom` matchers).
+
+`vite.config.ts` imports from `vitest/config` (not `vite`) to expose the `test` field.
+
+### Test locations
+
+| File | What it covers |
+|---|---|
+| `src/lib/monteCarlo.test.ts` | `randn()` distribution, `runSimulation()` structure, deterministic zero-volatility, edge cases, statistical properties |
+| `src/components/MonteCarlo.test.tsx` | Render, input state, button enable/disable, results after simulation |
+
+### Key conventions
+
+- Recharts is mocked in component tests (SVG not available in jsdom).
+- `runSimulation` is imported from `src/lib/monteCarlo.ts` and tested in isolation from the component.
+- Statistical assertions use large-sample comparisons (e.g. `p50_high > p50_low`) rather than exact values, since the engine uses `Math.random()`.
+- `Math.random` can be mocked with `vi.spyOn` for deterministic edge-case tests; always call `vi.restoreAllMocks()` after.
 
 ## Accessibility standards
 
