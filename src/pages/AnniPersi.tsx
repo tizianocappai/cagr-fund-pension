@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { useMeta } from '@/lib/useMeta';
 import {
 	Area,
 	AreaChart,
@@ -177,6 +178,10 @@ const GapChart = React.memo(function GapChart({
 // ── Page ───────────────────────────────────────────────────────────────────────
 
 export default function AnniPersi() {
+	useMeta(
+		'Quanto ti costano gli anni senza fondo pensione',
+		'Calcola il costo reale di ogni anno trascorso senza versare nel fondo pensione complementare: contributi mancati e interessi composti perduti per sempre.',
+	)
 	const [ralInput, setRalInput] = React.useState('30.000');
 	const [quotaAderenteInput, setQuotaAderenteInput] = React.useState('1,2');
 	const [quotaAziendaInput, setQuotaAziendaInput] = React.useState('2');

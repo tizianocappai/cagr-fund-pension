@@ -1,4 +1,5 @@
 import * as React from 'react'
+import { useMeta } from '@/lib/useMeta'
 import {
   CartesianGrid,
   Legend,
@@ -95,6 +96,10 @@ const AccumuloChart = React.memo(function AccumuloChart({ versamento, r, n, fv }
 // ── Page ──────────────────────────────────────────────────────────────────────
 
 export default function CalcoloObiettivo() {
+  useMeta(
+    'Calcola quanto versare per raggiungere il tuo obiettivo pensionistico',
+    'Inserisci il capitale che vuoi raggiungere alla pensione: la calcolatrice ti dice esattamente quanto versare ogni anno e ogni mese nel fondo pensione complementare.',
+  )
   const [capitaleInput,  setCapitaleInput]  = React.useState('150.000')
   const [tassoInput,     setTassoInput]     = React.useState('3')
   const [anniInput,      setAnniInput]      = React.useState('30')

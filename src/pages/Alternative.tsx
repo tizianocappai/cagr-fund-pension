@@ -1,4 +1,5 @@
 import * as React from 'react'
+import { useMeta } from '@/lib/useMeta'
 import {
   Bar,
   BarChart,
@@ -167,6 +168,10 @@ function ScenariTooltip({ active, payload, label }: {
 // ── Componente principale ─────────────────────────────────────────────────────
 
 export default function Alternative() {
+  useMeta(
+    'ETF come alternativa al fondo pensione complementare',
+    'Replica i comparti del fondo pensione con due ETF a basso costo: iShares Core MSCI World (IE00B4L5Y983) e iShares Core Euro Govt Bond (IE00B4WXJJ64). Dati storici reali e scenari futuri.',
+  )
   const [selectedId, setSelectedId] = React.useState('bilanciato')
   const [contributoInput, setContributoInput] = React.useState('200')
   const [orizzonteInput, setOrizzonteInput] = React.useState('30')

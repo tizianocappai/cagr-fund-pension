@@ -1,5 +1,6 @@
 import * as React from 'react'
 import { Link } from 'react-router'
+import { useMeta } from '@/lib/useMeta'
 import { CagrCalculator } from '@/components/CagrCalculator'
 import { FileUploader } from '@/components/ui/file-uploader'
 import { clearFile, loadFile, saveFile } from '@/lib/fileStorage'
@@ -22,6 +23,10 @@ function getParser(provider: Provider): ((rows: string[][]) => Transaction[]) | 
 }
 
 export default function RendimentoFondo() {
+  useMeta(
+    'Calcola il rendimento del tuo fondo pensione',
+    'Carica il file del tuo fondo pensione (Cometa, Fonte, Amundi) e calcola il tasso di crescita medio annuo reale con il metodo XIRR. Vedi commissioni, versamenti e proiezione futura.',
+  )
   const [provider,    setProvider]    = React.useState<Provider | null>(null)
   const [file,        setFile]        = React.useState<File | null>(null)
   const [initialFile, setInitialFile] = React.useState<File | null>(null)

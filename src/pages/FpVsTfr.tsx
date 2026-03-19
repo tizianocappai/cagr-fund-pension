@@ -1,4 +1,5 @@
 import * as React from 'react'
+import { useMeta } from '@/lib/useMeta'
 import {
   CartesianGrid,
   Legend,
@@ -345,6 +346,10 @@ function simulateFp(ral: number, years: number, r: number, pctAderente: number, 
 // ── Page ──────────────────────────────────────────────────────────────────────
 
 export default function FpVsTfr() {
+  useMeta(
+    'TFR in azienda o fondo pensione? Confronto netto',
+    'Confronta il netto finale del TFR lasciato in azienda con il capitale accumulato nel fondo pensione. Calcolo con tassazione IRPEF 2026, tassazione separata TFR e aliquota agevolata fondo pensione.',
+  )
   const [ralInput,  setRalInput]  = React.useState('30.000')
   const [anniInput, setAnniInput] = React.useState('30')
 

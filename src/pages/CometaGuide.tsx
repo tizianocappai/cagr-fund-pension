@@ -1,4 +1,5 @@
 import { Separator } from '@/components/ui/separator'
+import { useMeta } from '@/lib/useMeta'
 
 const steps = [
   {
@@ -68,6 +69,10 @@ const steps = [
 ]
 
 export default function CometaGuide() {
+  useMeta(
+    'Come esportare i dati dal portale Fondo Cometa',
+    'Guida passo passo per scaricare il file di rendiconto dal portale di Fondo Cometa e calcolarne il rendimento reale con il metodo XIRR su Gennaro.',
+  )
   return (
     <div className="mx-auto max-w-4xl px-6 py-10">
 

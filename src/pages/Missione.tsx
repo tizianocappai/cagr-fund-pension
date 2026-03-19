@@ -1,5 +1,6 @@
 import { Link } from 'react-router';
 import { Separator } from '@/components/ui/separator';
+import { useMeta } from '@/lib/useMeta';
 
 const features = [
 	{
@@ -41,6 +42,10 @@ const features = [
 ];
 
 export default function Missione() {
+	useMeta(
+		'Missione',
+		'Gennaro: strumenti gratuiti per capire il tuo fondo pensione complementare. Calcola il rendimento reale, confronta TFR vs fondo pensione, simula il capitale futuro.',
+	)
 	return (
 		<div className='mx-auto max-w-4xl px-6 py-10'>
 			<header className='mb-8'>

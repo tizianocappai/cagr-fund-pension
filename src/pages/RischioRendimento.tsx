@@ -1,5 +1,6 @@
 import { Separator } from '@/components/ui/separator'
 import { MonteCarlo } from '@/components/MonteCarlo'
+import { useMeta } from '@/lib/useMeta'
 
 interface Comparto {
   titolo: string
@@ -65,6 +66,10 @@ const comparti: Comparto[] = [
 ]
 
 export default function RischioRendimento() {
+  useMeta(
+    'Quale comparto scegliere? Rischio e rendimento del fondo pensione',
+    'Scopri la differenza tra i comparti azionario e obbligazionario del fondo pensione complementare. Simulazione Monte Carlo per visualizzare scenari di rendimento futuri.',
+  )
   return (
     <div className="mx-auto max-w-4xl px-6 py-10">
 
