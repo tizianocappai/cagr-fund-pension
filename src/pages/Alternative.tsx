@@ -270,7 +270,7 @@ export default function Alternative() {
               <tr className="border-t border-[#c5d9ec]">
                 <td className="py-1.5 pr-4 font-medium text-[#0b0c0c]">Deducibilità contributi</td>
                 <td className="py-1.5 pr-4">Nessuna — versamenti a carico tuo al 100%, senza sgravi IRPEF</td>
-                <td className="py-1.5">Deducibili fino a 5.164,57 € / anno dall'imponibile IRPEF</td>
+                <td className="py-1.5">Deducibili fino a 5.300 € / anno dall'imponibile IRPEF</td>
               </tr>
               <tr className="border-t border-[#c5d9ec]">
                 <td className="py-1.5 pr-4 font-medium text-[#0b0c0c]">Tassazione rendimenti</td>
