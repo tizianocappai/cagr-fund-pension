@@ -11,13 +11,7 @@ import {
 	YAxis,
 } from 'recharts';
 import { Alert, Divider, Input } from 'antd';
-import {
-	Card,
-	CardContent,
-	CardDescription,
-	CardHeader,
-	CardTitle,
-} from '@/components/ui/card';
+import { Card } from 'antd';
 import { ChartTooltip } from '@/components/ui/chart-tooltip';
 import { fmtEur, fmtEurRound, tickY } from '@/lib/formatters';
 import { parseEur, parseRate } from '@/lib/parse';
@@ -391,66 +385,58 @@ export default function AnniPersi() {
 						</h2>
 						<div className='grid grid-cols-2 gap-3 mb-6'>
 							<Card>
-								<CardHeader className='pb-2'>
-									<CardDescription>
+								<div className='pb-2'>
+									<p className='text-[14px] leading-[20px] tracking-[0.25px] text-on-surface-variant'>
 										Se avessi iniziato {anniPersi} anni fa
-									</CardDescription>
-									<CardTitle className='text-[28px] leading-[36px]'>
+									</p>
+									<div className='text-[28px] leading-[36px] font-bold'>
 										{fmtEurRound.format(capitaleIdeale)}
-									</CardTitle>
-								</CardHeader>
-								<CardContent>
-									<p className='text-[12px] leading-[16px] tracking-[0.4px] text-muted-foreground'>
-										capitale alla pensione — scenario ideale
-									</p>
-								</CardContent>
+									</div>
+								</div>
+								<p className='text-[12px] leading-[16px] tracking-[0.4px] text-muted-foreground'>
+									capitale alla pensione — scenario ideale
+								</p>
 							</Card>
 							<Card>
-								<CardHeader className='pb-2'>
-									<CardDescription>
+								<div className='pb-2'>
+									<p className='text-[14px] leading-[20px] tracking-[0.25px] text-on-surface-variant'>
 										Partendo da oggi
-									</CardDescription>
-									<CardTitle className='text-[28px] leading-[36px]'>
+									</p>
+									<div className='text-[28px] leading-[36px] font-bold'>
 										{fmtEurRound.format(capitaleReale)}
-									</CardTitle>
-								</CardHeader>
-								<CardContent>
-									<p className='text-[12px] leading-[16px] tracking-[0.4px] text-muted-foreground'>
-										capitale alla pensione — scenario reale
-									</p>
-								</CardContent>
+									</div>
+								</div>
+								<p className='text-[12px] leading-[16px] tracking-[0.4px] text-muted-foreground'>
+									capitale alla pensione — scenario reale
+								</p>
 							</Card>
 							<Card>
-								<CardHeader className='pb-2'>
-									<CardDescription>
+								<div className='pb-2'>
+									<p className='text-[14px] leading-[20px] tracking-[0.25px] text-on-surface-variant'>
 										Capitale perso per il ritardo
-									</CardDescription>
-									<CardTitle className='text-[28px] leading-[36px] text-error'>
-										{fmtEurRound.format(differenza)}
-									</CardTitle>
-								</CardHeader>
-								<CardContent>
-									<p className='text-[12px] leading-[16px] tracking-[0.4px] text-muted-foreground'>
-										differenza tra i due scenari alla
-										pensione
 									</p>
-								</CardContent>
+									<div className='text-[28px] leading-[36px] font-bold text-error'>
+										{fmtEurRound.format(differenza)}
+									</div>
+								</div>
+								<p className='text-[12px] leading-[16px] tracking-[0.4px] text-muted-foreground'>
+									differenza tra i due scenari alla
+									pensione
+								</p>
 							</Card>
 							<Card>
-								<CardHeader className='pb-2'>
-									<CardDescription>
+								<div className='pb-2'>
+									<p className='text-[14px] leading-[20px] tracking-[0.25px] text-on-surface-variant'>
 										Costo medio per ogni anno perso
-									</CardDescription>
-									<CardTitle className='text-[28px] leading-[36px] text-error'>
-										{fmtEur.format(costoPerAnno)}
-									</CardTitle>
-								</CardHeader>
-								<CardContent>
-									<p className='text-[12px] leading-[16px] tracking-[0.4px] text-muted-foreground'>
-										di capitale finale bruciato per ogni
-										anno di attesa
 									</p>
-								</CardContent>
+									<div className='text-[28px] leading-[36px] font-bold text-error'>
+										{fmtEur.format(costoPerAnno)}
+									</div>
+								</div>
+								<p className='text-[12px] leading-[16px] tracking-[0.4px] text-muted-foreground'>
+									di capitale finale bruciato per ogni
+									anno di attesa
+								</p>
 							</Card>
 						</div>
 

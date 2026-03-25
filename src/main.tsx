@@ -20,6 +20,7 @@ import { Analytics } from '@vercel/analytics/react';
 import { ErrorBoundary } from './components/ErrorBoundary.tsx';
 import { DisclaimerModal } from './components/DisclaimerModal.tsx';
 import { CookieBanner } from './components/CookieBanner.tsx';
+import { IllustrationBackground } from './components/IllustrationBackground.tsx';
 
 function App() {
 	const [analyticsEnabled, setAnalyticsEnabled] = useState(() => {
@@ -35,6 +36,7 @@ function App() {
 	return (
 		<ConfigProvider theme={illustrationTheme} locale={itIT}>
 			<BrowserRouter>
+				<IllustrationBackground />
 				<ErrorBoundary>
 					<div className='flex min-h-screen flex-col'>
 						<DisclaimerModal />

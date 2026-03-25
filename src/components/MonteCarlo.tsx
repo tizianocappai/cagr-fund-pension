@@ -11,13 +11,7 @@ import {
 	YAxis,
 } from 'recharts';
 import { Alert, Button, Input } from 'antd';
-import {
-	Card,
-	CardContent,
-	CardDescription,
-	CardHeader,
-	CardTitle,
-} from '@/components/ui/card';
+import { Card } from 'antd';
 import { Tooltip } from 'antd';
 import { fmtEurRound } from '@/lib/formatters';
 import { parseEur, parseRate } from '@/lib/parse';
@@ -294,37 +288,35 @@ export function MonteCarlo() {
 					{/* Probability */}
 					<div className='grid grid-cols-1 sm:grid-cols-3 gap-3'>
 						<Card className='sm:col-span-1'>
-							<CardHeader className='pb-2'>
-								<CardDescription>
+							<div className='pb-2'>
+								<p className='text-[14px] leading-[20px] tracking-[0.25px] text-on-surface-variant'>
 									<Tooltip title="Percentuale di simulazioni in cui il capitale finale supera il tuo capitale obiettivo. Sopra il 70% è considerato solido; tra 40–70% accettabile; sotto il 40% richiede attenzione.">
 										<span className='border-b border-dashed border-current cursor-help'>
 											Probabilità di successo
 										</span>
 									</Tooltip>
-								</CardDescription>
-								<CardTitle
+								</p>
+								<div
 									className='text-[57px] leading-[64px] tracking-[-0.25px] font-normal'
 									style={{ color: successColor }}
 								>
 									{sim.successRate.toFixed(1)}%
-								</CardTitle>
-							</CardHeader>
-							<CardContent>
-								<p className='text-[12px] leading-[16px] tracking-[0.4px] text-muted-foreground'>
-									su {N_SIMULAZIONI.toLocaleString('it-IT')}{' '}
-									simulazioni — obiettivo{" "}
-									<span className="font-mono font-medium text-foreground">{fmtEurRound.format(sim.target)}</span>
-								</p>
-							</CardContent>
+								</div>
+							</div>
+							<p className='text-[12px] leading-[16px] tracking-[0.4px] text-muted-foreground'>
+								su {N_SIMULAZIONI.toLocaleString('it-IT')}{' '}
+								simulazioni — obiettivo{" "}
+								<span className="font-mono font-medium text-foreground">{fmtEurRound.format(sim.target)}</span>
+							</p>
 						</Card>
 
 						<Card className='sm:col-span-2'>
-							<CardHeader className='pb-2'>
-								<CardDescription>
+							<div className='pb-2'>
+								<p className='text-[14px] leading-[20px] tracking-[0.25px] text-on-surface-variant'>
 									Parametri simulazione
-								</CardDescription>
-							</CardHeader>
-							<CardContent className='text-[12px] leading-[16px] tracking-[0.4px] text-muted-foreground flex flex-col gap-1'>
+								</p>
+							</div>
+							<div className='text-[12px] leading-[16px] tracking-[0.4px] text-muted-foreground flex flex-col gap-1'>
 								<div className='flex justify-between'>
 									<span>Orizzonte temporale</span>
 									<span className='font-mono font-medium text-foreground'>
@@ -350,7 +342,7 @@ export function MonteCarlo() {
 										{fmtEurRound.format(sim.target)}
 									</span>
 								</div>
-							</CardContent>
+							</div>
 						</Card>
 					</div>
 

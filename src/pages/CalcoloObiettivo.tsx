@@ -12,7 +12,7 @@ import {
   YAxis,
 } from 'recharts'
 import { Alert, Divider, Input } from 'antd'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card } from 'antd'
 import { ChartTooltip } from '@/components/ui/chart-tooltip'
 import { fmtEur, fmtEurRound, tickY } from '@/lib/formatters'
 import { parseEur, parseRate } from '@/lib/parse'
@@ -195,40 +195,32 @@ export default function CalcoloObiettivo() {
             <h2 className="text-[22px] leading-[28px] font-medium mb-4">Risultato</h2>
             <div className="grid grid-cols-2 gap-3 mb-4">
               <Card>
-                <CardHeader className="pb-2">
-                  <CardDescription>Versamento annuale necessario</CardDescription>
-                  <CardTitle className="text-[28px] leading-[36px]">{fmtEur.format(versamento)}</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-[12px] leading-[16px] tracking-[0.4px] text-muted-foreground">da investire ogni anno per {n} anni</p>
-                </CardContent>
+                <div className="pb-2">
+                  <p className="text-[14px] leading-[20px] tracking-[0.25px] text-on-surface-variant">Versamento annuale necessario</p>
+                  <div className="text-[28px] leading-[36px] font-bold">{fmtEur.format(versamento)}</div>
+                </div>
+                <p className="text-[12px] leading-[16px] tracking-[0.4px] text-muted-foreground">da investire ogni anno per {n} anni</p>
               </Card>
               <Card>
-                <CardHeader className="pb-2">
-                  <CardDescription>Totale versato di tasca tua</CardDescription>
-                  <CardTitle className="text-[28px] leading-[36px]">{fmtEurRound.format(versateTot)}</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-[12px] leading-[16px] tracking-[0.4px] text-muted-foreground">{n} × {fmtEurRound.format(Math.round(versamento))}</p>
-                </CardContent>
+                <div className="pb-2">
+                  <p className="text-[14px] leading-[20px] tracking-[0.25px] text-on-surface-variant">Totale versato di tasca tua</p>
+                  <div className="text-[28px] leading-[36px] font-bold">{fmtEurRound.format(versateTot)}</div>
+                </div>
+                <p className="text-[12px] leading-[16px] tracking-[0.4px] text-muted-foreground">{n} × {fmtEurRound.format(Math.round(versamento))}</p>
               </Card>
               <Card>
-                <CardHeader className="pb-2">
-                  <CardDescription>Versamento mensile necessario</CardDescription>
-                  <CardTitle className="text-[28px] leading-[36px]">{fmtEur.format(versamento / 12)}</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-[12px] leading-[16px] tracking-[0.4px] text-muted-foreground">versamento annuale ÷ 12</p>
-                </CardContent>
+                <div className="pb-2">
+                  <p className="text-[14px] leading-[20px] tracking-[0.25px] text-on-surface-variant">Versamento mensile necessario</p>
+                  <div className="text-[28px] leading-[36px] font-bold">{fmtEur.format(versamento / 12)}</div>
+                </div>
+                <p className="text-[12px] leading-[16px] tracking-[0.4px] text-muted-foreground">versamento annuale ÷ 12</p>
               </Card>
               <Card>
-                <CardHeader className="pb-2">
-                  <CardDescription>Interessi generati</CardDescription>
-                  <CardTitle className="text-[28px] leading-[36px]">{fmtEurRound.format(interessi)}</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-[12px] leading-[16px] tracking-[0.4px] text-muted-foreground">obiettivo {fmtEurRound.format(fv)} − versato</p>
-                </CardContent>
+                <div className="pb-2">
+                  <p className="text-[14px] leading-[20px] tracking-[0.25px] text-on-surface-variant">Interessi generati</p>
+                  <div className="text-[28px] leading-[36px] font-bold">{fmtEurRound.format(interessi)}</div>
+                </div>
+                <p className="text-[12px] leading-[16px] tracking-[0.4px] text-muted-foreground">obiettivo {fmtEurRound.format(fv)} − versato</p>
               </Card>
             </div>
 

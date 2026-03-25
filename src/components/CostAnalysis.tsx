@@ -11,7 +11,7 @@ import {
   XAxis,
   YAxis,
 } from 'recharts'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card } from 'antd'
 import { ChartTooltip } from '@/components/ui/chart-tooltip'
 import { Alert } from 'antd'
 import { chartColors } from '@/lib/chartColors'
@@ -132,43 +132,37 @@ export function CostAnalysis({ results, flow }: Props) {
         </h3>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
           <Card>
-            <CardHeader className="pb-2">
-              <CardDescription>Il tuo TER</CardDescription>
-              <CardTitle className="text-[28px] leading-[36px]">{(ter * 100).toFixed(2)}%</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-[12px] leading-[16px] tracking-[0.4px] text-muted-foreground">
-                Costo effettivo annuo
-              </p>
-            </CardContent>
+            <div className="pb-2">
+              <p className="text-[14px] leading-[20px] tracking-[0.25px] text-on-surface-variant">Il tuo TER</p>
+              <div className="text-[28px] leading-[36px] font-bold">{(ter * 100).toFixed(2)}%</div>
+            </div>
+            <p className="text-[12px] leading-[16px] tracking-[0.4px] text-muted-foreground">
+              Costo effettivo annuo
+            </p>
           </Card>
 
           <Card>
-            <CardHeader className="pb-2">
-              <CardDescription>Media mercato</CardDescription>
-              <CardTitle className="text-[28px] leading-[36px]">{(benchmark.ter * 100).toFixed(2)}%</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-[12px] leading-[16px] tracking-[0.4px] text-muted-foreground">
-                {benchmark.label} ({benchmark.range})
-              </p>
-            </CardContent>
+            <div className="pb-2">
+              <p className="text-[14px] leading-[20px] tracking-[0.25px] text-on-surface-variant">Media mercato</p>
+              <div className="text-[28px] leading-[36px] font-bold">{(benchmark.ter * 100).toFixed(2)}%</div>
+            </div>
+            <p className="text-[12px] leading-[16px] tracking-[0.4px] text-muted-foreground">
+              {benchmark.label} ({benchmark.range})
+            </p>
           </Card>
 
           <Card>
-            <CardHeader className="pb-2">
-              <CardDescription>Valutazione</CardDescription>
-              <CardTitle className={`text-[28px] leading-[36px] ${terStatus.color}`}>
+            <div className="pb-2">
+              <p className="text-[14px] leading-[20px] tracking-[0.25px] text-on-surface-variant">Valutazione</p>
+              <div className={`text-[28px] leading-[36px] font-bold ${terStatus.color}`}>
                 {terStatus.label}
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-[12px] leading-[16px] tracking-[0.4px] text-muted-foreground">
-                {terDiff > 0
-                  ? `+${(terDiff * 100).toFixed(2)}pp sopra`
-                  : `${(terDiff * 100).toFixed(2)}pp sotto`}
-              </p>
-            </CardContent>
+              </div>
+            </div>
+            <p className="text-[12px] leading-[16px] tracking-[0.4px] text-muted-foreground">
+              {terDiff > 0
+                ? `+${(terDiff * 100).toFixed(2)}pp sopra`
+                : `${(terDiff * 100).toFixed(2)}pp sotto`}
+            </p>
           </Card>
         </div>
       </div>

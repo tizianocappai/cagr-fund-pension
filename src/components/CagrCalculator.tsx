@@ -5,7 +5,7 @@ import { computeXirr } from '@/lib/xirr'
 import { parseItalianInput } from '@/lib/parse'
 import { fmtEur } from '@/lib/formatters'
 import { Alert, Button, Divider, Input, Tooltip } from 'antd'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card } from 'antd'
 import { ContributionsChart } from '@/components/ContributionsChart'
 import { ForecastChart, type Flow } from '@/components/ForecastChart'
 import { CostAnalysis } from '@/components/CostAnalysis'
@@ -234,19 +234,17 @@ function ResultsPanel({ results, flow, columns }: { results: Results; flow: Flow
         <div className="grid grid-cols-2 gap-3">
           {stats.map(s => (
             <Card key={s.label}>
-              <CardHeader className="pb-2">
-                <CardDescription>{s.label}</CardDescription>
-                <CardTitle className="text-[28px] leading-[36px]">
+              <div className="pb-2">
+                <p className="text-[14px] leading-[20px] tracking-[0.25px] text-on-surface-variant">{s.label}</p>
+                <div className="text-[28px] leading-[36px] font-bold">
                   {s.label === 'Tasso di crescita medio annuo' ? (
                     <Tooltip title="Il tasso di crescita medio annuo misura quanto è cresciuto il tuo investimento ogni anno in media. In pratica ti dice: «se ogni anno il mio fondo fosse cresciuto sempre della stessa percentuale, di quanto sarebbe cresciuto?». Più è alto, meglio ha reso il tuo fondo nel tempo.">
                       <span className="border-b border-dashed border-current cursor-help">{s.value}</span>
                     </Tooltip>
                   ) : s.value}
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-[12px] leading-[16px] tracking-[0.4px] text-muted-foreground">{s.note}</p>
-              </CardContent>
+                </div>
+              </div>
+              <p className="text-[12px] leading-[16px] tracking-[0.4px] text-muted-foreground">{s.note}</p>
             </Card>
           ))}
         </div>
@@ -345,13 +343,11 @@ function ResultsPanel({ results, flow, columns }: { results: Results; flow: Flow
         <div className="grid grid-cols-2 gap-3">
           {bonusStats.map(s => (
             <Card key={s.label}>
-              <CardHeader className="pb-2">
-                <CardDescription>{s.label}</CardDescription>
-                <CardTitle className="text-[28px] leading-[36px]">{s.value}</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-[12px] leading-[16px] tracking-[0.4px] text-muted-foreground">{s.note}</p>
-              </CardContent>
+              <div className="pb-2">
+                <p className="text-[14px] leading-[20px] tracking-[0.25px] text-on-surface-variant">{s.label}</p>
+                <div className="text-[28px] leading-[36px] font-bold">{s.value}</div>
+              </div>
+              <p className="text-[12px] leading-[16px] tracking-[0.4px] text-muted-foreground">{s.note}</p>
             </Card>
           ))}
         </div>

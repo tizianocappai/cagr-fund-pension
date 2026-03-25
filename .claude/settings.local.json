@@ -25,7 +25,10 @@
       "Bash(npm list:*)",
       "Bash(node -e \"require\\(''''yahoo-finance2''''\\)\")",
       "Bash(ls /Users/tiziano.cappai/Personale/Progetti/cagr-fund-pension/src/components/Bmc*)",
-      "Bash(python3:*)"
+      "Bash(python3:*)",
+      "WebFetch(domain:m3.material.io)",
+      "WebSearch",
+      "Bash(git add:*)"
     ]
   }
 }
