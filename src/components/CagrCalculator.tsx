@@ -10,6 +10,7 @@ import { Input } from '@/components/ui/input'
 import { Separator } from '@/components/ui/separator'
 import { ContributionsChart } from '@/components/ContributionsChart'
 import { ForecastChart, type Flow } from '@/components/ForecastChart'
+import { CostAnalysis } from '@/components/CostAnalysis'
 import { Tooltip } from '@/components/ui/tooltip'
 import { type ContributionColumn } from '@/lib/providerConfig'
 
@@ -362,6 +363,16 @@ function ResultsPanel({ results, flow, columns }: { results: Results; flow: Flow
           ))}
         </div>
       </div>
+
+      <Separator />
+
+      {/* Cost analysis section */}
+      <section>
+        <h2 className="border-l-4 border-[#0b0c0c] pl-3 text-2xl font-bold mb-4">
+          Analisi costi
+        </h2>
+        <CostAnalysis results={results} flow={flow} />
+      </section>
     </div>
   )
 }
