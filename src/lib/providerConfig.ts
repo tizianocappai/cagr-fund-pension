@@ -1,3 +1,5 @@
+import { chartColors } from './chartColors'
+
 export type Provider = 'cometa' | 'fonte' | 'amundi'
 
 export interface ContributionColumn {
@@ -7,13 +9,13 @@ export interface ContributionColumn {
 }
 
 const BASE_COLUMNS: ContributionColumn[] = [
-  { key: 'aderente', label: 'Aderente', chartFill: '#3b82f6' },
-  { key: 'azienda',  label: 'Azienda',  chartFill: '#10b981' },
-  { key: 'tfr',      label: 'TFR',      chartFill: '#f59e0b' },
+  { key: 'aderente', label: 'Aderente', chartFill: chartColors.contribution.aderente },
+  { key: 'azienda',  label: 'Azienda',  chartFill: chartColors.contribution.azienda },
+  { key: 'tfr',      label: 'TFR',      chartFill: chartColors.contribution.tfr },
 ]
 
 export const columnsByProvider: Record<Provider, ContributionColumn[]> = {
   cometa: BASE_COLUMNS,
   fonte:  BASE_COLUMNS,
-  amundi: [...BASE_COLUMNS, { key: 'altro', label: 'Altro', chartFill: '#8b5cf6' }],
+  amundi: [...BASE_COLUMNS, { key: 'altro', label: 'Altro', chartFill: chartColors.contribution.altro }],
 }

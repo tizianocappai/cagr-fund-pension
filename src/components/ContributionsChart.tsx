@@ -12,6 +12,7 @@ import {
 import { ChartTooltip } from '@/components/ui/chart-tooltip'
 import { tickY } from '@/lib/formatters'
 import { type ContributionColumn } from '@/lib/providerConfig'
+import { chartColors } from '@/lib/chartColors'
 
 interface YearRow {
   year: number
@@ -42,26 +43,26 @@ export const ContributionsChart = React.memo(function ContributionsChart({ yearR
     <div role="img" aria-label="Grafico: contributi versati per anno">
     <ResponsiveContainer width="100%" height={260}>
       <BarChart data={data} barCategoryGap="30%" barGap={2}>
-        <CartesianGrid vertical={false} stroke="#e5e5e5" />
+        <CartesianGrid vertical={false} stroke={chartColors.grid} />
         <XAxis
           dataKey="year"
-          tick={{ fontSize: 11, fill: '#737373' }}
+          tick={{ fontSize: 11, fill: chartColors.axis }}
           axisLine={false}
           tickLine={false}
         />
         <YAxis
           tickFormatter={tickY}
-          tick={{ fontSize: 11, fill: '#737373' }}
+          tick={{ fontSize: 11, fill: chartColors.axis }}
           axisLine={false}
           tickLine={false}
           width={56}
         />
-        <Tooltip content={<ChartTooltip labelPrefix="" colorProp="fill" />} cursor={{ fill: '#f3f2f1' }} />
-        <Legend iconType="square" iconSize={10} wrapperStyle={{ fontSize: 11, color: '#737373', paddingTop: 8 }} />
+        <Tooltip content={<ChartTooltip labelPrefix="" colorProp="fill" />} cursor={{ fill: 'var(--color-surface-container)' }} />
+        <Legend iconType="square" iconSize={10} wrapperStyle={{ fontSize: 11, color: chartColors.axis, paddingTop: 8 }} />
         {columns.map(col => (
-          <Bar key={col.key} dataKey={col.label} fill={col.chartFill} />
+          <Bar key={col.key} dataKey={col.label} fill={col.chartFill} radius={[4, 4, 0, 0]} />
         ))}
-        <Bar dataKey="Spese" fill="#f43f5e" />
+        <Bar dataKey="Spese" fill={chartColors.contribution.fees} radius={[4, 4, 0, 0]} />
       </BarChart>
     </ResponsiveContainer>
     </div>

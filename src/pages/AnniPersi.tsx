@@ -10,8 +10,7 @@ import {
 	XAxis,
 	YAxis,
 } from 'recharts';
-import { Input } from '@/components/ui/input';
-import { Separator } from '@/components/ui/separator';
+import { Alert, Divider, Input } from 'antd';
 import {
 	Card,
 	CardContent,
@@ -22,6 +21,7 @@ import {
 import { ChartTooltip } from '@/components/ui/chart-tooltip';
 import { fmtEur, fmtEurRound, tickY } from '@/lib/formatters';
 import { parseEur, parseRate } from '@/lib/parse';
+import { chartColors } from '@/lib/chartColors';
 
 // ── Simulation ─────────────────────────────────────────────────────────────────
 
@@ -97,12 +97,12 @@ const GapChart = React.memo(function GapChart({
 						>
 							<stop
 								offset='5%'
-								stopColor='#10b981'
+								stopColor={chartColors.success}
 								stopOpacity={0.15}
 							/>
 							<stop
 								offset='95%'
-								stopColor='#10b981'
+								stopColor={chartColors.success}
 								stopOpacity={0}
 							/>
 						</linearGradient>
@@ -115,28 +115,28 @@ const GapChart = React.memo(function GapChart({
 						>
 							<stop
 								offset='5%'
-								stopColor='#3b82f6'
+								stopColor={chartColors.primary}
 								stopOpacity={0.15}
 							/>
 							<stop
 								offset='95%'
-								stopColor='#3b82f6'
+								stopColor={chartColors.primary}
 								stopOpacity={0}
 							/>
 						</linearGradient>
 					</defs>
-					<CartesianGrid stroke='#e5e5e5' strokeDasharray='4 2' />
+					<CartesianGrid stroke={chartColors.grid} strokeDasharray='4 2' />
 					<XAxis
 						dataKey='anno'
 						tickFormatter={(v) => (v === 0 ? 'Oggi' : `+${v}y`)}
-						tick={{ fontSize: 11, fill: '#737373' }}
+						tick={{ fontSize: 11, fill: chartColors.axis }}
 						axisLine={false}
 						tickLine={false}
 					/>
 					<YAxis
 						domain={[0, yMax]}
 						tickFormatter={tickY}
-						tick={{ fontSize: 11, fill: '#737373' }}
+						tick={{ fontSize: 11, fill: chartColors.axis }}
 						axisLine={false}
 						tickLine={false}
 						width={62}
@@ -147,14 +147,14 @@ const GapChart = React.memo(function GapChart({
 						iconSize={16}
 						wrapperStyle={{
 							fontSize: 11,
-							color: '#737373',
+							color: chartColors.axis,
 							paddingTop: 8,
 						}}
 					/>
 					<Area
 						type='monotone'
 						dataKey='Se avessi iniziato prima'
-						stroke='#10b981'
+						stroke={chartColors.success}
 						strokeWidth={2.5}
 						fill='url(#gradIdeale)'
 						dot={false}
@@ -163,7 +163,7 @@ const GapChart = React.memo(function GapChart({
 					<Area
 						type='monotone'
 						dataKey='Partendo da oggi'
-						stroke='#3b82f6'
+						stroke={chartColors.primary}
 						strokeWidth={2.5}
 						fill='url(#gradReale)'
 						dot={false}
@@ -219,36 +219,41 @@ export default function AnniPersi() {
 	return (
 		<div className='mx-auto max-w-4xl px-6 py-10'>
 			<header className='mb-8'>
-				<h1 className='text-3xl font-bold'>Anni persi</h1>
+				<h1 className='text-[36px] leading-[44px] font-normal'>Anni persi</h1>
 				<p className='mt-2 text-muted-foreground'>
 					Ogni anno senza fondo pensione ha un costo reale. Scopri
 					quanto ti è costato aspettare.
 				</p>
 			</header>
 
-			<div className='border-l-4 border-[#1d70b8] bg-[#e8f1f8] px-4 py-4 text-sm leading-relaxed mb-8'>
-				<p>
-					Il tempo è la risorsa più preziosa negli investimenti.
-					Grazie all'interesse composto, ogni anno in cui il tuo
-					denaro non lavora non è solo un anno in meno di contributi —
-					è un anno in meno di crescita su{' '}
-					<strong>tutto il capitale già accumulato</strong>. Il
-					ritardo si paga per decenni.
-				</p>
-			</div>
+			<Alert
+				type="info"
+				showIcon
+				className="mb-8"
+				description={
+					<p>
+						Il tempo è la risorsa più preziosa negli investimenti.
+						Grazie all'interesse composto, ogni anno in cui il tuo
+						denaro non lavora non è solo un anno in meno di contributi —
+						è un anno in meno di crescita su{' '}
+						<strong>tutto il capitale già accumulato</strong>. Il
+						ritardo si paga per decenni.
+					</p>
+				}
+			/>
 
-			<Separator className='mb-8' />
+			<Divider className='mb-8' />
 
 			{/* Inputs */}
 			<div>
-				<p className='text-base font-bold mb-4 border-l-4 border-[#0b0c0c] pl-3'>
+				<h2 className='text-[22px] leading-[28px] font-medium mb-4'>
 					I tuoi dati
-				</p>
+				</h2>
 				<div className='grid grid-cols-3 gap-4 mb-2'>
 					<div className='flex flex-col gap-1'>
 						<label
 							htmlFor='ral-ap'
-							className='text-xs tracking-widest uppercase text-muted-foreground'
+							className='text-[12px] leading-[16px] tracking-[0.4px] tracking-widest uppercase text-muted-foreground'
 						>
 							RAL (€)
 						</label>
@@ -263,7 +268,7 @@ export default function AnniPersi() {
 					<div className='flex flex-col gap-1'>
 						<label
 							htmlFor='aderente-ap'
-							className='text-xs tracking-widest uppercase text-muted-foreground'
+							className='text-[12px] leading-[16px] tracking-[0.4px] tracking-widest uppercase text-muted-foreground'
 						>
 							Quota aderente (% RAL)
 						</label>
@@ -280,7 +285,7 @@ export default function AnniPersi() {
 					<div className='flex flex-col gap-1'>
 						<label
 							htmlFor='azienda-ap'
-							className='text-xs tracking-widest uppercase text-muted-foreground'
+							className='text-[12px] leading-[16px] tracking-[0.4px] tracking-widest uppercase text-muted-foreground'
 						>
 							Quota azienda (% RAL)
 						</label>
@@ -297,7 +302,7 @@ export default function AnniPersi() {
 					<div className='flex flex-col gap-1'>
 						<label
 							htmlFor='tasso-ap'
-							className='text-xs tracking-widest uppercase text-muted-foreground'
+							className='text-[12px] leading-[16px] tracking-[0.4px] tracking-widest uppercase text-muted-foreground'
 						>
 							Rendimento annuo atteso (%)
 						</label>
@@ -312,7 +317,7 @@ export default function AnniPersi() {
 					<div className='flex flex-col gap-1'>
 						<label
 							htmlFor='anni-pensione'
-							className='text-xs tracking-widest uppercase text-muted-foreground'
+							className='text-[12px] leading-[16px] tracking-[0.4px] tracking-widest uppercase text-muted-foreground'
 						>
 							Anni al pensionamento
 						</label>
@@ -331,7 +336,7 @@ export default function AnniPersi() {
 					<div className='flex flex-col gap-1'>
 						<label
 							htmlFor='anni-persi'
-							className='text-xs tracking-widest uppercase text-muted-foreground'
+							className='text-[12px] leading-[16px] tracking-[0.4px] tracking-widest uppercase text-muted-foreground'
 						>
 							Anni già passati senza fondo
 						</label>
@@ -346,49 +351,56 @@ export default function AnniPersi() {
 						/>
 					</div>
 				</div>
-				<p className='text-xs text-muted-foreground mb-2'>
+				<p className='text-[12px] leading-[16px] tracking-[0.4px] text-muted-foreground mb-2'>
 					Usa il formato italiano per la RAL: punto come separatore
 					migliaia (es. 30.000).
 				</p>
 				{ral > 0 && (
-					<div className='border-l-4 border-[#1d70b8] bg-[#e8f1f8] px-4 py-3 text-xs flex flex-col gap-0.5'>
-						<span>
-							Contributo annuale totale:{' '}
-							<strong>
-								{fmtEurRound.format(Math.round(annualContrib))}
-							</strong>
-						</span>
-						<span className='text-muted-foreground'>
-							TFR: {fmtEurRound.format(Math.round(tfrAnnuo))} ·
-							Aderente:{' '}
-							{fmtEurRound.format(Math.round(aderAnnuo))} ·
-							Azienda: {fmtEurRound.format(Math.round(aziAnnuo))}
-						</span>
-					</div>
+					<Alert
+						type="info"
+						showIcon
+						className="text-[12px] leading-[16px] tracking-[0.4px]"
+						description={
+							<div className="flex flex-col gap-0.5">
+								<span>
+									Contributo annuale totale:{' '}
+									<strong>
+										{fmtEurRound.format(Math.round(annualContrib))}
+									</strong>
+								</span>
+								<span className='text-muted-foreground'>
+									TFR: {fmtEurRound.format(Math.round(tfrAnnuo))} ·
+									Aderente:{' '}
+									{fmtEurRound.format(Math.round(aderAnnuo))} ·
+									Azienda: {fmtEurRound.format(Math.round(aziAnnuo))}
+								</span>
+							</div>
+						}
+					/>
 				)}
 			</div>
 
 			{valid && (
 				<>
-					<Separator className='my-8' />
+					<Divider className='my-8' />
 
 					{/* Results */}
 					<div>
-						<p className='text-base font-bold mb-4 border-l-4 border-[#0b0c0c] pl-3'>
+						<h2 className='text-[22px] leading-[28px] font-medium mb-4'>
 							Il costo del ritardo
-						</p>
+						</h2>
 						<div className='grid grid-cols-2 gap-3 mb-6'>
 							<Card>
 								<CardHeader className='pb-2'>
 									<CardDescription>
 										Se avessi iniziato {anniPersi} anni fa
 									</CardDescription>
-									<CardTitle className='text-2xl'>
+									<CardTitle className='text-[28px] leading-[36px]'>
 										{fmtEurRound.format(capitaleIdeale)}
 									</CardTitle>
 								</CardHeader>
 								<CardContent>
-									<p className='text-xs text-muted-foreground'>
+									<p className='text-[12px] leading-[16px] tracking-[0.4px] text-muted-foreground'>
 										capitale alla pensione — scenario ideale
 									</p>
 								</CardContent>
@@ -398,12 +410,12 @@ export default function AnniPersi() {
 									<CardDescription>
 										Partendo da oggi
 									</CardDescription>
-									<CardTitle className='text-2xl'>
+									<CardTitle className='text-[28px] leading-[36px]'>
 										{fmtEurRound.format(capitaleReale)}
 									</CardTitle>
 								</CardHeader>
 								<CardContent>
-									<p className='text-xs text-muted-foreground'>
+									<p className='text-[12px] leading-[16px] tracking-[0.4px] text-muted-foreground'>
 										capitale alla pensione — scenario reale
 									</p>
 								</CardContent>
@@ -413,12 +425,12 @@ export default function AnniPersi() {
 									<CardDescription>
 										Capitale perso per il ritardo
 									</CardDescription>
-									<CardTitle className='text-2xl text-error'>
+									<CardTitle className='text-[28px] leading-[36px] text-error'>
 										{fmtEurRound.format(differenza)}
 									</CardTitle>
 								</CardHeader>
 								<CardContent>
-									<p className='text-xs text-muted-foreground'>
+									<p className='text-[12px] leading-[16px] tracking-[0.4px] text-muted-foreground'>
 										differenza tra i due scenari alla
 										pensione
 									</p>
@@ -429,12 +441,12 @@ export default function AnniPersi() {
 									<CardDescription>
 										Costo medio per ogni anno perso
 									</CardDescription>
-									<CardTitle className='text-2xl text-error'>
+									<CardTitle className='text-[28px] leading-[36px] text-error'>
 										{fmtEur.format(costoPerAnno)}
 									</CardTitle>
 								</CardHeader>
 								<CardContent>
-									<p className='text-xs text-muted-foreground'>
+									<p className='text-[12px] leading-[16px] tracking-[0.4px] text-muted-foreground'>
 										di capitale finale bruciato per ogni
 										anno di attesa
 									</p>
@@ -442,44 +454,51 @@ export default function AnniPersi() {
 							</Card>
 						</div>
 
-						<div className='border-l-4 border-error bg-[#fde8e6] px-4 py-3 text-sm flex flex-col gap-1'>
-							<p>
-								Aspettare {anniPersi}{' '}
-								{anniPersi === 1 ? 'anno' : 'anni'} ti costerà{' '}
-								<strong>
-									{fmtEurRound.format(differenza)}
-								</strong>{' '}
-								di capitale finale. Questo gap si compone di:
-							</p>
-							<ul className='list-disc pl-5 flex flex-col gap-0.5'>
-								<li>
-									<strong>
-										{fmtEurRound.format(
-											contributiNonVersati,
-										)}
-									</strong>{' '}
-									di contributi mai versati ({anniPersi} ×{' '}
-									{fmtEurRound.format(annualContrib)})
-								</li>
-								<li>
-									<strong>
-										{fmtEurRound.format(interessiPersi)}
-									</strong>{' '}
-									di interessi composti che quei contributi
-									avrebbero generato fino alla pensione
-								</li>
-							</ul>
-						</div>
+						<Alert
+							type="error"
+							showIcon
+							className="text-[14px] leading-[20px] tracking-[0.25px]"
+							description={
+								<div className="flex flex-col gap-1">
+									<p>
+										Aspettare {anniPersi}{' '}
+										{anniPersi === 1 ? 'anno' : 'anni'} ti costerà{' '}
+										<strong>
+											{fmtEurRound.format(differenza)}
+										</strong>{' '}
+										di capitale finale. Questo gap si compone di:
+									</p>
+									<ul className='list-disc pl-5 flex flex-col gap-0.5'>
+										<li>
+											<strong>
+												{fmtEurRound.format(
+													contributiNonVersati,
+												)}
+											</strong>{' '}
+											di contributi mai versati ({anniPersi} ×{' '}
+											{fmtEurRound.format(annualContrib)})
+										</li>
+										<li>
+											<strong>
+												{fmtEurRound.format(interessiPersi)}
+											</strong>{' '}
+											di interessi composti che quei contributi
+											avrebbero generato fino alla pensione
+										</li>
+									</ul>
+								</div>
+							}
+						/>
 					</div>
 
-					<Separator className='my-8' />
+					<Divider className='my-8' />
 
 					{/* Chart */}
 					<div>
-						<p className='text-base font-bold mb-4 border-l-4 border-[#0b0c0c] pl-3'>
+						<h2 className='text-[22px] leading-[28px] font-medium mb-4'>
 							Crescita del capitale da oggi
-						</p>
-						<p className='text-sm text-muted-foreground mb-5'>
+						</h2>
+						<p className='text-[14px] leading-[20px] tracking-[0.25px] text-muted-foreground mb-5'>
 							La linea verde parte già da{' '}
 							{fmtEurRound.format(
 								simulate(annualContrib, r, anniPersi),

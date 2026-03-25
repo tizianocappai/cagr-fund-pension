@@ -10,11 +10,11 @@ import {
   XAxis,
   YAxis,
 } from 'recharts'
-import { Input } from '@/components/ui/input'
-import { Separator } from '@/components/ui/separator'
+import { Alert, Divider, Input } from 'antd'
 import { ChartTooltip } from '@/components/ui/chart-tooltip'
 import { fmtEurRound, tickY } from '@/lib/formatters'
 import { parseEur, parseRate } from '@/lib/parse'
+import { chartColors } from '@/lib/chartColors'
 
 // ── IRPEF 2026 ────────────────────────────────────────────────────────────────
 
@@ -117,20 +117,26 @@ const TfrSection = React.memo(function TfrSection({ ral, years, inflazione, setI
 
   return (
     <div className="flex flex-col gap-5">
-      <div className="border-l-4 border-[#1d70b8] bg-[#e8f1f8] px-4 py-3 text-sm">
-        <p>
-          Tasso di rivalutazione TFR applicato:{' '}
-          <strong>1,5% + 75% × {infDisplay}% = {rateDisplay}%</strong> annuo
-        </p>
-        <p className="mt-1 text-xs text-muted-foreground">
-          Accantonamento annuo lordo:{' '}
-          <strong className="text-foreground">{fmtEurRound.format(Math.round(accrual))}</strong>{' '}
-          (RAL ÷ 13,5)
-        </p>
-      </div>
+      <Alert
+        type="info"
+        showIcon
+        description={
+          <>
+            <p>
+              Tasso di rivalutazione TFR applicato:{' '}
+              <strong>1,5% + 75% × {infDisplay}% = {rateDisplay}%</strong> annuo
+            </p>
+            <p className="mt-1 text-[12px] leading-[16px] tracking-[0.4px] text-muted-foreground">
+              Accantonamento annuo lordo:{' '}
+              <strong className="text-foreground">{fmtEurRound.format(Math.round(accrual))}</strong>{' '}
+              (RAL ÷ 13,5)
+            </p>
+          </>
+        }
+      />
 
       <div className="flex flex-col gap-1">
-        <label htmlFor="tfr-inf" className="text-xs text-muted-foreground">
+        <label htmlFor="tfr-inf" className="text-[12px] leading-[16px] tracking-[0.4px] text-muted-foreground">
           Inflazione ISTAT FOI (%)
         </label>
         <Input
@@ -140,36 +146,36 @@ const TfrSection = React.memo(function TfrSection({ ral, years, inflazione, setI
           placeholder="1,1"
           className="font-mono max-w-xs"
         />
-        <p className="text-xs text-muted-foreground">Valore FOI ISTAT dicembre 2024: ~1,1%</p>
+        <p className="text-[12px] leading-[16px] tracking-[0.4px] text-muted-foreground">Valore FOI ISTAT dicembre 2024: ~1,1%</p>
       </div>
 
       <div role="img" aria-label="Grafico: crescita del TFR nel tempo">
       <ResponsiveContainer width="100%" height={320}>
         <LineChart data={data} margin={{ top: 4, right: 8, bottom: 0, left: 0 }}>
-          <CartesianGrid stroke="#e5e5e5" strokeDasharray="4 2" />
+          <CartesianGrid stroke={chartColors.grid} strokeDasharray="4 2" />
           <XAxis
             dataKey="anno"
             tickFormatter={v => v === 0 ? 'Oggi' : `+${v}y`}
-            tick={{ fontSize: 11, fill: '#737373' }}
+            tick={{ fontSize: 11, fill: chartColors.axis }}
             axisLine={false}
             tickLine={false}
           />
           <YAxis
             domain={[0, yMax]}
             tickFormatter={tickY}
-            tick={{ fontSize: 11, fill: '#737373' }}
+            tick={{ fontSize: 11, fill: chartColors.axis }}
             axisLine={false}
             tickLine={false}
             width={62}
           />
           <Tooltip content={<ChartTooltip />} />
-          <Legend iconType="plainline" iconSize={16} wrapperStyle={{ fontSize: 11, color: '#737373', paddingTop: 8 }} />
-          <Line type="monotone" dataKey="TFR accantonato" stroke="#f59e0b" strokeWidth={2.5} dot={false} activeDot={{ r: 4 }} />
+          <Legend iconType="plainline" iconSize={16} wrapperStyle={{ fontSize: 11, color: chartColors.axis, paddingTop: 8 }} />
+          <Line type="monotone" dataKey="TFR accantonato" stroke={chartColors.warning} strokeWidth={2.5} dot={false} activeDot={{ r: 4 }} />
         </LineChart>
       </ResponsiveContainer>
       </div>
 
-      <div className="flex flex-col gap-0 border border-border text-sm divide-y divide-border">
+      <div className="flex flex-col gap-0 bg-surface-container elevation-1 rounded-md overflow-hidden text-[14px] leading-[20px] tracking-[0.25px] divide-y divide-border">
         <div className="flex justify-between px-4 py-2">
           <span className="text-muted-foreground">TFR lordo dopo {years} anni</span>
           <span className="font-mono font-medium">{fmtEurRound.format(finalValue)}</span>
@@ -180,12 +186,12 @@ const TfrSection = React.memo(function TfrSection({ ral, years, inflazione, setI
           </span>
           <span className="font-mono text-error">−{fmtEurRound.format(tfrTax)}</span>
         </div>
-        <div className="flex justify-between px-4 py-2 bg-muted">
+        <div className="flex justify-between px-4 py-2 bg-surface-container-high">
           <span className="font-semibold">TFR netto stimato</span>
           <span className="font-mono font-semibold">{fmtEurRound.format(tfrNetto)}</span>
         </div>
       </div>
-      <p className="text-xs text-muted-foreground">
+      <p className="text-[12px] leading-[16px] tracking-[0.4px] text-muted-foreground">
         La tassazione separata è stimata applicando gli scaglioni IRPEF 2026 alla quota annua (TFR ÷ anni di servizio).
         Il calcolo è indicativo e non tiene conto di detrazioni o addizionali regionali/comunali.
       </p>
@@ -239,17 +245,23 @@ const FpSection = React.memo(function FpSection({ ral, years, rendimento, setRen
 
   return (
     <div className="flex flex-col gap-5">
-      <div className="border-l-4 border-[#1d70b8] bg-[#e8f1f8] px-4 py-3 text-sm">
-        <p>Versamento annuo totale: <strong>{fmtEurRound.format(Math.round(totalAnnuo))}</strong></p>
-        <p className="mt-1 text-xs text-muted-foreground flex flex-col gap-0.5">
-          <span>TFR: {fmtEurRound.format(Math.round(tfrAnnuo))} (RAL ÷ 13,5)</span>
-          <span>Aderente: {fmtEurRound.format(Math.round(aderAnnuo))} ({(pctAderente * 100).toLocaleString('it-IT', { maximumFractionDigits: 2 })}% RAL)</span>
-          <span>Azienda: {fmtEurRound.format(Math.round(aziAnnuo))} ({(pctAzienda * 100).toLocaleString('it-IT', { maximumFractionDigits: 2 })}% RAL)</span>
-          {extraAnnuo > 0 && <span>Ulteriore contributo: {fmtEurRound.format(Math.round(extraAnnuo))}</span>}
-        </p>
-      </div>
+      <Alert
+        type="info"
+        showIcon
+        description={
+          <>
+            <p>Versamento annuo totale: <strong>{fmtEurRound.format(Math.round(totalAnnuo))}</strong></p>
+            <p className="mt-1 text-[12px] leading-[16px] tracking-[0.4px] text-muted-foreground flex flex-col gap-0.5">
+              <span>TFR: {fmtEurRound.format(Math.round(tfrAnnuo))} (RAL ÷ 13,5)</span>
+              <span>Aderente: {fmtEurRound.format(Math.round(aderAnnuo))} ({(pctAderente * 100).toLocaleString('it-IT', { maximumFractionDigits: 2 })}% RAL)</span>
+              <span>Azienda: {fmtEurRound.format(Math.round(aziAnnuo))} ({(pctAzienda * 100).toLocaleString('it-IT', { maximumFractionDigits: 2 })}% RAL)</span>
+              {extraAnnuo > 0 && <span>Ulteriore contributo: {fmtEurRound.format(Math.round(extraAnnuo))}</span>}
+            </p>
+          </>
+        }
+      />
 
-      <p className="text-xs text-muted-foreground">
+      <p className="text-[12px] leading-[16px] tracking-[0.4px] text-muted-foreground">
         Non sai quale rendimento usare? Consulta i rendimenti ufficiali per fondo e comparto sul sito{' '}
         <a href="https://www.covip.it/per-gli-operatori/fondi-pensione/costi-e-rendimenti-dei-fondi-pensione/elenco-dei-rendimenti" target="_blank" rel="noopener noreferrer">
           COVIP — Elenco dei rendimenti
@@ -258,19 +270,19 @@ const FpSection = React.memo(function FpSection({ ral, years, rendimento, setRen
 
       <div className="grid grid-cols-2 gap-3">
         <div className="flex flex-col gap-1">
-          <label htmlFor="fp-rendimento" className="text-xs text-muted-foreground">Rendimento annuo (%)</label>
+          <label htmlFor="fp-rendimento" className="text-[12px] leading-[16px] tracking-[0.4px] text-muted-foreground">Rendimento annuo (%)</label>
           <Input id="fp-rendimento" value={rendimento} onChange={e => setRendimento(e.target.value)} placeholder="3" className="font-mono" />
         </div>
         <div className="flex flex-col gap-1">
-          <label htmlFor="fp-aderente" className="text-xs text-muted-foreground">Quota aderente (% RAL)</label>
+          <label htmlFor="fp-aderente" className="text-[12px] leading-[16px] tracking-[0.4px] text-muted-foreground">Quota aderente (% RAL)</label>
           <Input id="fp-aderente" value={quotaAderente} onChange={e => setQuotaAderente(e.target.value)} placeholder="1,2" className="font-mono" />
         </div>
         <div className="flex flex-col gap-1">
-          <label htmlFor="fp-azienda" className="text-xs text-muted-foreground">Quota azienda (% RAL)</label>
+          <label htmlFor="fp-azienda" className="text-[12px] leading-[16px] tracking-[0.4px] text-muted-foreground">Quota azienda (% RAL)</label>
           <Input id="fp-azienda" value={quotaAzienda} onChange={e => setQuotaAzienda(e.target.value)} placeholder="2" className="font-mono" />
         </div>
         <div className="flex flex-col gap-1">
-          <label htmlFor="fp-extra" className="text-xs text-muted-foreground">Ulteriore contributo annuale (€)</label>
+          <label htmlFor="fp-extra" className="text-[12px] leading-[16px] tracking-[0.4px] text-muted-foreground">Ulteriore contributo annuale (€)</label>
           <Input id="fp-extra" value={ulterioreContributo} onChange={e => setUlterioreContributo(e.target.value)} placeholder="5.300" className="font-mono" />
         </div>
       </div>
@@ -278,30 +290,30 @@ const FpSection = React.memo(function FpSection({ ral, years, rendimento, setRen
       <div role="img" aria-label="Grafico: crescita del fondo pensione nel tempo">
       <ResponsiveContainer width="100%" height={320}>
         <LineChart data={data} margin={{ top: 4, right: 8, bottom: 0, left: 0 }}>
-          <CartesianGrid stroke="#e5e5e5" strokeDasharray="4 2" />
+          <CartesianGrid stroke={chartColors.grid} strokeDasharray="4 2" />
           <XAxis
             dataKey="anno"
             tickFormatter={v => v === 0 ? 'Oggi' : `+${v}y`}
-            tick={{ fontSize: 11, fill: '#737373' }}
+            tick={{ fontSize: 11, fill: chartColors.axis }}
             axisLine={false}
             tickLine={false}
           />
           <YAxis
             domain={[0, yMax]}
             tickFormatter={tickY}
-            tick={{ fontSize: 11, fill: '#737373' }}
+            tick={{ fontSize: 11, fill: chartColors.axis }}
             axisLine={false}
             tickLine={false}
             width={62}
           />
           <Tooltip content={<ChartTooltip />} />
-          <Legend iconType="plainline" iconSize={16} wrapperStyle={{ fontSize: 11, color: '#737373', paddingTop: 8 }} />
-          <Line type="monotone" dataKey="Fondo pensione" stroke="#10b981" strokeWidth={2.5} dot={false} activeDot={{ r: 4 }} />
+          <Legend iconType="plainline" iconSize={16} wrapperStyle={{ fontSize: 11, color: chartColors.axis, paddingTop: 8 }} />
+          <Line type="monotone" dataKey="Fondo pensione" stroke={chartColors.success} strokeWidth={2.5} dot={false} activeDot={{ r: 4 }} />
         </LineChart>
       </ResponsiveContainer>
       </div>
 
-      <div className="flex flex-col gap-0 border border-border text-sm divide-y divide-border">
+      <div className="flex flex-col gap-0 bg-surface-container elevation-1 rounded-md overflow-hidden text-[14px] leading-[20px] tracking-[0.25px] divide-y divide-border">
         <div className="flex justify-between px-4 py-2">
           <span className="text-muted-foreground">Capitale lordo dopo {years} anni (rendimento {rDisplay}%)</span>
           <span className="font-mono font-medium">{fmtEurRound.format(finalValue)}</span>
@@ -313,12 +325,12 @@ const FpSection = React.memo(function FpSection({ ral, years, rendimento, setRen
           </span>
           <span className="font-mono text-error">−{fmtEurRound.format(fpTax)}</span>
         </div>
-        <div className="flex justify-between px-4 py-2 bg-muted">
+        <div className="flex justify-between px-4 py-2 bg-surface-container-high">
           <span className="font-semibold">Capitale netto stimato</span>
           <span className="font-mono font-semibold">{fmtEurRound.format(fpNetto)}</span>
         </div>
       </div>
-      <p className="text-xs text-muted-foreground">
+      <p className="text-[12px] leading-[16px] tracking-[0.4px] text-muted-foreground">
         Tassazione agevolata: 15% fino a 15 anni di adesione, poi −0,3% per ogni anno aggiuntivo, minimo 9% oltre i 35 anni.
         Il calcolo è indicativo e si applica alla prestazione in capitale a scadenza.
       </p>
@@ -388,54 +400,59 @@ export default function FpVsTfr() {
     <div className="mx-auto max-w-4xl px-6 py-10">
 
       <header className="mb-8">
-        <h1 className="text-3xl font-bold">FP vs TFR</h1>
+        <h1 className="text-[36px] leading-[44px] font-normal">FP vs TFR</h1>
         <p className="mt-2 text-muted-foreground">
           Confronta cosa succede al tuo TFR se rimane in azienda oppure viene versato nel fondo pensione.
         </p>
       </header>
 
-      <div className="border-l-4 border-[#1d70b8] bg-[#e8f1f8] px-4 py-4 text-sm leading-relaxed mb-8">
-        <p>
-          In questa pagina simuleremo due scenari. Nel primo, <strong>Gennaro decide di non avere a
-          che fare con lo sbattimento di aprire un fondo pensione</strong> e decide di tenere tutto
-          in azienda — il suo TFR viene accantonato e rivalutato ogni anno secondo la formula di
-          legge. Nel secondo scenario invece <strong>Gennaro decide di aderire al fondo pensione</strong>,
-          aggiungendo anche una quota volontaria: il TFR, la quota aderente e la quota azienda
-          vengono investiti insieme e crescono al rendimento annuo del fondo.
-        </p>
-      </div>
+      <Alert
+        type="info"
+        showIcon
+        className="mb-8"
+        description={
+          <p>
+            In questa pagina simuleremo due scenari. Nel primo, <strong>Gennaro decide di non avere a
+            che fare con lo sbattimento di aprire un fondo pensione</strong> e decide di tenere tutto
+            in azienda — il suo TFR viene accantonato e rivalutato ogni anno secondo la formula di
+            legge. Nel secondo scenario invece <strong>Gennaro decide di aderire al fondo pensione</strong>,
+            aggiungendo anche una quota volontaria: il TFR, la quota aderente e la quota azienda
+            vengono investiti insieme e crescono al rendimento annuo del fondo.
+          </p>
+        }
+      />
 
-      <Separator className="mb-8" />
+      <Divider className="mb-8" />
 
       <div className="grid grid-cols-2 gap-4 mb-2 max-w-sm">
         <div className="flex flex-col gap-1">
-          <label htmlFor="ral" className="text-xs tracking-widest uppercase text-muted-foreground">
+          <label htmlFor="ral" className="text-[12px] leading-[16px] tracking-[0.4px] tracking-widest uppercase text-muted-foreground">
             RAL di Gennaro (€)
           </label>
           <Input id="ral" value={ralInput} onChange={e => setRalInput(e.target.value)} placeholder="30.000" className="font-mono" />
         </div>
         <div className="flex flex-col gap-1">
-          <label htmlFor="orizzonte" className="text-xs tracking-widest uppercase text-muted-foreground">
+          <label htmlFor="orizzonte" className="text-[12px] leading-[16px] tracking-[0.4px] tracking-widest uppercase text-muted-foreground">
             Anni alla pensione
           </label>
           <Input id="orizzonte" type="number" min={1} max={50} value={anniInput} onChange={e => setAnniInput(e.target.value)} className="font-mono" />
         </div>
       </div>
-      <p className="text-xs text-muted-foreground mb-4">
+      <p className="text-[12px] leading-[16px] tracking-[0.4px] text-muted-foreground mb-4">
         Usa il formato italiano per la RAL: punto come separatore migliaia.
       </p>
 
       {ral > 0 && (
-        <div className="border-l-4 border-[#0b0c0c] bg-muted px-4 py-3 text-sm mb-8">
+        <div className="rounded-md bg-surface-container px-4 py-3 text-[14px] leading-[20px] tracking-[0.25px] mb-8">
           <p className="font-semibold mb-2">IRPEF 2026 sulla tua RAL</p>
-          <div className="flex flex-col gap-1 text-xs">
+          <div className="flex flex-col gap-1 text-[12px] leading-[16px] tracking-[0.4px]">
             {irpef.brackets.map(b => b.base > 0 && (
               <div key={b.label} className="flex justify-between">
                 <span className="text-muted-foreground">{b.label} × {(b.rate * 100).toFixed(0)}%</span>
                 <span className="font-mono">{fmtEurRound.format(b.tax)}</span>
               </div>
             ))}
-            <div className="flex justify-between border-t border-border pt-1 mt-1 font-semibold">
+            <div className="flex justify-between border-t border-outline pt-1 mt-1 font-semibold">
               <span>Totale IRPEF</span>
               <span className="font-mono text-error">{fmtEurRound.format(irpef.tax)}</span>
             </div>
@@ -452,15 +469,15 @@ export default function FpVsTfr() {
               <span className="font-mono">{fmtEurRound.format(ral - irpef.tax)}</span>
             </div>
           </div>
-          <p className="text-xs text-muted-foreground mt-2">Stima indicativa — non include detrazioni, addizionali regionali/comunali o altri contributi.</p>
+          <p className="text-[12px] leading-[16px] tracking-[0.4px] text-muted-foreground mt-2">Stima indicativa — non include detrazioni, addizionali regionali/comunali o altri contributi.</p>
         </div>
       )}
 
-      <Separator className="mb-8" />
+      <Divider className="mb-8" />
 
       <div>
-        <p className="text-base font-bold mb-1 border-l-4 border-[#0b0c0c] pl-3">TFR in azienda</p>
-        <p className="text-sm text-muted-foreground mb-5">
+        <h2 className="text-[22px] leading-[28px] font-medium mb-1">TFR in azienda</h2>
+        <p className="text-[14px] leading-[20px] tracking-[0.25px] text-muted-foreground mb-5">
           Simulazione della crescita del TFR se resta depositato in azienda. La rivalutazione
           annua è fissata per legge a{' '}
           <strong className="text-foreground">1,5% + 75% dell'inflazione ISTAT FOI</strong>.
@@ -468,11 +485,11 @@ export default function FpVsTfr() {
         <TfrSection ral={ral} years={years} inflazione={inflazione} setInflazione={setInflazione} />
       </div>
 
-      <Separator className="my-8" />
+      <Divider className="my-8" />
 
       <div>
-        <p className="text-base font-bold mb-1 border-l-4 border-[#0b0c0c] pl-3">Fondo pensione</p>
-        <p className="text-sm text-muted-foreground mb-5">
+        <h2 className="text-[22px] leading-[28px] font-medium mb-1">Fondo pensione</h2>
+        <p className="text-[14px] leading-[20px] tracking-[0.25px] text-muted-foreground mb-5">
           Simulazione della crescita del capitale versato nel fondo pensione, applicando
           il rendimento annuo atteso all'intera somma (TFR + quota aderente + quota azienda).
         </p>
@@ -490,14 +507,14 @@ export default function FpVsTfr() {
         />
       </div>
 
-      <Separator className="my-8" />
+      <Divider className="my-8" />
 
       <div>
-        <p className="text-base font-bold mb-4 border-l-4 border-[#0b0c0c] pl-3">Riepilogo</p>
-        <div className="border border-border overflow-x-auto">
-          <table className="w-full text-sm">
+        <h2 className="text-[22px] leading-[28px] font-medium mb-4">Riepilogo</h2>
+        <div className="bg-surface-container elevation-1 rounded-md overflow-hidden">
+          <table className="w-full text-[14px] leading-[20px] tracking-[0.25px]">
             <thead>
-              <tr className="border-b border-border bg-muted">
+              <tr className="border-b border-outline bg-surface-container-high">
                 <th className="px-3 py-2 text-left font-medium text-muted-foreground">Scenario</th>
                 <th className="px-3 py-2 text-right font-medium text-muted-foreground">Versato totale</th>
                 <th className="px-3 py-2 text-right font-medium text-muted-foreground">Capitale lordo</th>
@@ -522,12 +539,12 @@ export default function FpVsTfr() {
               </tr>
             </tbody>
             <tfoot>
-              <tr className="border-t border-border bg-muted">
+              <tr className="border-t border-outline bg-muted">
                 <td className="px-3 py-2 font-semibold" colSpan={3}>Vantaggio fondo pensione (netto)</td>
-                <td className="px-3 py-2 text-right font-mono font-semibold" style={{ color: diff >= 0 ? '#00703c' : '#d4351c' }}>
+                <td className="px-3 py-2 text-right font-mono font-semibold" style={{ color: diff >= 0 ? chartColors.success : chartColors.error }}>
                   {diff >= 0 ? '+' : ''}{fmtEurRound.format(diff)}
                 </td>
-                <td className="px-3 py-2 text-right font-mono font-semibold" style={{ color: diff >= 0 ? '#00703c' : '#d4351c' }}>
+                <td className="px-3 py-2 text-right font-mono font-semibold" style={{ color: diff >= 0 ? chartColors.success : chartColors.error }}>
                   {diffPct !== null
                     ? `${diff >= 0 ? '+' : ''}${diffPct.toLocaleString('it-IT', { minimumFractionDigits: 1, maximumFractionDigits: 1 })}%`
                     : 'N/A'}

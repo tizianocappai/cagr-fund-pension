@@ -21,19 +21,19 @@ export function Nav() {
   return (
     <header className="print:hidden">
       {/* Service name bar */}
-      <div className="bg-[#0b0c0c] text-white">
+      <div className="bg-primary text-on-primary">
         <div className="mx-auto max-w-4xl px-6 py-4 flex items-center justify-between gap-4">
           <div className="min-w-0">
             <div className="flex items-center gap-2">
               <img src="/gennaro-logo.png" alt="" aria-hidden="true" className="h-8 w-8 shrink-0 object-contain" />
-              <p className="text-xl font-bold leading-tight">Gennaro</p>
+              <p className="text-[24px] leading-[32px] font-normal leading-tight">Gennaro</p>
             </div>
-            <p className="text-sm text-border mt-0.5">Il detective del tuo fondo pensione</p>
+            <p className="text-[14px] leading-[20px] tracking-[0.25px] opacity-80 mt-0.5">Il detective del tuo fondo pensione</p>
           </div>
 
           {/* Hamburger — mobile only */}
           <button
-            className="md:hidden shrink-0 p-2 -mr-2 focus-visible:outline-3 focus-visible:outline-[#ffdd00]"
+            className="md:hidden shrink-0 p-2 -mr-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-on-primary"
             aria-label={open ? 'Chiudi menu' : 'Apri menu'}
             aria-expanded={open}
             aria-controls="mobile-nav"
@@ -58,8 +58,8 @@ export function Nav() {
         </div>
       </div>
 
-      {/* Desktop tab navigation — hidden below md */}
-      <nav className="hidden md:block border-b-2 border-[#0b0c0c] bg-white">
+      {/* Desktop tab navigation — M3 Primary Tabs pattern */}
+      <nav className="hidden md:block bg-surface elevation-2">
         <div className="mx-auto flex max-w-4xl px-6 overflow-x-auto overflow-y-hidden">
           {links.map(({ to, label }) => (
             <NavLink
@@ -68,10 +68,11 @@ export function Nav() {
               end={to === '/'}
               className={({ isActive }) =>
                 cn(
-                  'px-4 py-3 text-sm font-bold transition-colors no-underline border-b-4 -mb-0.5 whitespace-nowrap shrink-0',
+                  'relative h-12 px-4 flex items-center text-[14px] leading-[20px] tracking-[0.1px] font-medium transition-colors no-underline whitespace-nowrap shrink-0',
+                  'after:absolute after:bottom-0 after:left-0 after:right-0 after:h-[3px] after:transition-colors after:duration-200',
                   isActive
-                    ? 'border-[#0b0c0c] text-[#0b0c0c]'
-                    : 'border-transparent text-muted-foreground hover:text-[#0b0c0c] hover:border-border'
+                    ? 'text-primary after:bg-primary'
+                    : 'text-on-surface-variant hover:text-on-surface hover:bg-on-surface/8 after:bg-transparent'
                 )
               }
             >
@@ -81,11 +82,11 @@ export function Nav() {
         </div>
       </nav>
 
-      {/* Mobile dropdown — shown when open, below md breakpoint */}
+      {/* Mobile dropdown — M3 Navigation Drawer pattern */}
       {open && (
         <nav
           id="mobile-nav"
-          className="md:hidden bg-white border-b-2 border-[#0b0c0c]"
+          className="md:hidden bg-surface elevation-2"
         >
           {links.map(({ to, label }) => (
             <NavLink
@@ -94,10 +95,10 @@ export function Nav() {
               end={to === '/'}
               className={({ isActive }) =>
                 cn(
-                  'flex px-6 py-4 text-sm font-bold no-underline border-l-4 transition-colors',
+                  'flex items-center h-14 px-6 text-[14px] leading-[20px] tracking-[0.1px] font-medium no-underline transition-colors',
                   isActive
-                    ? 'border-[#0b0c0c] text-[#0b0c0c] bg-muted'
-                    : 'border-transparent text-muted-foreground hover:text-[#0b0c0c] hover:bg-muted'
+                    ? 'text-on-secondary-container bg-secondary-container'
+                    : 'text-on-surface-variant hover:text-on-surface hover:bg-on-surface/8'
                 )
               }
             >
@@ -106,9 +107,6 @@ export function Nav() {
           ))}
         </nav>
       )}
-
-      {/* Border shown on mobile when menu is closed */}
-      {!open && <div className="md:hidden border-b-2 border-[#0b0c0c]" />}
     </header>
   )
 }

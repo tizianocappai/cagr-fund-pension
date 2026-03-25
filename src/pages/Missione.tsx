@@ -1,5 +1,5 @@
 import { Link } from 'react-router';
-import { Separator } from '@/components/ui/separator';
+import { Alert, Divider } from 'antd';
 import { useMeta } from '@/lib/useMeta';
 
 const features = [
@@ -49,43 +49,49 @@ export default function Missione() {
 	return (
 		<div className='mx-auto max-w-4xl px-6 py-10'>
 			<header className='mb-8'>
-				<h1 className='text-3xl font-bold'>Missione</h1>
+				<h1 className='text-[36px] leading-[44px] font-normal'>Missione</h1>
 				<p className='mt-2 text-muted-foreground'>
 					Tutto quello che trovi su questo sito, spiegato in due
 					righe.
 				</p>
 			</header>
 
-			<div className='border-l-4 border-[#1d70b8] bg-[#e8f1f8] px-4 py-4 text-sm leading-relaxed mb-8'>
-				<p>
-					La maggior parte dei lavoratori italiani ha un fondo
-					pensione, ma pochissimi sanno quanto rende davvero. Gennaro
-					esiste per colmare quel vuoto: strumenti semplici, numeri
-					veri, nessuna consulenza finanziaria — solo chiarezza.
-				</p>
-			</div>
+			<Alert
+				type="info"
+				showIcon
+				className="mb-8"
+				description={
+					<p>
+						La maggior parte dei lavoratori italiani ha un fondo
+						pensione, ma pochissimi sanno quanto rende davvero. Gennaro
+						esiste per colmare quel vuoto: strumenti semplici, numeri
+						veri, nessuna consulenza finanziaria — solo chiarezza.
+					</p>
+				}
+			/>
 
-			<Separator className='mb-8' />
+			<Divider className='mb-8' />
 
-			<div className='flex flex-col gap-px border border-border'>
+			<div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
 				{features.map((f) => (
-					<div
+					<Link
 						key={f.to}
-						className='px-5 py-5 bg-card flex flex-col gap-2 border-b border-border last:border-b-0'
+						to={f.to}
+						className='flex flex-col gap-3 px-6 py-5 bg-surface-container elevation-1 rounded-md hover:elevation-2 transition-shadow duration-200 no-underline'
 					>
-						<Link to={f.to} className='font-bold text-base'>
+						<h2 className='font-bold text-[16px] leading-[24px] tracking-[0.5px] text-primary'>
 							{f.label}
-						</Link>
-						<p className='text-sm text-muted-foreground leading-relaxed'>
+						</h2>
+						<p className='text-[14px] leading-[20px] tracking-[0.25px] text-on-surface-variant'>
 							{f.description}
 						</p>
-					</div>
+					</Link>
 				))}
 			</div>
 
-			<Separator className='mt-8 mb-6' />
+			<Divider className='mt-8 mb-6' />
 
-			<p className='text-xs text-muted-foreground leading-relaxed'>
+			<p className='text-[12px] leading-[16px] tracking-[0.4px] text-muted-foreground leading-relaxed'>
 				I risultati hanno scopo puramente indicativo. Per decisioni
 				finanziarie personali consulta sempre un consulente finanziario
 				indipendente.

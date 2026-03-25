@@ -1,6 +1,9 @@
 import { StrictMode, useState } from 'react';
 import { createRoot } from 'react-dom/client';
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router';
+import { ConfigProvider } from 'antd';
+import itIT from 'antd/locale/it_IT';
+import { illustrationTheme } from './lib/antdTheme';
 import './index.css';
 import { Footer } from './components/Footer.tsx';
 import { Nav } from './components/Nav.tsx';
@@ -30,52 +33,54 @@ function App() {
 	});
 
 	return (
-		<BrowserRouter>
-			<ErrorBoundary>
-				<div className='flex min-h-screen flex-col'>
-					<DisclaimerModal />
-					<Nav />
-					<main className='flex-1'>
-						<Routes>
-							<Route path='/' element={<Missione />} />
-							<Route
-								path='/rendimento-fondo'
-								element={<RendimentoFondo />}
-							/>
-							<Route
-								path='/cometa-guide'
-								element={<CometaGuide />}
-							/>
-							<Route path='/fp-vs-tfr' element={<FpVsTfr />} />
-							<Route path='/anni-persi' element={<AnniPersi />} />
-							<Route
-								path='/obiettivo'
-								element={<CalcoloObiettivo />}
-							/>
-							<Route
-								path='/rischio-rendimento'
-								element={<RischioRendimento />}
-							/>
-							<Route
-								path='/alternative'
-								element={<Alternative />}
-							/>
-							<Route
-								path='/privacy'
-								element={<PrivacyPolicy />}
-							/>
-							<Route
-								path='*'
-								element={<Navigate to='/' replace />}
-							/>
-						</Routes>
-					</main>
-					<Footer />
-				</div>
-				<CookieBanner onConsent={setAnalyticsEnabled} />
-				{analyticsEnabled && <Analytics />}
-			</ErrorBoundary>
-		</BrowserRouter>
+		<ConfigProvider theme={illustrationTheme} locale={itIT}>
+			<BrowserRouter>
+				<ErrorBoundary>
+					<div className='flex min-h-screen flex-col'>
+						<DisclaimerModal />
+						<Nav />
+						<main className='flex-1'>
+							<Routes>
+								<Route path='/' element={<Missione />} />
+								<Route
+									path='/rendimento-fondo'
+									element={<RendimentoFondo />}
+								/>
+								<Route
+									path='/cometa-guide'
+									element={<CometaGuide />}
+								/>
+								<Route path='/fp-vs-tfr' element={<FpVsTfr />} />
+								<Route path='/anni-persi' element={<AnniPersi />} />
+								<Route
+									path='/obiettivo'
+									element={<CalcoloObiettivo />}
+								/>
+								<Route
+									path='/rischio-rendimento'
+									element={<RischioRendimento />}
+								/>
+								<Route
+									path='/alternative'
+									element={<Alternative />}
+								/>
+								<Route
+									path='/privacy'
+									element={<PrivacyPolicy />}
+								/>
+								<Route
+									path='*'
+									element={<Navigate to='/' replace />}
+								/>
+							</Routes>
+						</main>
+						<Footer />
+					</div>
+					<CookieBanner onConsent={setAnalyticsEnabled} />
+					{analyticsEnabled && <Analytics />}
+				</ErrorBoundary>
+			</BrowserRouter>
+		</ConfigProvider>
 	);
 }
 

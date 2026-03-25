@@ -4,14 +4,11 @@ import { readExcel } from '@/lib/readExcel'
 import { computeXirr } from '@/lib/xirr'
 import { parseItalianInput } from '@/lib/parse'
 import { fmtEur } from '@/lib/formatters'
-import { Button } from '@/components/ui/button'
+import { Alert, Button, Divider, Input, Tooltip } from 'antd'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Input } from '@/components/ui/input'
-import { Separator } from '@/components/ui/separator'
 import { ContributionsChart } from '@/components/ContributionsChart'
 import { ForecastChart, type Flow } from '@/components/ForecastChart'
 import { CostAnalysis } from '@/components/CostAnalysis'
-import { Tooltip } from '@/components/ui/tooltip'
 import { type ContributionColumn } from '@/lib/providerConfig'
 
 interface Props {
@@ -150,10 +147,10 @@ export function CagrCalculator({ file, flow, columns, parser = parseXls }: Props
 
   return (
     <div className="mt-8 flex flex-col gap-6">
-      <Separator />
+      <Divider />
 
       <div className="flex flex-col gap-2 print:hidden">
-        <label htmlFor="portfolio-value" className="text-xs tracking-widest uppercase text-muted-foreground">
+        <label htmlFor="portfolio-value" className="text-[12px] leading-[16px] tracking-[0.4px] tracking-widest uppercase text-muted-foreground">
           Valore attuale del portafoglio (€)
         </label>
         <div className="flex gap-3">
@@ -165,20 +162,16 @@ export function CagrCalculator({ file, flow, columns, parser = parseXls }: Props
             className="max-w-xs font-mono"
             aria-describedby="portfolio-value-hint"
           />
-          <Button onClick={calculate} disabled={loading}>
+          <Button type="primary" onClick={calculate} disabled={loading}>
             {loading ? 'Calcolo…' : 'Calcola Rendimento'}
           </Button>
         </div>
-        <p id="portfolio-value-hint" className="text-xs text-muted-foreground">
+        <p id="portfolio-value-hint" className="text-[12px] leading-[16px] tracking-[0.4px] text-muted-foreground">
           Usa il formato italiano: punto come separatore migliaia, virgola come decimale.
         </p>
       </div>
 
-      {error && (
-        <div className="border-l-4 border-error bg-[#fde8e6] px-4 py-3 text-sm font-bold text-error">
-          {error}
-        </div>
-      )}
+      {error && <Alert type="error" showIcon description={error} />}
 
       {results && <ResultsPanel results={results} flow={flow} columns={columns} />}
     </div>
@@ -217,57 +210,57 @@ function ResultsPanel({ results, flow, columns }: { results: Results; flow: Flow
 
   return (
     <div className="flex flex-col gap-6">
-      <Separator />
+      <Divider />
 
       {/* Print header — visible only when printing */}
-      <div className="hidden print:flex print:items-center print:gap-3 print:pb-4 print:border-b-2 print:border-[#0b0c0c]">
+      <div className="hidden print:flex print:items-center print:gap-3 print:pb-4 print:border-b-2 print:border-outline">
         <img src="/gennaro-logo.png" alt="" aria-hidden="true" className="h-8 w-8 object-contain" />
         <div>
-          <p className="text-lg font-bold leading-tight">Gennaro — Rendimento Fondo Pensione</p>
-          <p className="text-sm text-muted-foreground">Report generato il {exportDate}</p>
+          <p className="text-[22px] leading-[28px] font-medium leading-tight">Gennaro — Rendimento Fondo Pensione</p>
+          <p className="text-[14px] leading-[20px] tracking-[0.25px] text-muted-foreground">Report generato il {exportDate}</p>
         </div>
       </div>
 
       {/* Export button — hidden when printing */}
       <div className="flex justify-end print:hidden">
-        <Button variant="secondary" onClick={() => window.print()}>
+        <Button type="default" onClick={() => window.print()}>
           Esporta PDF
         </Button>
       </div>
 
       {/* Main results */}
       <div>
-        <p className="text-base font-bold mb-4 border-l-4 border-[#0b0c0c] pl-3">Risultati</p>
+        <h2 className="text-[22px] leading-[28px] font-medium mb-4">Risultati</h2>
         <div className="grid grid-cols-2 gap-3">
           {stats.map(s => (
             <Card key={s.label}>
               <CardHeader className="pb-2">
                 <CardDescription>{s.label}</CardDescription>
-                <CardTitle className="text-2xl">
+                <CardTitle className="text-[28px] leading-[36px]">
                   {s.label === 'Tasso di crescita medio annuo' ? (
-                    <Tooltip content="Il tasso di crescita medio annuo misura quanto è cresciuto il tuo investimento ogni anno in media. In pratica ti dice: «se ogni anno il mio fondo fosse cresciuto sempre della stessa percentuale, di quanto sarebbe cresciuto?». Più è alto, meglio ha reso il tuo fondo nel tempo.">
+                    <Tooltip title="Il tasso di crescita medio annuo misura quanto è cresciuto il tuo investimento ogni anno in media. In pratica ti dice: «se ogni anno il mio fondo fosse cresciuto sempre della stessa percentuale, di quanto sarebbe cresciuto?». Più è alto, meglio ha reso il tuo fondo nel tempo.">
                       <span className="border-b border-dashed border-current cursor-help">{s.value}</span>
                     </Tooltip>
                   ) : s.value}
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-xs text-muted-foreground">{s.note}</p>
+                <p className="text-[12px] leading-[16px] tracking-[0.4px] text-muted-foreground">{s.note}</p>
               </CardContent>
             </Card>
           ))}
         </div>
       </div>
 
-      <Separator />
+      <Divider />
 
       {/* Year breakdown table */}
       <div>
-        <p className="text-base font-bold mb-4 border-l-4 border-[#0b0c0c] pl-3">Riepilogo per anno</p>
-        <div className="border border-border overflow-x-auto">
-          <table className="w-full text-sm">
+        <h2 className="text-[22px] leading-[28px] font-medium mb-4">Riepilogo per anno</h2>
+        <div className="border border-outline overflow-x-auto">
+          <table className="w-full text-[14px] leading-[20px] tracking-[0.25px]">
             <thead>
-              <tr className="border-b border-border bg-muted">
+              <tr className="border-b border-outline bg-muted">
                 <th className="px-3 py-2 text-left font-medium text-muted-foreground">Anno</th>
                 <th className="px-3 py-2 text-right font-medium text-muted-foreground">Op.</th>
                 {columns.map(col => (
@@ -295,7 +288,7 @@ function ResultsPanel({ results, flow, columns }: { results: Results; flow: Flow
               ))}
             </tbody>
             <tfoot>
-              <tr className="border-t border-border bg-muted">
+              <tr className="border-t border-outline bg-muted">
                 <td className="px-3 py-2 font-semibold">Totale</td>
                 <td className="px-3 py-2 text-right font-mono font-semibold">{results.transactionCount}</td>
                 {columns.map(col => (
@@ -311,19 +304,19 @@ function ResultsPanel({ results, flow, columns }: { results: Results; flow: Flow
         </div>
       </div>
 
-      <Separator />
+      <Divider />
 
       {/* Contributions chart */}
       <div>
-        <p className="text-base font-bold mb-4 border-l-4 border-[#0b0c0c] pl-3">Contributi per anno</p>
+        <h2 className="text-[22px] leading-[28px] font-medium mb-4">Contributi per anno</h2>
         <ContributionsChart yearRows={results.yearRows} columns={columns} />
       </div>
 
-      <Separator />
+      <Divider />
 
       {/* Forecast chart */}
       <div>
-        <p className="text-base font-bold mb-4 border-l-4 border-[#0b0c0c] pl-3">Proiezione futura</p>
+        <h2 className="text-[22px] leading-[28px] font-medium mb-4">Proiezione futura</h2>
         {(() => {
           const prevYear = new Date().getFullYear() - 1
           const row = results.yearRows.find(r => r.year === prevYear) ?? results.yearRows[results.yearRows.length - 1]
@@ -339,12 +332,12 @@ function ResultsPanel({ results, flow, columns }: { results: Results; flow: Flow
         })()}
       </div>
 
-      <Separator />
+      <Divider />
 
       {/* Bonus section */}
       <div>
-        <p className="text-base font-bold mb-1 border-l-4 border-[#0b0c0c] pl-3">Bonus</p>
-        <p className="text-sm text-muted-foreground mb-4">
+        <h2 className="text-[22px] leading-[28px] font-medium mb-1">Bonus</h2>
+        <p className="text-[14px] leading-[20px] tracking-[0.25px] text-muted-foreground mb-4">
           Questo tasso di crescita medio annuo esclude il contributo del datore di lavoro dal costo base, perché quel denaro non è mai uscito dal tuo portafoglio:
           nel momento in cui versi la tua quota, l'azienda aggiunge immediatamente la propria — <strong className="text-foreground">soldi gratis</strong> che entrano in automatico.
           Il risultato mostra quanto rende il capitale che hai <em>davvero</em> speso di tasca tua.
@@ -354,21 +347,21 @@ function ResultsPanel({ results, flow, columns }: { results: Results; flow: Flow
             <Card key={s.label}>
               <CardHeader className="pb-2">
                 <CardDescription>{s.label}</CardDescription>
-                <CardTitle className="text-2xl">{s.value}</CardTitle>
+                <CardTitle className="text-[28px] leading-[36px]">{s.value}</CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-xs text-muted-foreground">{s.note}</p>
+                <p className="text-[12px] leading-[16px] tracking-[0.4px] text-muted-foreground">{s.note}</p>
               </CardContent>
             </Card>
           ))}
         </div>
       </div>
 
-      <Separator />
+      <Divider />
 
       {/* Cost analysis section */}
       <section>
-        <h2 className="border-l-4 border-[#0b0c0c] pl-3 text-2xl font-bold mb-4">
+        <h2 className="text-[24px] leading-[32px] font-normal mb-4">
           Analisi costi
         </h2>
         <CostAnalysis results={results} flow={flow} />

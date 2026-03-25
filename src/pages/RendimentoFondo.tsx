@@ -2,13 +2,16 @@ import * as React from 'react'
 import { Link } from 'react-router'
 import { useMeta } from '@/lib/useMeta'
 import { CagrCalculator } from '@/components/CagrCalculator'
-import { FileUploader } from '@/components/ui/file-uploader'
+import { Alert, Upload } from 'antd'
+import { InboxOutlined } from '@ant-design/icons'
 import { clearFile, loadFile, saveFile } from '@/lib/fileStorage'
 import { parseFonte } from '@/lib/parseFonte'
 import { parseAmundi } from '@/lib/parseAmundi'
 import type { Transaction } from '@/lib/parseXls'
 import type { Flow } from '@/components/ForecastChart'
 import { type Provider, columnsByProvider } from '@/lib/providerConfig'
+
+const { Dragger } = Upload
 
 const providers: { value: Provider; label: string }[] = [
   { value: 'cometa', label: 'Fondo Cometa'           },
@@ -29,21 +32,18 @@ export default function RendimentoFondo() {
   )
   const [provider,    setProvider]    = React.useState<Provider | null>(null)
   const [file,        setFile]        = React.useState<File | null>(null)
-  const [initialFile, setInitialFile] = React.useState<File | null>(null)
   const [ready,       setReady]       = React.useState(false)
 
   React.useEffect(() => {
     if (!provider) {
       setFile(null)
-      setInitialFile(null)
       setReady(false)
       return
     }
     setFile(null)
-    setInitialFile(null)
     setReady(false)
     loadFile(provider)
-      .then(f => { if (f) { setInitialFile(f); setFile(f) } })
+      .then(f => { if (f) { setFile(f) } })
       .catch(() => {})
       .finally(() => setReady(true))
   }, [provider])
@@ -57,7 +57,6 @@ export default function RendimentoFondo() {
   async function handleClear() {
     if (!provider) return
     setFile(null)
-    setInitialFile(null)
     await clearFile(provider).catch(() => {})
   }
 
@@ -68,22 +67,19 @@ export default function RendimentoFondo() {
     <div className="mx-auto max-w-4xl px-6 py-10">
 
       <header className="mb-8">
-        <h1 className="text-3xl font-bold">Rendimento Fondo Pensione</h1>
+        <h1 className="text-[36px] leading-[44px] font-normal">Rendimento Fondo Pensione</h1>
         <p className="mt-2 text-muted-foreground">
           Calcola il tasso di crescita medio annuo del tuo fondo pensione complementare.
         </p>
-        <div className="mt-4 text-sm">
-          <p className="text-xs tracking-widest uppercase text-muted-foreground mb-2">Fondi supportati</p>
-          <ul className="flex flex-col gap-1">
+        <div className="mt-4">
+          <p className="text-[12px] leading-[16px] tracking-[0.5px] font-medium uppercase text-on-surface-variant mb-2">Fondi supportati</p>
+          <ul className="list-disc list-inside text-[14px] leading-[20px] tracking-[0.25px] text-on-surface space-y-1 pl-1">
             {providers.map(p => (
-              <li key={p.value} className="flex items-center gap-2">
-                <span className="inline-block w-1.5 h-1.5 bg-primary shrink-0" />
-                {p.label}
-              </li>
+              <li key={p.value}>{p.label}</li>
             ))}
           </ul>
         </div>
-        <p className="mt-3 text-xs text-muted-foreground">
+        <p className="mt-3 text-[12px] leading-[16px] tracking-[0.4px] text-muted-foreground">
           Non trovi il tuo fondo?{' '}
           <a href="mailto:tiziano.cappai1999@gmail.com">Scrivimi</a>
           {' '}per richiedere il supporto.
@@ -92,14 +88,14 @@ export default function RendimentoFondo() {
 
       {/* Provider selector */}
       <div className="flex flex-col gap-1 mb-8 max-w-xs">
-        <label htmlFor="provider" className="text-xs tracking-widest uppercase text-muted-foreground">
+        <label htmlFor="provider" className="text-[12px] leading-[16px] tracking-[0.4px] tracking-widest uppercase text-muted-foreground">
           Seleziona il tuo fondo
         </label>
         <select
           id="provider"
           value={provider ?? ''}
           onChange={e => setProvider((e.target.value as Provider) || null)}
-          className="border-2 border-[#0b0c0c] bg-white px-3 py-2 text-sm font-mono focus-visible:outline-3 focus-visible:outline-[#ffdd00] focus-visible:outline-offset-0 appearance-none cursor-pointer"
+          className="h-14 border border-outline bg-surface px-4 text-[16px] leading-[24px] tracking-[0.5px] rounded-sm focus-visible:outline-none focus-visible:border-primary focus-visible:ring-0 appearance-none cursor-pointer transition-colors duration-200"
         >
           <option value="">Seleziona un fondo...</option>
           {providers.map(p => (
@@ -112,20 +108,45 @@ export default function RendimentoFondo() {
       {provider && ready && (
         <div key={provider}>
           {provider === 'cometa' && (
-            <div className="mb-6 border-l-4 border-[#1d70b8] bg-[#e8f1f8] px-4 py-3 text-sm">
-              Prima volta? Leggi la{' '}
-              <Link to="/cometa-guide">guida passo passo</Link>{' '}
-              per sapere come esportare il file dal portale Fondo Cometa.
-            </div>
+            <Alert
+              type="info"
+              showIcon
+              className="mb-6"
+              description={
+                <>
+                  Prima volta? Leggi la{' '}
+                  <Link to="/cometa-guide">guida passo passo</Link>{' '}
+                  per sapere come esportare il file dal portale Fondo Cometa.
+                </>
+              }
+            />
           )}
 
-          <FileUploader
+          <Dragger
             accept=".xls,.xlsx"
-            initialFile={initialFile}
-            onFileSelect={handleFileSelect}
-            onClear={handleClear}
+            maxCount={1}
+            fileList={file ? [{
+              uid: '-1',
+              name: file.name,
+              status: 'done',
+              size: file.size,
+            }] : []}
+            beforeUpload={(uploadFile) => {
+              handleFileSelect(uploadFile as File)
+              return false
+            }}
+            onRemove={() => {
+              handleClear()
+              return true
+            }}
             className={file ? 'py-6' : undefined}
-          />
+          >
+            <p className="ant-upload-drag-icon">
+              <InboxOutlined />
+            </p>
+            <p className="ant-upload-text">Trascina qui il file o clicca per sfogliare</p>
+            <p className="ant-upload-hint">.xls, .xlsx</p>
+          </Dragger>
 
           {file && (
             <CagrCalculator

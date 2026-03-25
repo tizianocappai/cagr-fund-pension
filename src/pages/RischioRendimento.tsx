@@ -1,6 +1,7 @@
-import { Separator } from '@/components/ui/separator'
+import { Alert, Divider } from 'antd'
 import { MonteCarlo } from '@/components/MonteCarlo'
 import { useMeta } from '@/lib/useMeta'
+import { chartColors } from '@/lib/chartColors'
 
 interface Comparto {
   titolo: string
@@ -25,7 +26,7 @@ const comparti: Comparto[] = [
     orizzonteTemporale: 'Breve — fino a 5 anni',
     nota: 'Come tenere i soldi sotto un materasso, ma un po\u2019 più intelligente.',
     rischioLabel: 'Rischio basso',
-    rischioColor: '#00703c',
+    rischioColor: chartColors.success,
   },
   {
     titolo: 'Eppur si muove',
@@ -37,7 +38,7 @@ const comparti: Comparto[] = [
     orizzonteTemporale: 'Medio — 5–10 anni',
     nota: 'Un equilibrio tra ricerca di rendimento e necessità di stabilità.',
     rischioLabel: 'Rischio medio-basso',
-    rischioColor: '#f59e0b',
+    rischioColor: chartColors.warning,
   },
   {
     titolo: 'Niente male',
@@ -49,7 +50,7 @@ const comparti: Comparto[] = [
     orizzonteTemporale: 'Lungo — 10–20 anni',
     nota: 'Come le montagne russe: ci sono alti e bassi, ma nel lungo periodo si può arrivare più in alto.',
     rischioLabel: 'Rischio medio-alto',
-    rischioColor: '#f97316',
+    rischioColor: chartColors.warning,
   },
   {
     titolo: 'Forse andrò in pensione',
@@ -61,7 +62,7 @@ const comparti: Comparto[] = [
     orizzonteTemporale: 'Molto lungo — oltre 20 anni',
     nota: 'Come un viaggio avventuroso: può essere faticoso e incerto, ma anche molto gratificante.',
     rischioLabel: 'Rischio alto',
-    rischioColor: '#d4351c',
+    rischioColor: chartColors.error,
   },
 ]
 
@@ -74,14 +75,14 @@ export default function RischioRendimento() {
     <div className="mx-auto max-w-4xl px-6 py-10">
 
       <header className="mb-8">
-        <h1 className="text-3xl font-bold">Devo rischiare?</h1>
+        <h1 className="text-[36px] leading-[44px] font-normal">Devo rischiare?</h1>
         <p className="mt-2 text-muted-foreground">
           Capire il rapporto tra rischio e rendimento per scegliere il comparto giusto.
         </p>
       </header>
 
       {/* Introduzione */}
-      <div className="flex flex-col gap-4 mb-8 text-sm leading-relaxed">
+      <div className="flex flex-col gap-4 mb-8 text-[14px] leading-[20px] tracking-[0.25px] leading-relaxed">
         <p>
           Immagina di avere un salvadanaio speciale dove puoi mettere i tuoi soldi per farli
           crescere nel tempo. Non esiste però un solo modo di farlo: ci sono diversi{' '}
@@ -105,65 +106,68 @@ export default function RischioRendimento() {
         </p>
       </div>
 
-      <Separator className="mb-8" />
+      <Divider className="mb-8" />
 
       {/* Comparti */}
       <div className="flex flex-col gap-6 mb-8">
         {comparti.map((c, i) => (
-          <div key={c.titolo} className="border border-border">
+          <div key={c.titolo} className="bg-surface-container elevation-1 rounded-md overflow-hidden">
             {/* Header banda colorata */}
-            <div className="flex items-center justify-between border-b border-border px-4 py-3 bg-muted">
-              <p className="font-bold text-sm">{i + 1}. {c.titolo}</p>
+            <div className="flex items-center justify-between px-4 py-3 bg-surface-container-high">
+              <p className="font-bold text-[14px] leading-[20px] tracking-[0.25px]">{i + 1}. {c.titolo}</p>
               <span
-                className="text-xs font-semibold px-2 py-0.5 border"
-                style={{ color: c.rischioColor, borderColor: c.rischioColor }}
+                className="text-xs font-semibold px-2 py-1 rounded-sm"
+                style={{
+                  backgroundColor: c.rischioColor === chartColors.success ? 'var(--color-success-container)' : c.rischioColor === chartColors.error ? 'var(--color-error-container)' : 'var(--color-warning-container)',
+                  color: c.rischioColor === chartColors.success ? 'var(--color-on-success-container)' : c.rischioColor === chartColors.error ? 'var(--color-on-error-container)' : 'var(--color-on-warning-container)'
+                }}
               >
                 {c.rischioLabel}
               </span>
             </div>
 
             <div className="px-4 py-4 flex flex-col gap-4">
-              <p className="text-sm leading-relaxed">{c.descrizione}</p>
+              <p className="text-[14px] leading-[20px] tracking-[0.25px] leading-relaxed">{c.descrizione}</p>
 
               {/* Bilanciamento */}
               <div>
-                <p className="text-xs tracking-widest uppercase text-muted-foreground mb-2">
+                <p className="text-[12px] leading-[16px] tracking-[0.4px] tracking-widest uppercase text-muted-foreground mb-2">
                   Esempio teorico di bilanciamento
                 </p>
-                <div className="flex gap-6 text-sm">
+                <div className="flex gap-6 text-[14px] leading-[20px] tracking-[0.25px]">
                   <div className="flex flex-col gap-0.5">
-                    <span className="text-xs text-muted-foreground">Azioni</span>
+                    <span className="text-[12px] leading-[16px] tracking-[0.4px] text-muted-foreground">Azioni</span>
                     <span className="font-mono font-semibold">{c.azioni}</span>
                   </div>
                   <div className="flex flex-col gap-0.5">
-                    <span className="text-xs text-muted-foreground">Obbligazioni</span>
+                    <span className="text-[12px] leading-[16px] tracking-[0.4px] text-muted-foreground">Obbligazioni</span>
                     <span className="font-mono font-semibold">{c.obbligazioni}</span>
                   </div>
                   <div className="flex flex-col gap-0.5">
-                    <span className="text-xs text-muted-foreground">Rendimento storico ipotetico</span>
+                    <span className="text-[12px] leading-[16px] tracking-[0.4px] text-muted-foreground">Rendimento storico ipotetico</span>
                     <span className="font-mono font-semibold">{c.rendimentoStorico} annuo</span>
                   </div>
                   <div className="flex flex-col gap-0.5">
-                    <span className="text-xs text-muted-foreground">Orizzonte temporale indicativo</span>
+                    <span className="text-[12px] leading-[16px] tracking-[0.4px] text-muted-foreground">Orizzonte temporale indicativo</span>
                     <span className="font-mono font-semibold">{c.orizzonteTemporale}</span>
                   </div>
                 </div>
               </div>
 
               {/* Barra visiva */}
-              <div className="flex h-3 w-full overflow-hidden border border-border">
+              <div className="flex h-3 w-full overflow-hidden bg-surface-container-high rounded-sm">
                 <div
                   className="h-full bg-error transition-all"
                   style={{ width: c.azioni.replace('–', '-').split(/[-–]/)[0].trim() }}
                 />
                 <div className="h-full flex-1 bg-border" />
               </div>
-              <div className="flex justify-between text-xs text-muted-foreground -mt-2">
+              <div className="flex justify-between text-[12px] leading-[16px] tracking-[0.4px] text-muted-foreground -mt-2">
                 <span>Azioni</span>
                 <span>Obbligazioni</span>
               </div>
 
-              <p className="text-xs text-muted-foreground italic border-l-2 border-border pl-3">
+              <p className="text-[12px] leading-[16px] tracking-[0.4px] text-muted-foreground italic">
                 {c.nota}
               </p>
             </div>
@@ -171,32 +175,38 @@ export default function RischioRendimento() {
         ))}
       </div>
 
-      <Separator className="mb-8" />
+      <Divider className="mb-8" />
 
       {/* Nota importante */}
-      <div className="border-l-4 border-[#1d70b8] bg-[#e8f1f8] px-4 py-4 text-sm leading-relaxed flex flex-col gap-2">
-        <p className="font-bold">Nota importante</p>
-        <p>
-          Le percentuali indicate sono <strong>solo teoriche</strong> e servono come riferimento
-          per capire il livello di rischio e come viene bilanciato il portafoglio tra azioni e
-          obbligazioni. Nella realtà ogni fondo pensione può avere percentuali diverse e variabili
-          nel tempo in base alla strategia adottata.
-        </p>
-        <p>
-          Scegliere il comparto giusto dipende da quanto sei disposto a vedere i tuoi soldi salire
-          e scendere nel tempo, e da quanto manca al momento in cui vorrai utilizzarli.
-        </p>
-      </div>
+      <Alert
+        type="info"
+        showIcon
+        message="Nota importante"
+        description={
+          <>
+            <p>
+              Le percentuali indicate sono <strong>solo teoriche</strong> e servono come riferimento
+              per capire il livello di rischio e come viene bilanciato il portafoglio tra azioni e
+              obbligazioni. Nella realtà ogni fondo pensione può avere percentuali diverse e variabili
+              nel tempo in base alla strategia adottata.
+            </p>
+            <p className="mt-2">
+              Scegliere il comparto giusto dipende da quanto sei disposto a vedere i tuoi soldi salire
+              e scendere nel tempo, e da quanto manca al momento in cui vorrai utilizzarli.
+            </p>
+          </>
+        }
+      />
 
-      <Separator className="mb-8" />
+      <Divider className="mb-8" />
 
       {/* Cosa dice la ricerca */}
       <div className="flex flex-col gap-6">
         <div>
-          <p className="text-base font-bold mb-1 border-l-4 border-[#0b0c0c] pl-3">
+          <p className="text-[16px] leading-[24px] tracking-[0.15px] font-medium mb-1 ">
             Cosa dice la ricerca: il tempo abbassa il rischio
           </p>
-          <p className="text-sm text-muted-foreground mt-3 leading-relaxed">
+          <p className="text-[14px] leading-[20px] tracking-[0.25px] text-muted-foreground mt-3 leading-relaxed">
             Uno degli insegnamenti più solidi della finanza storica è che il rischio di perdere
             denaro si riduce drasticamente all'aumentare dell'orizzonte temporale. Non è una
             promessa, ma un dato che si ripete con grande coerenza su oltre un secolo di mercati.
@@ -205,13 +215,13 @@ export default function RischioRendimento() {
 
         {/* Tabella probabilità perdita */}
         <div>
-          <p className="text-xs tracking-widest uppercase text-muted-foreground mb-3">
+          <p className="text-[12px] leading-[16px] tracking-[0.4px] tracking-widest uppercase text-muted-foreground mb-3">
             Probabilità storica di rendimento negativo — mercato azionario globale (1900–2023)
           </p>
-          <div className="border border-border overflow-x-auto">
-            <table className="w-full text-sm">
+          <div className="bg-surface-container elevation-1 rounded-md overflow-hidden">
+            <table className="w-full text-[14px] leading-[20px] tracking-[0.25px]">
               <thead>
-                <tr className="border-b border-border bg-muted">
+                <tr className="border-b border-outline bg-surface-container-high">
                   <th className="px-3 py-2 text-left font-medium text-muted-foreground">Orizzonte temporale</th>
                   <th className="px-3 py-2 text-right font-medium text-muted-foreground">Probabilità di perdita</th>
                   <th className="px-3 py-2 text-right font-medium text-muted-foreground">Rendimento medio annuo</th>
@@ -234,7 +244,7 @@ export default function RischioRendimento() {
               </tbody>
             </table>
           </div>
-          <p className="text-xs text-muted-foreground mt-2">
+          <p className="text-[12px] leading-[16px] tracking-[0.4px] text-muted-foreground mt-2">
             Dati basati su MSCI World e S&P 500, rendimenti nominali in dollari. Fonte: Dimson, Marsh &amp; Staunton,{' '}
             <em>Triumph of the Optimists</em> (2002) aggiornato al 2023 tramite{' '}
             <a href="https://www.credit-suisse.com/about-us/en/reports-research/csri.html" target="_blank" rel="noopener noreferrer">
@@ -244,8 +254,8 @@ export default function RischioRendimento() {
         </div>
 
         {/* Principi chiave */}
-        <div className="flex flex-col gap-4 text-sm leading-relaxed">
-          <div className="border-l-4 border-[#0b0c0c] pl-3">
+        <div className="flex flex-col gap-4 text-[14px] leading-[20px] tracking-[0.25px] leading-relaxed">
+          <div className="">
             <p className="font-semibold mb-1">Il principio della "regressione alla media"</p>
             <p className="text-muted-foreground">
               Nel breve periodo i mercati oscillano in modo imprevedibile. Nel lungo periodo tendono
@@ -259,7 +269,7 @@ export default function RischioRendimento() {
             </p>
           </div>
 
-          <div className="border-l-4 border-[#0b0c0c] pl-3">
+          <div className="">
             <p className="font-semibold mb-1">I fondi pensione italiani nel lungo periodo</p>
             <p className="text-muted-foreground">
               Secondo il rapporto COVIP 2023, i comparti azionari dei fondi pensione negoziali
@@ -274,7 +284,7 @@ export default function RischioRendimento() {
             </p>
           </div>
 
-          <div className="border-l-4 border-[#0b0c0c] pl-3">
+          <div className="">
             <p className="font-semibold mb-1">La regola pratica del "glide path"</p>
             <p className="text-muted-foreground">
               Molti fondi pensione adottano una strategia di <em>lifecycle</em>: si inizia con
@@ -291,19 +301,19 @@ export default function RischioRendimento() {
           </div>
         </div>
 
-        <div className="border-l-4 border-error bg-[#fde8e6] px-4 py-3 text-xs leading-relaxed">
+        <div className="bg-error-container px-4 py-3 text-[12px] leading-[16px] tracking-[0.4px] leading-relaxed text-on-error-container elevation-1 rounded-md">
           I dati storici non garantiscono rendimenti futuri. Le performance passate dei mercati
           finanziari non sono indicative di quelle future. Questo contenuto ha scopo puramente
           educativo e non costituisce consulenza finanziaria.
         </div>
       </div>
 
-      <Separator className="mb-8" />
+      <Divider className="mb-8" />
 
       {/* Monte Carlo simulation */}
       <div>
-        <p className="text-base font-bold mb-1 border-l-4 border-[#0b0c0c] pl-3">Simulazione Monte Carlo</p>
-        <p className="text-sm text-muted-foreground mb-5">
+        <p className="text-[16px] leading-[24px] tracking-[0.15px] font-medium mb-1 ">Simulazione Monte Carlo</p>
+        <p className="text-[14px] leading-[20px] tracking-[0.25px] text-muted-foreground mb-5">
           Inserisci i tuoi dati per simulare migliaia di possibili traiettorie di crescita del tuo fondo
           pensione e scoprire la probabilità di raggiungere il tuo obiettivo di capitale.
         </p>

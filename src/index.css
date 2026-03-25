@@ -1,26 +1,115 @@
+/* Ant Design reset CSS */
+@import "antd/dist/reset.css";
+
+/* Tailwind CSS */
 @import "tailwindcss";
 
 @theme {
-  /* GOV.UK-inspired palette */
-  --color-background:           #ffffff;
-  --color-foreground:           #0b0c0c;
-  --color-muted:                #f3f2f1;
-  --color-muted-foreground:     #505a5f;
-  --color-border:               #b1b4b6;
-  --color-card:                 #ffffff;
-  --color-card-foreground:      #0b0c0c;
-  --color-primary:              #00703c;
-  --color-primary-foreground:   #ffffff;
-  --color-secondary:            #f3f2f1;
-  --color-secondary-foreground: #0b0c0c;
-  --color-focus:                #ffdd00;
-  --color-error:                #d4351c;
-  --color-ring:                 #ffdd00;
+  /* ── Custom Color Palette (Navy Blue + Orange) ──────────────────────────── */
 
-  --radius: 0rem;
+  /* Primary (Navy Blue #161E54) */
+  --color-primary: #161E54;
+  --color-on-primary: #FFFFFF;
+  --color-primary-container: #BBE0EF;
+  --color-on-primary-container: #0A0E26;
 
-  --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
-  --font-mono: ui-monospace, "Courier New", monospace;
+  /* Secondary (Orange #F16D34) */
+  --color-secondary: #F16D34;
+  --color-on-secondary: #FFFFFF;
+  --color-secondary-container: #FF986A;
+  --color-on-secondary-container: #2D1600;
+
+  /* Tertiary (Light Orange #FF986A) */
+  --color-tertiary: #FF986A;
+  --color-on-tertiary: #000000;
+  --color-tertiary-container: #FFDCC8;
+  --color-on-tertiary-container: #2D1600;
+
+  /* Error */
+  --color-error: #B3261E;
+  --color-on-error: #FFFFFF;
+  --color-error-container: #F9DEDC;
+  --color-on-error-container: #410E0B;
+
+  /* Success */
+  --color-success: #198754;
+  --color-on-success: #FFFFFF;
+  --color-success-container: #D1F4E0;
+  --color-on-success-container: #002114;
+
+  /* Warning */
+  --color-warning: #F16D34;
+  --color-on-warning: #FFFFFF;
+  --color-warning-container: #FFE5D9;
+  --color-on-warning-container: #2D1600;
+
+  /* Surface & Background (Light Blue tones) */
+  --color-surface: #F8FCFE;
+  --color-on-surface: #0F1419;
+  --color-surface-variant: #E0F2F7;
+  --color-on-surface-variant: #3D4F5A;
+
+  --color-surface-container-lowest: #FFFFFF;
+  --color-surface-container-low: #F0F8FB;
+  --color-surface-container: #E5F4F9;
+  --color-surface-container-high: #D0EAF3;
+  --color-surface-container-highest: #BBE0EF;
+
+  --color-background: #F8FCFE;
+  --color-on-background: #0F1419;
+
+  /* Inverse (for tooltips, snackbars) */
+  --color-inverse-surface: #161E54;
+  --color-inverse-on-surface: #FFFFFF;
+
+  /* Outline & Borders */
+  --color-outline: #6B7B87;
+  --color-outline-variant: #BBE0EF;
+
+  /* Shadows */
+  --color-shadow: #000000;
+  --color-scrim: #000000;
+
+  /* Legacy aliases for compatibility */
+  --color-foreground: #0F1419;
+  --color-muted: #E5F4F9;
+  --color-muted-foreground: #3D4F5A;
+  --color-border: #6B7B87;
+  --color-card: #F8FCFE;
+  --color-card-foreground: #0F1419;
+  --color-primary-foreground: #FFFFFF;
+  --color-secondary-foreground: #FFFFFF;
+  --color-focus: #161E54;
+  --color-ring: #161E54;
+
+  /* ── Elevation System ──────────────────────────── */
+  --elevation-0: none;
+  --elevation-1: 0px 1px 2px 0px rgba(0, 0, 0, 0.3), 0px 1px 3px 1px rgba(0, 0, 0, 0.15);
+  --elevation-2: 0px 1px 2px 0px rgba(0, 0, 0, 0.3), 0px 2px 6px 2px rgba(0, 0, 0, 0.15);
+  --elevation-3: 0px 4px 8px 3px rgba(0, 0, 0, 0.15), 0px 1px 3px 0px rgba(0, 0, 0, 0.3);
+  --elevation-4: 0px 6px 10px 4px rgba(0, 0, 0, 0.15), 0px 2px 3px 0px rgba(0, 0, 0, 0.3);
+  --elevation-5: 0px 8px 12px 6px rgba(0, 0, 0, 0.15), 0px 4px 4px 0px rgba(0, 0, 0, 0.3);
+
+  /* ── Shape System (Border Radius) ──────────────────────────── */
+  /* M3 Shape Scale - Exact values from Material Design 3 specs */
+  --radius-xs: 4px;      /* Extra Small - Chips, Small components */
+  --radius-sm: 8px;      /* Small - Cards, Dialogs */
+  --radius-md: 12px;     /* Medium - Cards (standard) */
+  --radius-lg: 16px;     /* Large - Sheets, large cards */
+  --radius-xl: 28px;     /* Extra Large - FAB */
+  --radius-full: 20px;   /* Full - Buttons (NOT 9999px - M3 uses fixed 20px) */
+  --radius: 12px;        /* Default */
+
+  /* ── Typography ──────────────────────────── */
+  --font-sans: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-mono: "Roboto Mono", "SF Mono", Monaco, "Cascadia Code", "Ubuntu Mono", monospace;
+
+  /* State Layers (use with opacity) */
+  --state-hover: 0.08;
+  --state-focus: 0.12;
+  --state-pressed: 0.12;
+  --state-dragged: 0.16;
+  --state-disabled: 0.38;
 }
 
 @media print {
@@ -42,37 +131,33 @@
 
 @layer base {
   * {
-    border-color: var(--color-border);
+    border-color: var(--color-outline);
     box-sizing: border-box;
   }
 
   body {
     margin: 0;
     background-color: var(--color-background);
-    color: var(--color-foreground);
+    color: var(--color-on-background);
     font-family: var(--font-sans);
-    font-size: 16px;
-    line-height: 1.5;
+    font-size: 14px;
+    line-height: 20px;
+    letter-spacing: 0.25px;
     -webkit-font-smoothing: antialiased;
   }
 
   a {
-    color: #1d70b8;
-    text-decoration: underline;
-    text-underline-offset: 2px;
+    color: var(--color-primary);
+    text-decoration: none;
   }
 
   a:hover {
-    color: #003078;
-    text-decoration-thickness: 3px;
+    text-decoration: underline;
   }
 
   a:focus-visible {
-    outline: 3px solid #ffdd00;
-    outline-offset: 0;
-    background-color: #ffdd00;
-    color: #0b0c0c;
-    text-decoration: none;
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
   }
 
   nav a {
@@ -81,9 +166,46 @@
   }
 
   nav a:focus-visible {
-    outline: 3px solid #ffdd00;
-    outline-offset: 0;
-    background-color: transparent;
-    color: inherit;
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+  }
+
+  /* Material 3 focus visible state */
+  *:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+  }
+}
+
+/* ── Material 3 Utility Classes ──────────────────────────── */
+@layer utilities {
+  .elevation-0 { box-shadow: var(--elevation-0); }
+  .elevation-1 { box-shadow: var(--elevation-1); }
+  .elevation-2 { box-shadow: var(--elevation-2); }
+  .elevation-3 { box-shadow: var(--elevation-3); }
+  .elevation-4 { box-shadow: var(--elevation-4); }
+  .elevation-5 { box-shadow: var(--elevation-5); }
+
+  /* State layer helpers */
+  .state-layer {
+    position: relative;
+  }
+
+  .state-layer::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: currentColor;
+    opacity: 0;
+    transition: opacity 200ms cubic-bezier(0.4, 0, 0.2, 1);
+    pointer-events: none;
+  }
+
+  .state-layer:hover::before {
+    opacity: var(--state-hover);
+  }
+
+  .state-layer:active::before {
+    opacity: var(--state-pressed);
   }
 }

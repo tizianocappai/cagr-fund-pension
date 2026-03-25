@@ -2,17 +2,19 @@ import * as React from 'react'
 import { Link } from 'react-router'
 import { CagrCalculator } from '@/components/CagrCalculator'
 import { columnsByProvider } from '@/lib/providerConfig'
-import { FileUploader } from '@/components/ui/file-uploader'
+import { Alert, Upload } from 'antd'
+import { InboxOutlined } from '@ant-design/icons'
 import { clearFile, loadFile, saveFile } from '@/lib/fileStorage'
+
+const { Dragger } = Upload
 
 export default function Cometa() {
   const [file, setFile] = React.useState<File | null>(null)
-  const [initialFile, setInitialFile] = React.useState<File | null>(null)
   const [restoring, setRestoring] = React.useState(true)
 
   React.useEffect(() => {
     loadFile('cometa')
-      .then(f => { if (f) { setInitialFile(f); setFile(f) } })
+      .then(f => { if (f) { setFile(f) } })
       .catch(() => {})
       .finally(() => setRestoring(false))
   }, [])
@@ -24,7 +26,6 @@ export default function Cometa() {
 
   async function handleClear() {
     setFile(null)
-    setInitialFile(null)
     await clearFile('cometa').catch(() => {})
   }
 
@@ -33,26 +34,51 @@ export default function Cometa() {
   return (
     <div className="mx-auto max-w-4xl px-6 py-10">
 
-      <div className="mb-6 border-l-4 border-[#1d70b8] bg-[#e8f1f8] px-4 py-3 text-sm">
-        Prima volta? Leggi la{' '}
-        <Link to="/cometa-guide">guida passo passo</Link>{' '}
-        per sapere come esportare il file dal portale Fondo Cometa.
-      </div>
+      <Alert
+        type="info"
+        showIcon
+        className="mb-6"
+        description={
+          <>
+            Prima volta? Leggi la{' '}
+            <Link to="/cometa-guide">guida passo passo</Link>{' '}
+            per sapere come esportare il file dal portale Fondo Cometa.
+          </>
+        }
+      />
 
       <header className="mb-8">
-        <h1 className="text-3xl font-bold">Fondo Cometa</h1>
+        <h1 className="text-[36px] leading-[44px] font-normal">Fondo Cometa</h1>
         <p className="mt-2 text-muted-foreground">
           Carica il file XLS esportato dal portale del fondo pensione Cometa.
         </p>
       </header>
 
-      <FileUploader
+      <Dragger
         accept=".xls,.xlsx"
-        initialFile={initialFile}
-        onFileSelect={handleFileSelect}
-        onClear={handleClear}
+        maxCount={1}
+        fileList={file ? [{
+          uid: '-1',
+          name: file.name,
+          status: 'done',
+          size: file.size,
+        }] : []}
+        beforeUpload={(uploadFile) => {
+          handleFileSelect(uploadFile as File)
+          return false
+        }}
+        onRemove={() => {
+          handleClear()
+          return true
+        }}
         className={file ? 'py-6' : undefined}
-      />
+      >
+        <p className="ant-upload-drag-icon">
+          <InboxOutlined />
+        </p>
+        <p className="ant-upload-text">Trascina qui il file o clicca per sfogliare</p>
+        <p className="ant-upload-hint">.xls, .xlsx</p>
+      </Dragger>
 
       {file && <CagrCalculator file={file} flow="cometa" columns={columnsByProvider['cometa']} />}
 

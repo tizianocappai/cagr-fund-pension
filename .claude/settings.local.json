@@ -24,7 +24,8 @@
       "WebFetch(domain:finance.yahoo.com)",
       "Bash(npm list:*)",
       "Bash(node -e \"require\\(''''yahoo-finance2''''\\)\")",
-      "Bash(ls /Users/tiziano.cappai/Personale/Progetti/cagr-fund-pension/src/components/Bmc*)"
+      "Bash(ls /Users/tiziano.cappai/Personale/Progetti/cagr-fund-pension/src/components/Bmc*)",
+      "Bash(python3:*)"
     ]
   }
 }

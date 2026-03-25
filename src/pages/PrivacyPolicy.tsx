@@ -1,38 +1,43 @@
-import { Separator } from '@/components/ui/separator'
+import { Alert, Divider } from 'antd'
 
 export default function PrivacyPolicy() {
   return (
     <div className="mx-auto max-w-4xl px-6 py-10">
       <header className="mb-8">
-        <h1 className="text-3xl font-bold">Privacy Policy</h1>
+        <h1 className="text-[36px] leading-[44px] font-normal">Privacy Policy</h1>
         <p className="mt-2 text-muted-foreground">Ultimo aggiornamento: marzo 2026</p>
       </header>
 
-      <div className="border-l-4 border-[#1d70b8] bg-[#e8f1f8] px-4 py-4 text-sm leading-relaxed mb-8">
-        <p>
-          Questo sito non raccoglie né trasmette dati finanziari personali. Tutti i calcoli avvengono
-          interamente nel tuo browser. I file che carichi non vengono mai inviati a server esterni.
-        </p>
-      </div>
+      <Alert
+        type="info"
+        showIcon
+        className="mb-8"
+        description={
+          <p>
+            Questo sito non raccoglie né trasmette dati finanziari personali. Tutti i calcoli avvengono
+            interamente nel tuo browser. I file che carichi non vengono mai inviati a server esterni.
+          </p>
+        }
+      />
 
-      <Separator className="mb-8" />
+      <Divider className="mb-8" />
 
       <div className="flex flex-col gap-8">
 
         <section>
-          <h2 className="text-xl font-bold mb-3">Titolare del trattamento</h2>
-          <p className="text-sm text-muted-foreground leading-relaxed">
+          <h2 className="text-[24px] leading-[32px] font-normal mb-3">Titolare del trattamento</h2>
+          <p className="text-[14px] leading-[20px] tracking-[0.25px] text-muted-foreground leading-relaxed">
             Cappai Tiziano — <a href="mailto:tiziano.cappai1999@gmail.com">tiziano.cappai1999@gmail.com</a>
           </p>
         </section>
 
-        <Separator />
+        <Divider />
 
         <section>
-          <h2 className="text-xl font-bold mb-3">Dati trattati e finalità</h2>
-          <div className="flex flex-col gap-4 text-sm leading-relaxed">
+          <h2 className="text-[24px] leading-[32px] font-normal mb-3">Dati trattati e finalità</h2>
+          <div className="flex flex-col gap-4 text-[14px] leading-[20px] tracking-[0.25px] leading-relaxed">
 
-            <div className="border-l-4 border-[#0b0c0c] bg-muted px-4 py-3">
+            <div className="rounded-md bg-surface-container px-4 py-3">
               <p className="font-semibold mb-1">1. Dati di navigazione — Vercel Analytics</p>
               <p className="text-muted-foreground">
                 Con il tuo consenso, questo sito utilizza <strong className="text-foreground">Vercel Analytics</strong> per
@@ -44,7 +49,7 @@ export default function PrivacyPolicy() {
               <p className="text-muted-foreground mt-1">Base giuridica: consenso (Art. 6(1)(a) GDPR).</p>
             </div>
 
-            <div className="border-l-4 border-[#0b0c0c] bg-muted px-4 py-3">
+            <div className="rounded-md bg-surface-container px-4 py-3">
               <p className="font-semibold mb-1">2. Widget Buy Me a Coffee</p>
               <p className="text-muted-foreground">
                 Con il tuo consenso, viene caricato il widget di <strong className="text-foreground">Buy Me a Coffee</strong>,
@@ -55,14 +60,14 @@ export default function PrivacyPolicy() {
               <p className="text-muted-foreground mt-1">Base giuridica: consenso (Art. 6(1)(a) GDPR).</p>
             </div>
 
-            <div className="border-l-4 border-[#0b0c0c] bg-muted px-4 py-3">
+            <div className="rounded-md bg-surface-container px-4 py-3">
               <p className="font-semibold mb-1">3. Dati salvati localmente (localStorage)</p>
               <p className="text-muted-foreground">
                 Il sito salva nel tuo browser le seguenti preferenze, che non vengono mai trasmesse a server:
               </p>
               <ul className="list-disc pl-5 mt-1 text-muted-foreground flex flex-col gap-0.5">
-                <li><code className="text-xs bg-border px-1">gennaro_disclaimer_accepted</code> — conferma lettura avviso legale</li>
-                <li><code className="text-xs bg-border px-1">gennaro_cookie_consent</code> — preferenza cookie</li>
+                <li><code className="text-[12px] leading-[16px] tracking-[0.4px] bg-surface-container-high px-1">gennaro_disclaimer_accepted</code> — conferma lettura avviso legale</li>
+                <li><code className="text-[12px] leading-[16px] tracking-[0.4px] bg-surface-container-high px-1">gennaro_cookie_consent</code> — preferenza cookie</li>
                 <li>File Excel caricati (IndexedDB) — solo per evitare di ricaricarli ad ogni visita</li>
               </ul>
               <p className="text-muted-foreground mt-1">Base giuridica: interesse legittimo / funzionamento del servizio.</p>
@@ -71,14 +76,14 @@ export default function PrivacyPolicy() {
           </div>
         </section>
 
-        <Separator />
+        <Divider />
 
         <section>
-          <h2 className="text-xl font-bold mb-3">I tuoi diritti (GDPR)</h2>
-          <p className="text-sm text-muted-foreground leading-relaxed mb-3">
+          <h2 className="text-[24px] leading-[32px] font-normal mb-3">I tuoi diritti (GDPR)</h2>
+          <p className="text-[14px] leading-[20px] tracking-[0.25px] text-muted-foreground leading-relaxed mb-3">
             In qualità di utente hai diritto di:
           </p>
-          <ul className="list-disc pl-5 text-sm text-muted-foreground flex flex-col gap-1">
+          <ul className="list-disc pl-5 text-[14px] leading-[20px] tracking-[0.25px] text-muted-foreground flex flex-col gap-1">
             <li>Accedere ai dati che ti riguardano</li>
             <li>Richiedere la rettifica o cancellazione</li>
             <li>Opporti al trattamento o richiederne la limitazione</li>
@@ -87,11 +92,11 @@ export default function PrivacyPolicy() {
           </ul>
         </section>
 
-        <Separator />
+        <Divider />
 
         <section>
-          <h2 className="text-xl font-bold mb-3">Contatti</h2>
-          <p className="text-sm text-muted-foreground">
+          <h2 className="text-[24px] leading-[32px] font-normal mb-3">Contatti</h2>
+          <p className="text-[14px] leading-[20px] tracking-[0.25px] text-muted-foreground">
             Per qualsiasi richiesta relativa alla privacy:{' '}
             <a href="mailto:tiziano.cappai1999@gmail.com">tiziano.cappai1999@gmail.com</a>
           </p>

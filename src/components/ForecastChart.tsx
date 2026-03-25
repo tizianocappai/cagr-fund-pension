@@ -9,10 +9,11 @@ import {
   XAxis,
   YAxis,
 } from 'recharts'
-import { Input } from '@/components/ui/input'
+import { Input } from 'antd'
 import { ChartTooltip } from '@/components/ui/chart-tooltip'
 import { fmtEurRound, tickY } from '@/lib/formatters'
 import { parseEur, parseRate } from '@/lib/parse'
+import { chartColors } from '@/lib/chartColors'
 
 export type Flow = 'cometa' | 'fonte'
 
@@ -85,31 +86,31 @@ export const ForecastChart = React.memo(function ForecastChart({
       {/* Inputs */}
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
         <div className="flex flex-col gap-1">
-          <label htmlFor="fc-rate" className="text-xs text-muted-foreground">Rendimento medio annuo (%)</label>
+          <label htmlFor="fc-rate" className="text-[12px] leading-[16px] tracking-[0.4px] text-muted-foreground">Rendimento medio annuo (%)</label>
           <Input id="fc-rate" value={rate} onChange={e => setRate(e.target.value)} placeholder="3" className="font-mono" />
         </div>
         <div className="flex flex-col gap-1">
-          <label htmlFor="fc-years" className="text-xs text-muted-foreground">Anni di proiezione</label>
+          <label htmlFor="fc-years" className="text-[12px] leading-[16px] tracking-[0.4px] text-muted-foreground">Anni di proiezione</label>
           <Input id="fc-years" type="number" min={1} max={50} value={years} onChange={e => setYears(e.target.value)} className="font-mono" />
         </div>
       </div>
 
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
         <div className="flex flex-col gap-1">
-          <label htmlFor="fc-aderente" className="text-xs text-muted-foreground">Contributo aderente / anno (€)</label>
+          <label htmlFor="fc-aderente" className="text-[12px] leading-[16px] tracking-[0.4px] text-muted-foreground">Contributo aderente / anno (€)</label>
           <Input id="fc-aderente" value={aderente} onChange={e => setAderente(e.target.value)} placeholder="0" className="font-mono" />
         </div>
         <div className="flex flex-col gap-1">
-          <label htmlFor="fc-azienda" className="text-xs text-muted-foreground">Contributo azienda / anno (€)</label>
+          <label htmlFor="fc-azienda" className="text-[12px] leading-[16px] tracking-[0.4px] text-muted-foreground">Contributo azienda / anno (€)</label>
           <Input id="fc-azienda" value={azienda} onChange={e => setAzienda(e.target.value)} placeholder="0" className="font-mono" />
         </div>
         <div className="flex flex-col gap-1">
-          <label htmlFor="fc-tfr" className="text-xs text-muted-foreground">TFR / anno (€)</label>
+          <label htmlFor="fc-tfr" className="text-[12px] leading-[16px] tracking-[0.4px] text-muted-foreground">TFR / anno (€)</label>
           <Input id="fc-tfr" value={tfr} onChange={e => setTfr(e.target.value)} placeholder="0" className="font-mono" />
         </div>
       </div>
 
-      <p className="text-xs text-muted-foreground">
+      <p className="text-[12px] leading-[16px] tracking-[0.4px] text-muted-foreground">
         Ogni linea mostra come cresce nel tempo quella singola fonte di contributo, partendo da zero,
         al tasso di rendimento impostato. La linea <strong className="text-foreground">Totale</strong> è
         l'interesse composto applicato alla somma di tutti i contributi annui ed equivale al patrimonio
@@ -120,37 +121,37 @@ export const ForecastChart = React.memo(function ForecastChart({
       <div role="img" aria-label="Grafico: proiezione futura del capitale">
       <ResponsiveContainer width="100%" height={320} className="print:hidden">
         <LineChart data={data} margin={{ top: 4, right: 8, bottom: 0, left: 0 }}>
-          <CartesianGrid stroke="#e5e5e5" strokeDasharray="4 2" />
+          <CartesianGrid stroke={chartColors.grid} strokeDasharray="4 2" />
           <XAxis
             dataKey="anno"
             tickFormatter={v => v === 0 ? 'Oggi' : `+${v}y`}
-            tick={{ fontSize: 11, fill: '#737373' }}
+            tick={{ fontSize: 11, fill: chartColors.axis }}
             axisLine={false}
             tickLine={false}
           />
           <YAxis
             domain={[0, yMax]}
             tickFormatter={tickY}
-            tick={{ fontSize: 11, fill: '#737373' }}
+            tick={{ fontSize: 11, fill: chartColors.axis }}
             axisLine={false}
             tickLine={false}
             width={62}
           />
           <Tooltip content={<ChartTooltip />} />
-          <Legend iconType="plainline" iconSize={16} wrapperStyle={{ fontSize: 11, color: '#737373', paddingTop: 8 }} />
-          <Line type="monotone" dataKey="Aderente" stroke="#3b82f6" strokeWidth={2} dot={false} activeDot={{ r: 4 }} />
-          <Line type="monotone" dataKey="Azienda"  stroke="#10b981" strokeWidth={2} dot={false} activeDot={{ r: 4 }} />
-          <Line type="monotone" dataKey="TFR"      stroke="#f59e0b" strokeWidth={2} dot={false} activeDot={{ r: 4 }} />
-          <Line type="monotone" dataKey="Totale"   stroke="#e11d48" strokeWidth={3} dot={false} activeDot={{ r: 5 }} />
+          <Legend iconType="plainline" iconSize={16} wrapperStyle={{ fontSize: 11, color: chartColors.axis, paddingTop: 8 }} />
+          <Line type="monotone" dataKey="Aderente" stroke={chartColors.contribution.aderente} strokeWidth={2} dot={false} activeDot={{ r: 4 }} />
+          <Line type="monotone" dataKey="Azienda"  stroke={chartColors.contribution.azienda} strokeWidth={2} dot={false} activeDot={{ r: 4 }} />
+          <Line type="monotone" dataKey="TFR"      stroke={chartColors.contribution.tfr} strokeWidth={2} dot={false} activeDot={{ r: 4 }} />
+          <Line type="monotone" dataKey="Totale"   stroke={chartColors.projection.total} strokeWidth={3} dot={false} activeDot={{ r: 5 }} />
         </LineChart>
       </ResponsiveContainer>
       </div>
 
       {/* Year-by-year table */}
-      <div className="border border-border overflow-x-auto">
-        <table className="w-full text-sm">
+      <div className="bg-surface-container elevation-1 rounded-md overflow-hidden">
+        <table className="w-full text-[14px] leading-[20px] tracking-[0.25px]">
           <thead>
-            <tr className="border-b border-border bg-muted">
+            <tr className="border-b border-outline bg-surface-container-high">
               <th className="px-3 py-2 text-left font-medium text-muted-foreground">Anno</th>
               <th className="px-3 py-2 text-right font-medium text-muted-foreground">Versato annuo</th>
               <th className="px-3 py-2 text-right font-medium text-muted-foreground">Versato cumulato</th>
@@ -168,20 +169,20 @@ export const ForecastChart = React.memo(function ForecastChart({
                   <td className="px-3 py-2 font-medium">+{row.anno}y</td>
                   <td className="px-3 py-2 text-right font-mono text-muted-foreground">{fmtEurRound.format(versatoAnnuo)}</td>
                   <td className="px-3 py-2 text-right font-mono">{fmtEurRound.format(versatoCumulato)}</td>
-                  <td className="px-3 py-2 text-right font-mono text-[#10b981]">{fmtEurRound.format(interessiMaturati)}</td>
+                  <td className="px-3 py-2 text-right font-mono text-success">{fmtEurRound.format(interessiMaturati)}</td>
                   <td className="px-3 py-2 text-right font-mono font-semibold">{fmtEurRound.format(row.Totale)}</td>
                 </tr>
               )
             })}
           </tbody>
           <tfoot>
-            <tr className="border-t border-border bg-muted">
+            <tr className="border-t border-outline bg-muted">
               <td className="px-3 py-2 font-semibold">Totale</td>
               <td className="px-3 py-2" />
               <td className="px-3 py-2 text-right font-mono font-semibold">
                 {fmtEurRound.format((cAderente + cAzienda + cTfr) * forecastYrs)}
               </td>
-              <td className="px-3 py-2 text-right font-mono font-semibold text-[#10b981]">
+              <td className="px-3 py-2 text-right font-mono font-semibold text-success">
                 {fmtEurRound.format(data[forecastYrs].Totale - (cAderente + cAzienda + cTfr) * forecastYrs)}
               </td>
               <td className="px-3 py-2 text-right font-mono font-semibold">

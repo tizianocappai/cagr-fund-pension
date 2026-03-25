@@ -1,11 +1,21 @@
 import * as React from 'react'
 import { cn } from '@/lib/utils'
 
-const Card = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
-  ({ className, ...props }, ref) => (
+interface CardProps extends React.HTMLAttributes<HTMLDivElement> {
+  variant?: 'elevated' | 'filled' | 'outlined'
+}
+
+const Card = React.forwardRef<HTMLDivElement, CardProps>(
+  ({ className, variant = 'elevated', ...props }, ref) => (
     <div
       ref={ref}
-      className={cn('border border-[#b1b4b6] bg-white text-[#0b0c0c]', className)}
+      className={cn(
+        'rounded-md overflow-hidden',
+        variant === 'elevated' && 'bg-surface-container elevation-1',
+        variant === 'filled' && 'bg-surface-container-highest',
+        variant === 'outlined' && 'bg-surface border border-outline',
+        className
+      )}
       {...props}
     />
   )
@@ -30,7 +40,7 @@ const CardDescription = React.forwardRef<
   HTMLParagraphElement,
   React.HTMLAttributes<HTMLParagraphElement>
 >(({ className, ...props }, ref) => (
-  <p ref={ref} className={cn('text-sm text-[#505a5f]', className)} {...props} />
+  <p ref={ref} className={cn('text-[14px] leading-[20px] tracking-[0.25px] text-on-surface-variant', className)} {...props} />
 ))
 CardDescription.displayName = 'CardDescription'
 

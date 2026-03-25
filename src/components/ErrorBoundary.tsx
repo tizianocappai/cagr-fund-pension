@@ -19,7 +19,7 @@ export class ErrorBoundary extends React.Component<{ children: React.ReactNode }
     if (this.state.hasError) {
       return (
         <div className="mx-auto max-w-4xl px-6 py-10">
-          <div className="border-l-4 border-error bg-[#fde8e6] px-4 py-3 text-sm font-bold text-error">
+          <div className="bg-error-container px-4 py-3 text-[14px] leading-[20px] tracking-[0.1px] font-medium text-on-error-container elevation-1 rounded-md">
             Si è verificato un errore inatteso: {this.state.message}
           </div>
         </div>

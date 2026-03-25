@@ -1,4 +1,4 @@
-import { Separator } from '@/components/ui/separator'
+import { Divider } from 'antd'
 import { useMeta } from '@/lib/useMeta'
 
 const steps = [
@@ -29,7 +29,7 @@ const steps = [
     description: (
       <>
         Nella pagina delle operazioni, clicca su <strong>"Esporta il dettaglio delle operazioni"</strong>{' '}
-        contrassegnato dall'icona verde. Il file <code className="text-xs bg-[--color-muted] px-1.5 py-0.5 rounded font-mono">.xls</code> verrà
+        contrassegnato dall'icona verde. Il file <code className="text-[12px] leading-[16px] tracking-[0.4px] bg-[--color-muted] px-1.5 py-0.5 rounded font-mono">.xls</code> verrà
         scaricato automaticamente sul tuo dispositivo.
         <img
           src="/cometa-guide-step-3.png"
@@ -77,20 +77,20 @@ export default function CometaGuide() {
     <div className="mx-auto max-w-4xl px-6 py-10">
 
       <header className="mb-8">
-        <h1 className="text-3xl font-bold">Guida all'utilizzo</h1>
+        <h1 className="text-[36px] leading-[44px] font-normal">Guida all'utilizzo</h1>
         <p className="mt-2 text-muted-foreground">
           Segui questi 5 passi per calcolare il tasso di crescita medio annuo del tuo fondo pensione Cometa.
         </p>
       </header>
 
-        <Separator className="mb-10" />
+        <Divider className="mb-10" />
 
         <ol className="flex flex-col gap-0">
           {steps.map((step, i) => (
             <li key={step.number} className="flex gap-6">
               {/* Left column: number + connector line */}
               <div className="flex flex-col items-center">
-                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border-2 border-[--color-foreground] bg-[--color-foreground] text-[--color-background] text-xs font-bold">
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-on-surface bg-on-surface text-surface text-xs font-bold">
                   {step.number}
                 </div>
                 {i < steps.length - 1 && (
@@ -103,7 +103,7 @@ export default function CometaGuide() {
                 <div className="mb-1">
                   <h2 className="font-semibold">{step.title}</h2>
                 </div>
-                <div className="text-sm text-[--color-muted-foreground] leading-relaxed">
+                <div className="text-[14px] leading-[20px] tracking-[0.25px] text-[--color-muted-foreground] leading-relaxed">
                   {step.description}
                 </div>
               </div>
@@ -111,10 +111,10 @@ export default function CometaGuide() {
           ))}
         </ol>
 
-        <Separator className="mt-10 mb-8" />
+        <Divider className="mt-10 mb-8" />
 
         <div className="rounded-[--radius] border border-[--color-border] bg-[--color-muted] px-5 py-4">
-          <p className="text-xs text-[--color-muted-foreground] leading-relaxed">
+          <p className="text-[12px] leading-[16px] tracking-[0.4px] text-[--color-muted-foreground] leading-relaxed">
             <strong className="text-[--color-foreground]">Privacy:</strong> il file che carichi
             non viene mai inviato a nessun server. Tutto il calcolo avviene interamente nel tuo
             browser — i tuoi dati rimangono sul tuo dispositivo.

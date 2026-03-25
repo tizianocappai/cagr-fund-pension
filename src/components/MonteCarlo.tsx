@@ -10,8 +10,7 @@ import {
 	XAxis,
 	YAxis,
 } from 'recharts';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
+import { Alert, Button, Input } from 'antd';
 import {
 	Card,
 	CardContent,
@@ -19,10 +18,11 @@ import {
 	CardHeader,
 	CardTitle,
 } from '@/components/ui/card';
-import { Tooltip } from '@/components/ui/tooltip';
+import { Tooltip } from 'antd';
 import { fmtEurRound } from '@/lib/formatters';
 import { parseEur, parseRate } from '@/lib/parse';
 import { N_SIMULAZIONI, runSimulation, type SimResult } from '@/lib/monteCarlo';
+import { chartColors } from '@/lib/chartColors';
 
 const DEFAULT_RENDIMENTO = '3,5';
 
@@ -59,7 +59,7 @@ function HistoTooltip({
 	if (!active || !payload?.length) return null;
 	const d = payload[0].payload;
 	return (
-		<div className='border border-border bg-white px-3 py-2 text-xs shadow'>
+		<div className='border border-border bg-white px-3 py-2 text-[12px] leading-[16px] tracking-[0.4px] shadow'>
 			<p className='text-muted-foreground'>{d.label}</p>
 			<p className='font-semibold'>{d.count} simulazioni</p>
 		</div>
@@ -103,42 +103,44 @@ export function MonteCarlo() {
 	}
 
 	const successColor = !sim
-		? '#505a5f'
+		? chartColors.axis
 		: sim.successRate >= 70
-			? '#00703c'
+			? chartColors.success
 			: sim.successRate >= 40
-				? '#f59e0b'
-				: '#d4351c';
+				? chartColors.warning
+				: chartColors.error;
 
 	return (
 		<div className='flex flex-col gap-6'>
 			{/* Parameters callout */}
-			<div className='border-l-4 border-[#1d70b8] bg-[#e8f1f8] px-4 py-4 text-sm leading-relaxed flex flex-col gap-2'>
-				<p className='font-semibold'>Parametri del modello</p>
-				<p>
-					I valori sono espressi in termini <strong>reali</strong>,
-					già al netto dell'inflazione. I default riflettono un fondo
-					pensione bilanciato europeo tipico (rendimento reale ~3,5%,
-					volatilità ~11%), in linea con i dati storici di lungo
-					periodo. Fonte:{' '}
-					<a href='https://www.covip.it/per-gli-operatori/fondi-pensione/costi-e-rendimenti-dei-fondi-pensione/elenco-dei-rendimenti' target='_blank' rel='noopener noreferrer'>
-						COVIP — Rendimenti dei fondi pensione
-					</a>
-					{'; '}
-					<a href='https://www.credit-suisse.com/about-us/en/reports-research/global-investment-returns-yearbook.html' target='_blank' rel='noopener noreferrer'>
-						Dimson-Marsh-Staunton, Global Investment Returns Yearbook
-					</a>
-					. Puoi modificare i parametri per rispecchiare il tuo comparto.
-				</p>
-				<p className='text-xs text-muted-foreground'>
-					I rendimenti passati non garantiscono quelli futuri.
-				</p>
-			</div>
+			<Alert type="info" showIcon description={
+				<>
+					<p className='font-semibold mb-2'>Parametri del modello</p>
+					<p className='text-[14px] leading-[20px] tracking-[0.25px] leading-relaxed mb-2'>
+						I valori sono espressi in termini <strong>reali</strong>,
+						già al netto dell'inflazione. I default riflettono un fondo
+						pensione bilanciato europeo tipico (rendimento reale ~3,5%,
+						volatilità ~11%), in linea con i dati storici di lungo
+						periodo. Fonte:{' '}
+						<a href='https://www.covip.it/per-gli-operatori/fondi-pensione/costi-e-rendimenti-dei-fondi-pensione/elenco-dei-rendimenti' target='_blank' rel='noopener noreferrer'>
+							COVIP — Rendimenti dei fondi pensione
+						</a>
+						{'; '}
+						<a href='https://www.credit-suisse.com/about-us/en/reports-research/global-investment-returns-yearbook.html' target='_blank' rel='noopener noreferrer'>
+							Dimson-Marsh-Staunton, Global Investment Returns Yearbook
+						</a>
+						. Puoi modificare i parametri per rispecchiare il tuo comparto.
+					</p>
+					<p className='text-[12px] leading-[16px] tracking-[0.4px] text-muted-foreground'>
+						I rendimenti passati non garantiscono quelli futuri.
+					</p>
+				</>
+			} />
 
 			{/* Inputs */}
 			<div className='grid grid-cols-2 gap-3 sm:grid-cols-3'>
 				<div className='flex flex-col gap-1'>
-					<label htmlFor='mc-rendimento' className='text-xs tracking-widest uppercase text-muted-foreground'>
+					<label htmlFor='mc-rendimento' className='text-[12px] leading-[16px] tracking-[0.4px] tracking-widest uppercase text-muted-foreground'>
 						Rendimento reale atteso (%)
 					</label>
 					<Input
@@ -150,7 +152,7 @@ export function MonteCarlo() {
 					/>
 				</div>
 				<div className='flex flex-col gap-1'>
-					<label htmlFor='mc-volatilita' className='text-xs tracking-widest uppercase text-muted-foreground'>
+					<label htmlFor='mc-volatilita' className='text-[12px] leading-[16px] tracking-[0.4px] tracking-widest uppercase text-muted-foreground'>
 						Volatilità — std dev (%)
 					</label>
 					<Input
@@ -164,7 +166,7 @@ export function MonteCarlo() {
 				<div className='flex flex-col gap-1'>
 					<label
 						htmlFor='mc-eta'
-						className='text-xs tracking-widest uppercase text-muted-foreground'
+						className='text-[12px] leading-[16px] tracking-[0.4px] tracking-widest uppercase text-muted-foreground'
 					>
 						Età attuale
 					</label>
@@ -181,7 +183,7 @@ export function MonteCarlo() {
 				<div className='flex flex-col gap-1'>
 					<label
 						htmlFor='mc-pens'
-						className='text-xs tracking-widest uppercase text-muted-foreground'
+						className='text-[12px] leading-[16px] tracking-[0.4px] tracking-widest uppercase text-muted-foreground'
 					>
 						Età pensionamento
 					</label>
@@ -198,18 +200,18 @@ export function MonteCarlo() {
 				<div className='flex flex-col gap-1'>
 					<label
 						htmlFor='mc-anni'
-						className='text-xs tracking-widest uppercase text-muted-foreground'
+						className='text-[12px] leading-[16px] tracking-[0.4px] tracking-widest uppercase text-muted-foreground'
 					>
 						Orizzonte temporale
 					</label>
-					<div className='border-2 border-[#0b0c0c] bg-muted px-3 py-2 font-mono text-sm'>
+					<div className='h-14 flex items-center border border-outline bg-surface px-4 font-mono text-[16px] leading-[24px] tracking-[0.5px] rounded-sm'>
 						{years} anni
 					</div>
 				</div>
 				<div className='flex flex-col gap-1'>
 					<label
 						htmlFor='mc-patrim'
-						className='text-xs tracking-widest uppercase text-muted-foreground'
+						className='text-[12px] leading-[16px] tracking-[0.4px] tracking-widest uppercase text-muted-foreground'
 					>
 						Patrimonio iniziale (€)
 					</label>
@@ -224,7 +226,7 @@ export function MonteCarlo() {
 				<div className='flex flex-col gap-1'>
 					<label
 						htmlFor='mc-vers'
-						className='text-xs tracking-widest uppercase text-muted-foreground'
+						className='text-[12px] leading-[16px] tracking-[0.4px] tracking-widest uppercase text-muted-foreground'
 					>
 						Versamento (€)
 					</label>
@@ -239,7 +241,7 @@ export function MonteCarlo() {
 				<div className='flex flex-col gap-1'>
 					<label
 						htmlFor='mc-freq'
-						className='text-xs tracking-widest uppercase text-muted-foreground'
+						className='text-[12px] leading-[16px] tracking-[0.4px] tracking-widest uppercase text-muted-foreground'
 					>
 						Frequenza
 					</label>
@@ -251,7 +253,7 @@ export function MonteCarlo() {
 								e.target.value as 'mensile' | 'annuale',
 							)
 						}
-						className='border-2 border-[#0b0c0c] bg-white px-3 py-2 text-sm font-mono focus-visible:outline-3 focus-visible:outline-[#ffdd00] focus-visible:outline-offset-0 appearance-none cursor-pointer'
+						className='h-14 border border-outline bg-surface px-4 text-[16px] leading-[24px] tracking-[0.5px] rounded-sm focus-visible:outline-none focus-visible:border-primary focus-visible:ring-0 appearance-none cursor-pointer transition-colors duration-200'
 					>
 						<option value='mensile'>Mensile</option>
 						<option value='annuale'>Annuale</option>
@@ -261,7 +263,7 @@ export function MonteCarlo() {
 
 			{/* Target capital */}
 			<div className='flex flex-col gap-1'>
-				<label htmlFor='mc-obiettivo' className='text-xs tracking-widest uppercase text-muted-foreground'>
+				<label htmlFor='mc-obiettivo' className='text-[12px] leading-[16px] tracking-[0.4px] tracking-widest uppercase text-muted-foreground'>
 					Capitale obiettivo (€)
 				</label>
 				<Input
@@ -271,17 +273,17 @@ export function MonteCarlo() {
 					placeholder='es. 300.000'
 					className='font-mono max-w-xs'
 				/>
-				<p className='text-xs text-muted-foreground'>
+				<p className='text-[12px] leading-[16px] tracking-[0.4px] text-muted-foreground'>
 					Il capitale che vuoi raggiungere al pensionamento. La simulazione calcola la probabilità di superarlo.
 				</p>
 			</div>
 
 			<div>
-				<Button onClick={simulate} disabled={!valid || loading}>
+				<Button type="primary" onClick={simulate} disabled={!valid || loading}>
 					{loading ? 'Simulazione in corso…' : 'Avvia simulazione'}
 				</Button>
 				{!valid && (
-					<p className='mt-2 text-xs text-muted-foreground'>
+					<p className='mt-2 text-[12px] leading-[16px] tracking-[0.4px] text-muted-foreground'>
 						Inserisci almeno un versamento o un patrimonio iniziale, e un capitale obiettivo.
 					</p>
 				)}
@@ -294,21 +296,21 @@ export function MonteCarlo() {
 						<Card className='sm:col-span-1'>
 							<CardHeader className='pb-2'>
 								<CardDescription>
-									<Tooltip content="Percentuale di simulazioni in cui il capitale finale supera il tuo capitale obiettivo. Sopra il 70% è considerato solido; tra 40–70% accettabile; sotto il 40% richiede attenzione.">
+									<Tooltip title="Percentuale di simulazioni in cui il capitale finale supera il tuo capitale obiettivo. Sopra il 70% è considerato solido; tra 40–70% accettabile; sotto il 40% richiede attenzione.">
 										<span className='border-b border-dashed border-current cursor-help'>
 											Probabilità di successo
 										</span>
 									</Tooltip>
 								</CardDescription>
 								<CardTitle
-									className='text-4xl font-bold'
+									className='text-[57px] leading-[64px] tracking-[-0.25px] font-normal'
 									style={{ color: successColor }}
 								>
 									{sim.successRate.toFixed(1)}%
 								</CardTitle>
 							</CardHeader>
 							<CardContent>
-								<p className='text-xs text-muted-foreground'>
+								<p className='text-[12px] leading-[16px] tracking-[0.4px] text-muted-foreground'>
 									su {N_SIMULAZIONI.toLocaleString('it-IT')}{' '}
 									simulazioni — obiettivo{" "}
 									<span className="font-mono font-medium text-foreground">{fmtEurRound.format(sim.target)}</span>
@@ -322,7 +324,7 @@ export function MonteCarlo() {
 									Parametri simulazione
 								</CardDescription>
 							</CardHeader>
-							<CardContent className='text-xs text-muted-foreground flex flex-col gap-1'>
+							<CardContent className='text-[12px] leading-[16px] tracking-[0.4px] text-muted-foreground flex flex-col gap-1'>
 								<div className='flex justify-between'>
 									<span>Orizzonte temporale</span>
 									<span className='font-mono font-medium text-foreground'>
@@ -354,18 +356,18 @@ export function MonteCarlo() {
 
 					{/* Scenario table */}
 					<div>
-						<p className='text-base font-bold mb-1 border-l-4 border-[#0b0c0c] pl-3'>
+						<p className='text-[22px] leading-[28px] font-medium mb-1'>
 							Scenari
 						</p>
-						<p className='text-sm text-muted-foreground mb-3'>
-							<Tooltip content='Un percentile indica la percentuale di simulazioni che si trovano al di sotto di quel valore. Il 10° percentile significa che il 90% delle simulazioni ha ottenuto un risultato migliore — è lo scenario peggiore realistico.'>
+						<p className='text-[14px] leading-[20px] tracking-[0.25px] text-muted-foreground mb-3'>
+							<Tooltip title='Un percentile indica la percentuale di simulazioni che si trovano al di sotto di quel valore. Il 10° percentile significa che il 90% delle simulazioni ha ottenuto un risultato migliore — è lo scenario peggiore realistico.'>
 								<span className='border-b border-dashed border-current cursor-help'>
 									Cosa sono i percentili?
 								</span>
 							</Tooltip>
 						</p>
 						<div className='border border-border overflow-x-auto'>
-							<table className='w-full text-sm'>
+							<table className='w-full text-[14px] leading-[20px] tracking-[0.25px]'>
 								<thead>
 									<tr className='border-b border-border bg-muted'>
 										<th className='px-3 py-2 text-left font-medium text-muted-foreground'>
@@ -391,17 +393,17 @@ export function MonteCarlo() {
 											{
 												label: 'Pessimista (P10°)',
 												value: sim.p10,
-												color: '#d4351c',
+												color: chartColors.error,
 											},
 											{
 												label: 'Mediano (P50°)',
 												value: sim.p50,
-												color: '#0b0c0c',
+												color: chartColors.axis,
 											},
 											{
 												label: 'Ottimista (P90°)',
 												value: sim.p90,
-												color: '#00703c',
+												color: chartColors.success,
 											},
 										] as const
 									).map((s, i) => {
@@ -436,8 +438,8 @@ export function MonteCarlo() {
 														s.value -
 															sim.totalVersato >=
 														0
-															? '#00703c'
-															: '#d4351c',
+															? chartColors.success
+															: chartColors.error,
 												}}
 											>
 												{s.value - sim.totalVersato >= 0
@@ -464,15 +466,15 @@ export function MonteCarlo() {
 
 					{/* Histogram */}
 					<div>
-						<p className='text-base font-bold mb-1 border-l-4 border-[#0b0c0c] pl-3'>
+						<p className='text-[22px] leading-[28px] font-medium mb-1'>
 							Distribuzione del capitale finale
 						</p>
-						<p className='text-sm text-muted-foreground mb-4'>
+						<p className='text-[14px] leading-[20px] tracking-[0.25px] text-muted-foreground mb-4'>
 							Ogni barra mostra quante simulazioni hanno prodotto
 							un capitale finale in quell'intervallo. Le barre{' '}
 							<strong className='text-error'>rosse</strong> sono
 							sotto l'obiettivo, quelle{' '}
-							<strong style={{ color: '#00703c' }}>verdi</strong>{' '}
+							<strong style={{ color: chartColors.success }}>verdi</strong>{' '}
 							lo superano. La linea tratteggiata segna l'obiettivo
 							({fmtEurRound.format(sim.target)}).
 						</p>
@@ -492,20 +494,20 @@ export function MonteCarlo() {
 									barCategoryGap='2%'
 								>
 									<CartesianGrid
-										stroke='#e5e5e5'
+										stroke={chartColors.grid}
 										strokeDasharray='4 2'
 										vertical={false}
 									/>
 									<XAxis
 										dataKey='label'
-										tick={{ fontSize: 10, fill: '#737373' }}
+										tick={{ fontSize: 10, fill: chartColors.axis }}
 										axisLine={false}
 										tickLine={false}
 										interval={4}
 									/>
 									<YAxis
 										tickFormatter={(v) => `${v}`}
-										tick={{ fontSize: 10, fill: '#737373' }}
+										tick={{ fontSize: 10, fill: chartColors.axis }}
 										axisLine={false}
 										tickLine={false}
 										width={40}
@@ -526,14 +528,14 @@ export function MonteCarlo() {
 													sim.histogram[targetIdx]
 														.label
 												}
-												stroke='#0b0c0c'
+												stroke={chartColors.axis}
 												strokeDasharray='4 2'
 												strokeWidth={2}
 												label={{
 													value: 'Obiettivo',
 													position: 'insideTopRight',
 													fontSize: 10,
-													fill: '#0b0c0c',
+													fill: chartColors.axis,
 												}}
 											/>
 										) : null;
@@ -548,8 +550,8 @@ export function MonteCarlo() {
 												key={i}
 												fill={
 													b.aboveTarget
-														? '#00703c'
-														: '#d4351c'
+														? chartColors.success
+														: chartColors.error
 												}
 												fillOpacity={0.75}
 											/>
@@ -561,13 +563,15 @@ export function MonteCarlo() {
 					</div>
 
 					{/* Disclaimer */}
-					<div className='border-l-4 border-error bg-[#fde8e6] px-4 py-3 text-xs leading-relaxed'>
-						La simulazione Monte Carlo è uno strumento statistico a
-						scopo educativo. I risultati dipendono dalle ipotesi di
-						rendimento e volatilità e non costituiscono previsioni
-						né consulenza finanziaria. Le performance future possono
-						differire significativamente da quelle simulate.
-					</div>
+					<Alert type="error" showIcon description={
+						<p className='text-[12px] leading-[16px] tracking-[0.4px] leading-relaxed'>
+							La simulazione Monte Carlo è uno strumento statistico a
+							scopo educativo. I risultati dipendono dalle ipotesi di
+							rendimento e volatilità e non costituiscono previsioni
+							né consulenza finanziaria. Le performance future possono
+							differire significativamente da quelle simulate.
+						</p>
+					} />
 				</>
 			)}
 		</div>
