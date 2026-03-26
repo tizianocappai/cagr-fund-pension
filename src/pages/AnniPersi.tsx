@@ -19,6 +19,7 @@ import {
 	CardHeader,
 	CardTitle,
 } from '@/components/ui/card';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 import { ChartTooltip } from '@/components/ui/chart-tooltip';
 import { fmtEur, fmtEurRound, tickY } from '@/lib/formatters';
 import { parseEur, parseRate } from '@/lib/parse';
@@ -226,24 +227,24 @@ export default function AnniPersi() {
 				</p>
 			</header>
 
-			<div className='border-l-4 border-[#1d70b8] bg-[#e8f1f8] px-4 py-4 text-sm leading-relaxed mb-8'>
-				<p>
+			<Alert className="mb-8">
+				<AlertDescription>
 					Il tempo è la risorsa più preziosa negli investimenti.
 					Grazie all'interesse composto, ogni anno in cui il tuo
 					denaro non lavora non è solo un anno in meno di contributi —
 					è un anno in meno di crescita su{' '}
 					<strong>tutto il capitale già accumulato</strong>. Il
 					ritardo si paga per decenni.
-				</p>
-			</div>
+				</AlertDescription>
+			</Alert>
 
 			<Separator className='mb-8' />
 
 			{/* Inputs */}
 			<div>
-				<p className='text-base font-bold mb-4 border-l-4 border-[#0b0c0c] pl-3'>
+				<h2 className="text-lg font-semibold mb-4">
 					I tuoi dati
-				</p>
+				</h2>
 				<div className='grid grid-cols-3 gap-4 mb-2'>
 					<div className='flex flex-col gap-1'>
 						<label
@@ -351,7 +352,8 @@ export default function AnniPersi() {
 					migliaia (es. 30.000).
 				</p>
 				{ral > 0 && (
-					<div className='border-l-4 border-[#1d70b8] bg-[#e8f1f8] px-4 py-3 text-xs flex flex-col gap-0.5'>
+					<Alert>
+						<AlertDescription className="text-xs flex flex-col gap-0.5">
 						<span>
 							Contributo annuale totale:{' '}
 							<strong>
@@ -364,7 +366,8 @@ export default function AnniPersi() {
 							{fmtEurRound.format(Math.round(aderAnnuo))} ·
 							Azienda: {fmtEurRound.format(Math.round(aziAnnuo))}
 						</span>
-					</div>
+						</AlertDescription>
+					</Alert>
 				)}
 			</div>
 
@@ -374,9 +377,9 @@ export default function AnniPersi() {
 
 					{/* Results */}
 					<div>
-						<p className='text-base font-bold mb-4 border-l-4 border-[#0b0c0c] pl-3'>
+						<h2 className="text-lg font-semibold mb-4">
 							Il costo del ritardo
-						</p>
+						</h2>
 						<div className='grid grid-cols-2 gap-3 mb-6'>
 							<Card>
 								<CardHeader className='pb-2'>
@@ -442,7 +445,8 @@ export default function AnniPersi() {
 							</Card>
 						</div>
 
-						<div className='border-l-4 border-error bg-[#fde8e6] px-4 py-3 text-sm flex flex-col gap-1'>
+						<Alert variant="destructive">
+							<AlertDescription className="flex flex-col gap-1">
 							<p>
 								Aspettare {anniPersi}{' '}
 								{anniPersi === 1 ? 'anno' : 'anni'} ti costerà{' '}
@@ -469,16 +473,17 @@ export default function AnniPersi() {
 									avrebbero generato fino alla pensione
 								</li>
 							</ul>
-						</div>
+							</AlertDescription>
+						</Alert>
 					</div>
 
 					<Separator className='my-8' />
 
 					{/* Chart */}
 					<div>
-						<p className='text-base font-bold mb-4 border-l-4 border-[#0b0c0c] pl-3'>
+						<h2 className="text-lg font-semibold mb-4">
 							Crescita del capitale da oggi
-						</p>
+						</h2>
 						<p className='text-sm text-muted-foreground mb-5'>
 							La linea verde parte già da{' '}
 							{fmtEurRound.format(

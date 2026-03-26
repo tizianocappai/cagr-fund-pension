@@ -56,7 +56,7 @@ export const ContributionsChart = React.memo(function ContributionsChart({ yearR
           tickLine={false}
           width={56}
         />
-        <Tooltip content={<ChartTooltip labelPrefix="" colorProp="fill" />} cursor={{ fill: '#f3f2f1' }} />
+        <Tooltip content={<ChartTooltip labelPrefix="" colorProp="fill" />} cursor={{ fill: '#f5f5f5' }} />
         <Legend iconType="square" iconSize={10} wrapperStyle={{ fontSize: 11, color: '#737373', paddingTop: 8 }} />
         {columns.map(col => (
           <Bar key={col.key} dataKey={col.label} fill={col.chartFill} />

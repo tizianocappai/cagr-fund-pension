@@ -18,7 +18,7 @@ const steps = [
         <img
           src="/cometa-guide-step-2.png"
           alt="Screenshot del portale Cometa — pulsante Clicca qui per l'elenco completo"
-          className="mt-4 border border-border w-full max-w-lg"
+          className="mt-4 rounded-lg border border-border w-full max-w-lg"
         />
       </>
     ),
@@ -34,7 +34,7 @@ const steps = [
         <img
           src="/cometa-guide-step-3.png"
           alt="Screenshot del portale Cometa — pulsante Esporta il dettaglio delle operazioni"
-          className="mt-4 border border-border w-full max-w-lg"
+          className="mt-4 rounded-lg border border-border w-full max-w-lg"
         />
       </>
     ),
@@ -61,7 +61,7 @@ const steps = [
         <img
           src="/cometa-guide-step-5.png"
           alt="Screenshot del portale Cometa — valore attuale della posizione individuale"
-          className="mt-4 border border-border w-full max-w-lg"
+          className="mt-4 rounded-lg border border-border w-full max-w-lg"
         />
       </>
     ),
@@ -90,11 +90,11 @@ export default function CometaGuide() {
             <li key={step.number} className="flex gap-6">
               {/* Left column: number + connector line */}
               <div className="flex flex-col items-center">
-                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border-2 border-[--color-foreground] bg-[--color-foreground] text-[--color-background] text-xs font-bold">
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border-2 border-foreground bg-foreground text-background text-xs font-bold">
                   {step.number}
                 </div>
                 {i < steps.length - 1 && (
-                  <div className="w-px flex-1 bg-[--color-border] my-1" />
+                  <div className="w-px flex-1 bg-border my-1" />
                 )}
               </div>
 
@@ -103,7 +103,7 @@ export default function CometaGuide() {
                 <div className="mb-1">
                   <h2 className="font-semibold">{step.title}</h2>
                 </div>
-                <div className="text-sm text-[--color-muted-foreground] leading-relaxed">
+                <div className="text-sm text-muted-foreground leading-relaxed">
                   {step.description}
                 </div>
               </div>
@@ -113,9 +113,9 @@ export default function CometaGuide() {
 
         <Separator className="mt-10 mb-8" />
 
-        <div className="rounded-[--radius] border border-[--color-border] bg-[--color-muted] px-5 py-4">
-          <p className="text-xs text-[--color-muted-foreground] leading-relaxed">
-            <strong className="text-[--color-foreground]">Privacy:</strong> il file che carichi
+        <div className="rounded-md border border-border bg-muted px-5 py-4">
+          <p className="text-xs text-muted-foreground leading-relaxed">
+            <strong className="text-foreground">Privacy:</strong> il file che carichi
             non viene mai inviato a nessun server. Tutto il calcolo avviene interamente nel tuo
             browser — i tuoi dati rimangono sul tuo dispositivo.
           </p>

@@ -11,7 +11,8 @@ import { Separator } from '@/components/ui/separator'
 import { ContributionsChart } from '@/components/ContributionsChart'
 import { ForecastChart, type Flow } from '@/components/ForecastChart'
 import { CostAnalysis } from '@/components/CostAnalysis'
-import { Tooltip } from '@/components/ui/tooltip'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
+import { Alert, AlertDescription } from '@/components/ui/alert'
 import { type ContributionColumn } from '@/lib/providerConfig'
 
 interface Props {
@@ -175,9 +176,11 @@ export function CagrCalculator({ file, flow, columns, parser = parseXls }: Props
       </div>
 
       {error && (
-        <div className="border-l-4 border-error bg-[#fde8e6] px-4 py-3 text-sm font-bold text-error">
-          {error}
-        </div>
+        <Alert variant="destructive">
+          <AlertDescription className="font-bold">
+            {error}
+          </AlertDescription>
+        </Alert>
       )}
 
       {results && <ResultsPanel results={results} flow={flow} columns={columns} />}
@@ -220,7 +223,7 @@ function ResultsPanel({ results, flow, columns }: { results: Results; flow: Flow
       <Separator />
 
       {/* Print header — visible only when printing */}
-      <div className="hidden print:flex print:items-center print:gap-3 print:pb-4 print:border-b-2 print:border-[#0b0c0c]">
+      <div className="hidden print:flex print:items-center print:gap-3 print:pb-4 print:border-b print:border-border">
         <img src="/gennaro-logo.png" alt="" aria-hidden="true" className="h-8 w-8 object-contain" />
         <div>
           <p className="text-lg font-bold leading-tight">Gennaro — Rendimento Fondo Pensione</p>
@@ -237,7 +240,7 @@ function ResultsPanel({ results, flow, columns }: { results: Results; flow: Flow
 
       {/* Main results */}
       <div>
-        <p className="text-base font-bold mb-4 border-l-4 border-[#0b0c0c] pl-3">Risultati</p>
+        <h2 className="text-lg font-semibold mb-4">Risultati</h2>
         <div className="grid grid-cols-2 gap-3">
           {stats.map(s => (
             <Card key={s.label}>
@@ -245,9 +248,16 @@ function ResultsPanel({ results, flow, columns }: { results: Results; flow: Flow
                 <CardDescription>{s.label}</CardDescription>
                 <CardTitle className="text-2xl">
                   {s.label === 'Tasso di crescita medio annuo' ? (
-                    <Tooltip content="Il tasso di crescita medio annuo misura quanto è cresciuto il tuo investimento ogni anno in media. In pratica ti dice: «se ogni anno il mio fondo fosse cresciuto sempre della stessa percentuale, di quanto sarebbe cresciuto?». Più è alto, meglio ha reso il tuo fondo nel tempo.">
-                      <span className="border-b border-dashed border-current cursor-help">{s.value}</span>
-                    </Tooltip>
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <span className="border-b border-dashed border-current cursor-help">{s.value}</span>
+                        </TooltipTrigger>
+                        <TooltipContent className="max-w-xs">
+                          <p>Il tasso di crescita medio annuo misura quanto è cresciuto il tuo investimento ogni anno in media. In pratica ti dice: «se ogni anno il mio fondo fosse cresciuto sempre della stessa percentuale, di quanto sarebbe cresciuto?». Più è alto, meglio ha reso il tuo fondo nel tempo.</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
                   ) : s.value}
                 </CardTitle>
               </CardHeader>
@@ -263,8 +273,8 @@ function ResultsPanel({ results, flow, columns }: { results: Results; flow: Flow
 
       {/* Year breakdown table */}
       <div>
-        <p className="text-base font-bold mb-4 border-l-4 border-[#0b0c0c] pl-3">Riepilogo per anno</p>
-        <div className="border border-border overflow-x-auto">
+        <h2 className="text-lg font-semibold mb-4">Riepilogo per anno</h2>
+        <div className="rounded-lg border border-border overflow-hidden">
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-border bg-muted">
@@ -315,7 +325,7 @@ function ResultsPanel({ results, flow, columns }: { results: Results; flow: Flow
 
       {/* Contributions chart */}
       <div>
-        <p className="text-base font-bold mb-4 border-l-4 border-[#0b0c0c] pl-3">Contributi per anno</p>
+        <h2 className="text-lg font-semibold mb-4">Contributi per anno</h2>
         <ContributionsChart yearRows={results.yearRows} columns={columns} />
       </div>
 
@@ -323,7 +333,7 @@ function ResultsPanel({ results, flow, columns }: { results: Results; flow: Flow
 
       {/* Forecast chart */}
       <div>
-        <p className="text-base font-bold mb-4 border-l-4 border-[#0b0c0c] pl-3">Proiezione futura</p>
+        <h2 className="text-lg font-semibold mb-4">Proiezione futura</h2>
         {(() => {
           const prevYear = new Date().getFullYear() - 1
           const row = results.yearRows.find(r => r.year === prevYear) ?? results.yearRows[results.yearRows.length - 1]
@@ -343,7 +353,7 @@ function ResultsPanel({ results, flow, columns }: { results: Results; flow: Flow
 
       {/* Bonus section */}
       <div>
-        <p className="text-base font-bold mb-1 border-l-4 border-[#0b0c0c] pl-3">Bonus</p>
+        <h2 className="text-lg font-semibold mb-1">Bonus</h2>
         <p className="text-sm text-muted-foreground mb-4">
           Questo tasso di crescita medio annuo esclude il contributo del datore di lavoro dal costo base, perché quel denaro non è mai uscito dal tuo portafoglio:
           nel momento in cui versi la tua quota, l'azienda aggiunge immediatamente la propria — <strong className="text-foreground">soldi gratis</strong> che entrano in automatico.
@@ -368,7 +378,7 @@ function ResultsPanel({ results, flow, columns }: { results: Results; flow: Flow
 
       {/* Cost analysis section */}
       <section>
-        <h2 className="border-l-4 border-[#0b0c0c] pl-3 text-2xl font-bold mb-4">
+        <h2 className="text-2xl font-bold mb-4">
           Analisi costi
         </h2>
         <CostAnalysis results={results} flow={flow} />

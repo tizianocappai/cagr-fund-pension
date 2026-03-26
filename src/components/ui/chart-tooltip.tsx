@@ -27,7 +27,7 @@ export function ChartTooltip({
 }: ChartTooltipProps) {
   if (!active || !payload?.length) return null
   return (
-    <div className="border border-border bg-card px-3 py-2 text-xs shadow-sm min-w-44">
+    <div className="rounded-lg border border-border bg-card px-3 py-2 text-xs shadow-sm min-w-44">
       <p className="font-semibold mb-1.5">{labelPrefix} {label}</p>
       {payload.map(p => (
         <p

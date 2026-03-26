@@ -3,6 +3,7 @@ import { Link } from 'react-router'
 import { CagrCalculator } from '@/components/CagrCalculator'
 import { columnsByProvider } from '@/lib/providerConfig'
 import { FileUploader } from '@/components/ui/file-uploader'
+import { Alert, AlertDescription } from '@/components/ui/alert'
 import { clearFile, loadFile, saveFile } from '@/lib/fileStorage'
 
 export default function Cometa() {
@@ -33,11 +34,13 @@ export default function Cometa() {
   return (
     <div className="mx-auto max-w-4xl px-6 py-10">
 
-      <div className="mb-6 border-l-4 border-[#1d70b8] bg-[#e8f1f8] px-4 py-3 text-sm">
-        Prima volta? Leggi la{' '}
-        <Link to="/cometa-guide">guida passo passo</Link>{' '}
-        per sapere come esportare il file dal portale Fondo Cometa.
-      </div>
+      <Alert className="mb-6">
+        <AlertDescription>
+          Prima volta? Leggi la{' '}
+          <Link to="/cometa-guide">guida passo passo</Link>{' '}
+          per sapere come esportare il file dal portale Fondo Cometa.
+        </AlertDescription>
+      </Alert>
 
       <header className="mb-8">
         <h1 className="text-3xl font-bold">Fondo Cometa</h1>

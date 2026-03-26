@@ -1,23 +1,28 @@
 @import "tailwindcss";
 
 @theme {
-  /* GOV.UK-inspired palette */
-  --color-background:           #ffffff;
-  --color-foreground:           #0b0c0c;
-  --color-muted:                #f3f2f1;
-  --color-muted-foreground:     #505a5f;
-  --color-border:               #b1b4b6;
-  --color-card:                 #ffffff;
-  --color-card-foreground:      #0b0c0c;
-  --color-primary:              #00703c;
-  --color-primary-foreground:   #ffffff;
-  --color-secondary:            #f3f2f1;
-  --color-secondary-foreground: #0b0c0c;
-  --color-focus:                #ffdd00;
-  --color-error:                #d4351c;
-  --color-ring:                 #ffdd00;
+  /* Modern shadcn/ui blue-accent palette */
+  --color-background:           0 0% 100%;           /* white */
+  --color-foreground:           0 0% 3.9%;           /* near-black */
+  --color-card:                 0 0% 100%;
+  --color-card-foreground:      0 0% 3.9%;
+  --color-popover:              0 0% 100%;
+  --color-popover-foreground:   0 0% 3.9%;
+  --color-primary:              221.2 83.2% 53.3%;   /* blue #3b82f6 */
+  --color-primary-foreground:   0 0% 100%;
+  --color-secondary:            0 0% 96.1%;
+  --color-secondary-foreground: 0 0% 9%;
+  --color-muted:                0 0% 96.1%;
+  --color-muted-foreground:     0 0% 45.1%;
+  --color-accent:               0 0% 96.1%;
+  --color-accent-foreground:    0 0% 9%;
+  --color-destructive:          0 84.2% 60.2%;       /* red for errors */
+  --color-destructive-foreground: 0 0% 98%;
+  --color-border:               0 0% 89.8%;
+  --color-input:                0 0% 89.8%;
+  --color-ring:                 221.2 83.2% 53.3%;   /* blue focus ring */
 
-  --radius: 0rem;
+  --radius: 0.5rem;                                  /* 8px rounded corners */
 
   --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
   --font-mono: ui-monospace, "Courier New", monospace;
@@ -57,22 +62,19 @@
   }
 
   a {
-    color: #1d70b8;
+    color: hsl(var(--color-primary));
     text-decoration: underline;
-    text-underline-offset: 2px;
+    text-underline-offset: 4px;
   }
 
   a:hover {
-    color: #003078;
-    text-decoration-thickness: 3px;
+    text-decoration-thickness: 2px;
   }
 
   a:focus-visible {
-    outline: 3px solid #ffdd00;
-    outline-offset: 0;
-    background-color: #ffdd00;
-    color: #0b0c0c;
-    text-decoration: none;
+    outline: 2px solid hsl(var(--color-ring));
+    outline-offset: 2px;
+    border-radius: 2px;
   }
 
   nav a {
@@ -81,9 +83,8 @@
   }
 
   nav a:focus-visible {
-    outline: 3px solid #ffdd00;
-    outline-offset: 0;
-    background-color: transparent;
-    color: inherit;
+    outline: 2px solid hsl(var(--color-ring));
+    outline-offset: 2px;
+    border-radius: 2px;
   }
 }

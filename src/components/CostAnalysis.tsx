@@ -12,6 +12,7 @@ import {
   YAxis,
 } from 'recharts'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Alert, AlertDescription } from '@/components/ui/alert'
 import { ChartTooltip } from '@/components/ui/chart-tooltip'
 import { fmtEur, fmtEurRound, tickY } from '@/lib/formatters'
 import {
@@ -72,7 +73,7 @@ export function CostAnalysis({ results, flow }: Props) {
     terDiff > 0.002
       ? { label: 'Sopra media', color: 'text-error' }
       : terDiff < -0.001
-        ? { label: 'Sotto media', color: 'text-[#00703c]' }
+        ? { label: 'Sotto media', color: 'text-primary' }
         : { label: 'In linea', color: 'text-foreground' }
 
   // Chart data: yearly fees
@@ -115,20 +116,22 @@ export function CostAnalysis({ results, flow }: Props) {
   return (
     <div className="flex flex-col gap-6">
       {/* Info callout */}
-      <div className="border-l-4 border-[#1d70b8] bg-[#e8f1f8] px-4 py-3 text-sm">
-        <p className="font-bold mb-1">Cosa sono i costi?</p>
-        <p>
-          Il <strong>TER (Total Expense Ratio)</strong> misura il costo annuo del fondo come
-          percentuale del patrimonio. Include commissioni di gestione, spese amministrative e altri
-          oneri. Un TER più basso significa che una quota maggiore del tuo capitale lavora per te.
-        </p>
-      </div>
+      <Alert>
+        <AlertDescription>
+          <p className="font-bold mb-1">Cosa sono i costi?</p>
+          <p>
+            Il <strong>TER (Total Expense Ratio)</strong> misura il costo annuo del fondo come
+            percentuale del patrimonio. Include commissioni di gestione, spese amministrative e altri
+            oneri. Un TER più basso significa che una quota maggiore del tuo capitale lavora per te.
+          </p>
+        </AlertDescription>
+      </Alert>
 
       {/* TER Comparison */}
       <div>
-        <p className="text-sm font-bold mb-3 border-l-4 border-[#0b0c0c] pl-3">
+        <h3 className="text-base font-semibold mb-3">
           TER Confronto
-        </p>
+        </h3>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
           <Card>
             <CardHeader className="pb-2">
@@ -174,10 +177,10 @@ export function CostAnalysis({ results, flow }: Props) {
 
       {/* Historical Impact */}
       <div>
-        <p className="text-sm font-bold mb-3 border-l-4 border-[#0b0c0c] pl-3">
+        <h3 className="text-base font-semibold mb-3">
           Impatto Storico
-        </p>
-        <div className="border border-border overflow-hidden">
+        </h3>
+        <div className="rounded-lg border border-border overflow-hidden">
           <table className="w-full text-sm">
             <tbody>
               <tr className="border-b border-border">
@@ -220,50 +223,52 @@ export function CostAnalysis({ results, flow }: Props) {
 
       {/* Future Projection */}
       <div>
-        <p className="text-sm font-bold mb-3 border-l-4 border-[#0b0c0c] pl-3">
+        <h3 className="text-base font-semibold mb-3">
           Proiezione Futura (30 anni)
-        </p>
+        </h3>
 
-        <div className="border-l-4 border-[#1d70b8] bg-[#e8f1f8] px-4 py-3 text-sm mb-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <p className="font-bold mb-2">Con TER attuale ({(ter * 100).toFixed(2)}%)</p>
-              <div className="flex flex-col gap-1 text-xs">
-                <div className="flex justify-between">
-                  <span>Spese future stimate:</span>
-                  <span className="font-mono">{fmtEurRound.format(currentScenario.totalFees)}</span>
+        <Alert className="mb-4">
+          <AlertDescription>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <p className="font-bold mb-2">Con TER attuale ({(ter * 100).toFixed(2)}%)</p>
+                <div className="flex flex-col gap-1 text-xs">
+                  <div className="flex justify-between">
+                    <span>Spese future stimate:</span>
+                    <span className="font-mono">{fmtEurRound.format(currentScenario.totalFees)}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>Capitale finale netto:</span>
+                    <span className="font-mono font-bold">{fmtEurRound.format(currentScenario.finalCapital)}</span>
+                  </div>
                 </div>
-                <div className="flex justify-between">
-                  <span>Capitale finale netto:</span>
-                  <span className="font-mono font-bold">{fmtEurRound.format(currentScenario.finalCapital)}</span>
+              </div>
+
+              <div>
+                <p className="font-bold mb-2">Con TER ottimizzato ({(optimizedTER * 100).toFixed(2)}%)</p>
+                <div className="flex flex-col gap-1 text-xs">
+                  <div className="flex justify-between">
+                    <span>Spese future stimate:</span>
+                    <span className="font-mono">{fmtEurRound.format(optimizedScenario.totalFees)}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>Capitale finale netto:</span>
+                    <span className="font-mono font-bold">{fmtEurRound.format(optimizedScenario.finalCapital)}</span>
+                  </div>
                 </div>
               </div>
             </div>
 
-            <div>
-              <p className="font-bold mb-2">Con TER ottimizzato ({(optimizedTER * 100).toFixed(2)}%)</p>
-              <div className="flex flex-col gap-1 text-xs">
-                <div className="flex justify-between">
-                  <span>Spese future stimate:</span>
-                  <span className="font-mono">{fmtEurRound.format(optimizedScenario.totalFees)}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span>Capitale finale netto:</span>
-                  <span className="font-mono font-bold">{fmtEurRound.format(optimizedScenario.finalCapital)}</span>
-                </div>
+            {potentialSavings > 1000 && (
+              <div className="mt-3 pt-3 border-t border-primary">
+                <p className="font-bold text-primary">
+                  Riducendo i costi potresti avere {fmtEurRound.format(potentialSavings)} in più
+                  tra 30 anni!
+                </p>
               </div>
-            </div>
-          </div>
-
-          {potentialSavings > 1000 && (
-            <div className="mt-3 pt-3 border-t border-[#1d70b8]">
-              <p className="font-bold text-[#00703c]">
-                Riducendo i costi potresti avere {fmtEurRound.format(potentialSavings)} in più
-                tra 30 anni!
-              </p>
-            </div>
-          )}
-        </div>
+            )}
+          </AlertDescription>
+        </Alert>
 
         {/* Projection Chart */}
         <div role="img" aria-label="Grafico: proiezione costi futuri">
@@ -319,9 +324,9 @@ export function CostAnalysis({ results, flow }: Props) {
 
       {/* Yearly Fees Evolution */}
       <div>
-        <p className="text-sm font-bold mb-3 border-l-4 border-[#0b0c0c] pl-3">
+        <h3 className="text-base font-semibold mb-3">
           Evoluzione Spese Anno per Anno
-        </p>
+        </h3>
 
         <div role="img" aria-label="Grafico: spese pagate per anno">
           <ResponsiveContainer width="100%" height={240}>

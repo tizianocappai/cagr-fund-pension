@@ -1,10 +1,19 @@
 import * as React from 'react'
 import { Button } from '@/components/ui/button'
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog'
+import { Alert, AlertDescription } from '@/components/ui/alert'
 
 const STORAGE_KEY = 'gennaro_disclaimer_accepted'
 
 export function DisclaimerModal() {
-  const [visible, setVisible] = React.useState(() => {
+  const [open, setOpen] = React.useState(() => {
     try {
       return localStorage.getItem(STORAGE_KEY) !== 'true'
     } catch {
@@ -16,42 +25,33 @@ export function DisclaimerModal() {
     try {
       localStorage.setItem(STORAGE_KEY, 'true')
     } catch {}
-    setVisible(false)
+    setOpen(false)
   }
 
-  if (!visible) return null
-
   return (
-    <div
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="disclaimer-title"
-      aria-describedby="disclaimer-body"
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 px-4 print:hidden"
-    >
-      <div className="w-full max-w-lg border-2 border-[#0b0c0c] bg-white">
-        {/* Header */}
-        <div className="bg-[#0b0c0c] px-6 py-4">
-          <p id="disclaimer-title" className="text-lg font-bold text-white">
-            Avviso importante
-          </p>
-        </div>
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogContent className="sm:max-w-lg print:hidden">
+        <DialogHeader>
+          <DialogTitle>Avviso importante</DialogTitle>
+          <DialogDescription className="sr-only">
+            Disclaimer sui contenuti del sito
+          </DialogDescription>
+        </DialogHeader>
 
-        {/* Body */}
-        <div className="px-6 py-6 flex flex-col gap-6">
-          <div className="border-l-4 border-[#d4351c] bg-[#fde8e6] px-4 py-3 text-sm leading-relaxed">
-            <p id="disclaimer-body">
-              Qualsiasi contenuto di questo sito non è da intendersi come una consulenza
-              finanziaria o un consiglio d'investimento, pertanto vi invito a fare le
-              vostre dovute riflessioni prima di prendere qualsiasi decisione.
-            </p>
-          </div>
+        <Alert variant="destructive">
+          <AlertDescription className="leading-relaxed">
+            Qualsiasi contenuto di questo sito non è da intendersi come una consulenza
+            finanziaria o un consiglio d'investimento, pertanto vi invito a fare le
+            vostre dovute riflessioni prima di prendere qualsiasi decisione.
+          </AlertDescription>
+        </Alert>
 
-          <Button onClick={accept} className="self-end">
+        <DialogFooter>
+          <Button onClick={accept}>
             Ho preso visione
           </Button>
-        </div>
-      </div>
-    </div>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   )
 }

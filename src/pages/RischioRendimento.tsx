@@ -1,4 +1,5 @@
 import { Separator } from '@/components/ui/separator'
+import { Alert, AlertDescription } from '@/components/ui/alert'
 import { MonteCarlo } from '@/components/MonteCarlo'
 import { useMeta } from '@/lib/useMeta'
 
@@ -110,12 +111,12 @@ export default function RischioRendimento() {
       {/* Comparti */}
       <div className="flex flex-col gap-6 mb-8">
         {comparti.map((c, i) => (
-          <div key={c.titolo} className="border border-border">
+          <div key={c.titolo} className="rounded-lg border border-border overflow-hidden">
             {/* Header banda colorata */}
             <div className="flex items-center justify-between border-b border-border px-4 py-3 bg-muted">
               <p className="font-bold text-sm">{i + 1}. {c.titolo}</p>
               <span
-                className="text-xs font-semibold px-2 py-0.5 border"
+                className="text-xs font-semibold px-2 py-0.5 rounded-full border"
                 style={{ color: c.rischioColor, borderColor: c.rischioColor }}
               >
                 {c.rischioLabel}
@@ -151,12 +152,13 @@ export default function RischioRendimento() {
               </div>
 
               {/* Barra visiva */}
-              <div className="flex h-3 w-full overflow-hidden border border-border">
+              <div className="flex h-3 w-full overflow-hidden rounded-full border border-border">
                 <div
-                  className="h-full bg-error transition-all"
-                  style={{ width: c.azioni.replace('–', '-').split(/[-–]/)[0].trim() }}
+                  className="h-full bg-[hsl(221.2_83.2%_53.3%)] transition-all"
+                  style={{ width: c.azioni.replace('–', '-').split(/[-–]/)[0].trim().replace(/%/g, '') + '%' }}
+                  title="Azioni"
                 />
-                <div className="h-full flex-1 bg-border" />
+                <div className="h-full flex-1 bg-[hsl(48_96%_53%)]" title="Obbligazioni" />
               </div>
               <div className="flex justify-between text-xs text-muted-foreground -mt-2">
                 <span>Azioni</span>
@@ -174,7 +176,8 @@ export default function RischioRendimento() {
       <Separator className="mb-8" />
 
       {/* Nota importante */}
-      <div className="border-l-4 border-[#1d70b8] bg-[#e8f1f8] px-4 py-4 text-sm leading-relaxed flex flex-col gap-2">
+      <Alert className="flex flex-col gap-2">
+        <AlertDescription>
         <p className="font-bold">Nota importante</p>
         <p>
           Le percentuali indicate sono <strong>solo teoriche</strong> e servono come riferimento
@@ -186,16 +189,17 @@ export default function RischioRendimento() {
           Scegliere il comparto giusto dipende da quanto sei disposto a vedere i tuoi soldi salire
           e scendere nel tempo, e da quanto manca al momento in cui vorrai utilizzarli.
         </p>
-      </div>
+        </AlertDescription>
+      </Alert>
 
       <Separator className="mb-8" />
 
       {/* Cosa dice la ricerca */}
       <div className="flex flex-col gap-6">
         <div>
-          <p className="text-base font-bold mb-1 border-l-4 border-[#0b0c0c] pl-3">
+          <h2 className="text-lg font-semibold mb-1">
             Cosa dice la ricerca: il tempo abbassa il rischio
-          </p>
+          </h2>
           <p className="text-sm text-muted-foreground mt-3 leading-relaxed">
             Uno degli insegnamenti più solidi della finanza storica è che il rischio di perdere
             denaro si riduce drasticamente all'aumentare dell'orizzonte temporale. Non è una
@@ -208,7 +212,7 @@ export default function RischioRendimento() {
           <p className="text-xs tracking-widest uppercase text-muted-foreground mb-3">
             Probabilità storica di rendimento negativo — mercato azionario globale (1900–2023)
           </p>
-          <div className="border border-border overflow-x-auto">
+          <div className="rounded-lg border border-border overflow-hidden">
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b border-border bg-muted">
@@ -245,7 +249,7 @@ export default function RischioRendimento() {
 
         {/* Principi chiave */}
         <div className="flex flex-col gap-4 text-sm leading-relaxed">
-          <div className="border-l-4 border-[#0b0c0c] pl-3">
+          <div className="border-l-4 border-foreground pl-3">
             <p className="font-semibold mb-1">Il principio della "regressione alla media"</p>
             <p className="text-muted-foreground">
               Nel breve periodo i mercati oscillano in modo imprevedibile. Nel lungo periodo tendono
@@ -259,7 +263,7 @@ export default function RischioRendimento() {
             </p>
           </div>
 
-          <div className="border-l-4 border-[#0b0c0c] pl-3">
+          <div className="border-l-4 border-foreground pl-3">
             <p className="font-semibold mb-1">I fondi pensione italiani nel lungo periodo</p>
             <p className="text-muted-foreground">
               Secondo il rapporto COVIP 2023, i comparti azionari dei fondi pensione negoziali
@@ -274,7 +278,7 @@ export default function RischioRendimento() {
             </p>
           </div>
 
-          <div className="border-l-4 border-[#0b0c0c] pl-3">
+          <div className="border-l-4 border-foreground pl-3">
             <p className="font-semibold mb-1">La regola pratica del "glide path"</p>
             <p className="text-muted-foreground">
               Molti fondi pensione adottano una strategia di <em>lifecycle</em>: si inizia con
@@ -291,18 +295,20 @@ export default function RischioRendimento() {
           </div>
         </div>
 
-        <div className="border-l-4 border-error bg-[#fde8e6] px-4 py-3 text-xs leading-relaxed">
-          I dati storici non garantiscono rendimenti futuri. Le performance passate dei mercati
-          finanziari non sono indicative di quelle future. Questo contenuto ha scopo puramente
-          educativo e non costituisce consulenza finanziaria.
-        </div>
+        <Alert variant="destructive">
+          <AlertDescription className="text-xs">
+            I dati storici non garantiscono rendimenti futuri. Le performance passate dei mercati
+            finanziari non sono indicative di quelle future. Questo contenuto ha scopo puramente
+            educativo e non costituisce consulenza finanziaria.
+          </AlertDescription>
+        </Alert>
       </div>
 
       <Separator className="mb-8" />
 
       {/* Monte Carlo simulation */}
       <div>
-        <p className="text-base font-bold mb-1 border-l-4 border-[#0b0c0c] pl-3">Simulazione Monte Carlo</p>
+        <h2 className="text-lg font-semibold mb-1">Simulazione Monte Carlo</h2>
         <p className="text-sm text-muted-foreground mb-5">
           Inserisci i tuoi dati per simulare migliaia di possibili traiettorie di crescita del tuo fondo
           pensione e scoprire la probabilità di raggiungere il tuo obiettivo di capitale.

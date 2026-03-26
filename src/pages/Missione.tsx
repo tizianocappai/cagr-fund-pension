@@ -1,5 +1,6 @@
 import { Link } from 'react-router';
 import { Separator } from '@/components/ui/separator';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 import { useMeta } from '@/lib/useMeta';
 
 const features = [
@@ -56,18 +57,18 @@ export default function Missione() {
 				</p>
 			</header>
 
-			<div className='border-l-4 border-[#1d70b8] bg-[#e8f1f8] px-4 py-4 text-sm leading-relaxed mb-8'>
-				<p>
+			<Alert className="mb-8">
+				<AlertDescription>
 					La maggior parte dei lavoratori italiani ha un fondo
 					pensione, ma pochissimi sanno quanto rende davvero. Gennaro
 					esiste per colmare quel vuoto: strumenti semplici, numeri
 					veri, nessuna consulenza finanziaria — solo chiarezza.
-				</p>
-			</div>
+				</AlertDescription>
+			</Alert>
 
 			<Separator className='mb-8' />
 
-			<div className='flex flex-col gap-px border border-border'>
+			<div className='flex flex-col gap-px rounded-lg border border-border overflow-hidden'>
 				{features.map((f) => (
 					<div
 						key={f.to}

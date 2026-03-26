@@ -59,8 +59,8 @@ export function FileUploader({ accept, initialFile, onFileSelect, onClear, class
       aria-labelledby={labelId}
       aria-describedby={accept ? `${labelId}-hint` : undefined}
       className={cn(
-        'relative flex flex-col items-center justify-center gap-3 border-2 border-dashed border-[#b1b4b6] bg-[#f3f2f1] px-6 py-10 text-center transition-colors cursor-pointer focus-visible:outline-3 focus-visible:outline-[#ffdd00] focus-visible:outline-offset-0',
-        dragging && 'border-[#0b0c0c] bg-[#e8e8e8]',
+        'relative flex flex-col items-center justify-center gap-3 rounded-lg border-2 border-dashed border-border bg-muted px-6 py-10 text-center transition-colors cursor-pointer focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
+        dragging && 'border-foreground bg-muted/80',
         className
       )}
       onClick={() => inputRef.current?.click()}
@@ -83,15 +83,15 @@ export function FileUploader({ accept, initialFile, onFileSelect, onClear, class
         <>
           <div>
             <p id={labelId} className="text-base font-bold">{selectedFile.name}</p>
-            <p className="text-sm text-[#505a5f]">{(selectedFile.size / 1024).toFixed(1)} KB</p>
+            <p className="text-sm text-muted-foreground">{(selectedFile.size / 1024).toFixed(1)} KB</p>
           </div>
-          <p className="text-sm text-[#505a5f]">Premi Invio o clicca per sostituire</p>
+          <p className="text-sm text-muted-foreground">Premi Invio o clicca per sostituire</p>
           <button
             type="button"
             aria-label="Rimuovi file"
             onClick={handleClear}
             onKeyDown={(e: React.KeyboardEvent) => handleClear(e)}
-            className="absolute top-2 right-2 flex h-7 w-7 items-center justify-center bg-[#0b0c0c] text-white text-xs hover:bg-[#454a4b] transition-colors focus-visible:outline-3 focus-visible:outline-[#ffdd00]"
+            className="absolute top-2 right-2 flex h-7 w-7 items-center justify-center rounded-md bg-foreground text-white text-xs hover:bg-foreground/80 transition-colors focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
           >
             ✕
           </button>
@@ -100,10 +100,10 @@ export function FileUploader({ accept, initialFile, onFileSelect, onClear, class
         <>
           <div>
             <p id={labelId} className="text-base font-bold">Trascina qui il file o clicca per sfogliare</p>
-            <p className="text-sm text-[#505a5f]">oppure premi Invio per aprire il selettore</p>
+            <p className="text-sm text-muted-foreground">oppure premi Invio per aprire il selettore</p>
           </div>
           {accept && (
-            <p id={`${labelId}-hint`} className="text-sm text-[#505a5f]">{accept}</p>
+            <p id={`${labelId}-hint`} className="text-sm text-muted-foreground">{accept}</p>
           )}
         </>
       )}

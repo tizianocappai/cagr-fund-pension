@@ -21,19 +21,19 @@ export function Nav() {
   return (
     <header className="print:hidden">
       {/* Service name bar */}
-      <div className="bg-[#0b0c0c] text-white">
+      <div className="bg-card border-b border-border shadow-sm">
         <div className="mx-auto max-w-4xl px-6 py-4 flex items-center justify-between gap-4">
           <div className="min-w-0">
             <div className="flex items-center gap-2">
               <img src="/gennaro-logo.png" alt="" aria-hidden="true" className="h-8 w-8 shrink-0 object-contain" />
               <p className="text-xl font-bold leading-tight">Gennaro</p>
             </div>
-            <p className="text-sm text-border mt-0.5">Il detective del tuo fondo pensione</p>
+            <p className="text-sm text-muted-foreground mt-0.5">Il detective del tuo fondo pensione</p>
           </div>
 
           {/* Hamburger — mobile only */}
           <button
-            className="md:hidden shrink-0 p-2 -mr-2 focus-visible:outline-3 focus-visible:outline-[#ffdd00]"
+            className="md:hidden shrink-0 p-2 -mr-2 focus-visible:ring-2 focus-visible:ring-ring rounded-md"
             aria-label={open ? 'Chiudi menu' : 'Apri menu'}
             aria-expanded={open}
             aria-controls="mobile-nav"
@@ -59,7 +59,7 @@ export function Nav() {
       </div>
 
       {/* Desktop tab navigation — hidden below md */}
-      <nav className="hidden md:block border-b-2 border-[#0b0c0c] bg-white">
+      <nav className="hidden md:block border-b border-border bg-card">
         <div className="mx-auto flex max-w-4xl px-6 overflow-x-auto overflow-y-hidden">
           {links.map(({ to, label }) => (
             <NavLink
@@ -68,10 +68,10 @@ export function Nav() {
               end={to === '/'}
               className={({ isActive }) =>
                 cn(
-                  'px-4 py-3 text-sm font-bold transition-colors no-underline border-b-4 -mb-0.5 whitespace-nowrap shrink-0',
+                  'px-4 py-3 text-sm font-bold transition-colors no-underline border-b-4 -mb-px whitespace-nowrap shrink-0',
                   isActive
-                    ? 'border-[#0b0c0c] text-[#0b0c0c]'
-                    : 'border-transparent text-muted-foreground hover:text-[#0b0c0c] hover:border-border'
+                    ? 'border-primary text-foreground'
+                    : 'border-transparent text-muted-foreground hover:text-foreground hover:border-border'
                 )
               }
             >
@@ -85,7 +85,7 @@ export function Nav() {
       {open && (
         <nav
           id="mobile-nav"
-          className="md:hidden bg-white border-b-2 border-[#0b0c0c]"
+          className="md:hidden bg-card border-b border-border"
         >
           {links.map(({ to, label }) => (
             <NavLink
@@ -96,8 +96,8 @@ export function Nav() {
                 cn(
                   'flex px-6 py-4 text-sm font-bold no-underline border-l-4 transition-colors',
                   isActive
-                    ? 'border-[#0b0c0c] text-[#0b0c0c] bg-muted'
-                    : 'border-transparent text-muted-foreground hover:text-[#0b0c0c] hover:bg-muted'
+                    ? 'border-primary text-foreground bg-muted'
+                    : 'border-transparent text-muted-foreground hover:text-foreground hover:bg-muted'
                 )
               }
             >
@@ -108,7 +108,7 @@ export function Nav() {
       )}
 
       {/* Border shown on mobile when menu is closed */}
-      {!open && <div className="md:hidden border-b-2 border-[#0b0c0c]" />}
+      {!open && <div className="md:hidden border-b border-border" />}
     </header>
   )
 }

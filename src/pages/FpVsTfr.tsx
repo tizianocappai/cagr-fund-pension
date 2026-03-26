@@ -12,6 +12,7 @@ import {
 } from 'recharts'
 import { Input } from '@/components/ui/input'
 import { Separator } from '@/components/ui/separator'
+import { Alert, AlertDescription } from '@/components/ui/alert'
 import { ChartTooltip } from '@/components/ui/chart-tooltip'
 import { fmtEurRound, tickY } from '@/lib/formatters'
 import { parseEur, parseRate } from '@/lib/parse'
@@ -117,7 +118,8 @@ const TfrSection = React.memo(function TfrSection({ ral, years, inflazione, setI
 
   return (
     <div className="flex flex-col gap-5">
-      <div className="border-l-4 border-[#1d70b8] bg-[#e8f1f8] px-4 py-3 text-sm">
+      <Alert>
+        <AlertDescription>
         <p>
           Tasso di rivalutazione TFR applicato:{' '}
           <strong>1,5% + 75% × {infDisplay}% = {rateDisplay}%</strong> annuo
@@ -127,7 +129,8 @@ const TfrSection = React.memo(function TfrSection({ ral, years, inflazione, setI
           <strong className="text-foreground">{fmtEurRound.format(Math.round(accrual))}</strong>{' '}
           (RAL ÷ 13,5)
         </p>
-      </div>
+        </AlertDescription>
+      </Alert>
 
       <div className="flex flex-col gap-1">
         <label htmlFor="tfr-inf" className="text-xs text-muted-foreground">
@@ -169,7 +172,7 @@ const TfrSection = React.memo(function TfrSection({ ral, years, inflazione, setI
       </ResponsiveContainer>
       </div>
 
-      <div className="flex flex-col gap-0 border border-border text-sm divide-y divide-border">
+      <div className="flex flex-col gap-0 border border-border text-sm divide-y divide-border rounded-lg overflow-hidden">
         <div className="flex justify-between px-4 py-2">
           <span className="text-muted-foreground">TFR lordo dopo {years} anni</span>
           <span className="font-mono font-medium">{fmtEurRound.format(finalValue)}</span>
@@ -239,7 +242,8 @@ const FpSection = React.memo(function FpSection({ ral, years, rendimento, setRen
 
   return (
     <div className="flex flex-col gap-5">
-      <div className="border-l-4 border-[#1d70b8] bg-[#e8f1f8] px-4 py-3 text-sm">
+      <Alert>
+        <AlertDescription>
         <p>Versamento annuo totale: <strong>{fmtEurRound.format(Math.round(totalAnnuo))}</strong></p>
         <p className="mt-1 text-xs text-muted-foreground flex flex-col gap-0.5">
           <span>TFR: {fmtEurRound.format(Math.round(tfrAnnuo))} (RAL ÷ 13,5)</span>
@@ -247,7 +251,8 @@ const FpSection = React.memo(function FpSection({ ral, years, rendimento, setRen
           <span>Azienda: {fmtEurRound.format(Math.round(aziAnnuo))} ({(pctAzienda * 100).toLocaleString('it-IT', { maximumFractionDigits: 2 })}% RAL)</span>
           {extraAnnuo > 0 && <span>Ulteriore contributo: {fmtEurRound.format(Math.round(extraAnnuo))}</span>}
         </p>
-      </div>
+        </AlertDescription>
+      </Alert>
 
       <p className="text-xs text-muted-foreground">
         Non sai quale rendimento usare? Consulta i rendimenti ufficiali per fondo e comparto sul sito{' '}
@@ -301,7 +306,7 @@ const FpSection = React.memo(function FpSection({ ral, years, rendimento, setRen
       </ResponsiveContainer>
       </div>
 
-      <div className="flex flex-col gap-0 border border-border text-sm divide-y divide-border">
+      <div className="flex flex-col gap-0 border border-border text-sm divide-y divide-border rounded-lg overflow-hidden">
         <div className="flex justify-between px-4 py-2">
           <span className="text-muted-foreground">Capitale lordo dopo {years} anni (rendimento {rDisplay}%)</span>
           <span className="font-mono font-medium">{fmtEurRound.format(finalValue)}</span>
@@ -394,16 +399,16 @@ export default function FpVsTfr() {
         </p>
       </header>
 
-      <div className="border-l-4 border-[#1d70b8] bg-[#e8f1f8] px-4 py-4 text-sm leading-relaxed mb-8">
-        <p>
+      <Alert className="mb-8">
+        <AlertDescription className="text-sm leading-relaxed">
           In questa pagina simuleremo due scenari. Nel primo, <strong>Gennaro decide di non avere a
           che fare con lo sbattimento di aprire un fondo pensione</strong> e decide di tenere tutto
           in azienda — il suo TFR viene accantonato e rivalutato ogni anno secondo la formula di
           legge. Nel secondo scenario invece <strong>Gennaro decide di aderire al fondo pensione</strong>,
           aggiungendo anche una quota volontaria: il TFR, la quota aderente e la quota azienda
           vengono investiti insieme e crescono al rendimento annuo del fondo.
-        </p>
-      </div>
+        </AlertDescription>
+      </Alert>
 
       <Separator className="mb-8" />
 
@@ -426,7 +431,8 @@ export default function FpVsTfr() {
       </p>
 
       {ral > 0 && (
-        <div className="border-l-4 border-[#0b0c0c] bg-muted px-4 py-3 text-sm mb-8">
+        <Alert className="mb-8">
+          <AlertDescription>
           <p className="font-semibold mb-2">IRPEF 2026 sulla tua RAL</p>
           <div className="flex flex-col gap-1 text-xs">
             {irpef.brackets.map(b => b.base > 0 && (
@@ -453,13 +459,14 @@ export default function FpVsTfr() {
             </div>
           </div>
           <p className="text-xs text-muted-foreground mt-2">Stima indicativa — non include detrazioni, addizionali regionali/comunali o altri contributi.</p>
-        </div>
+          </AlertDescription>
+        </Alert>
       )}
 
       <Separator className="mb-8" />
 
       <div>
-        <p className="text-base font-bold mb-1 border-l-4 border-[#0b0c0c] pl-3">TFR in azienda</p>
+        <h2 className="text-lg font-semibold mb-1">TFR in azienda</h2>
         <p className="text-sm text-muted-foreground mb-5">
           Simulazione della crescita del TFR se resta depositato in azienda. La rivalutazione
           annua è fissata per legge a{' '}
@@ -471,7 +478,7 @@ export default function FpVsTfr() {
       <Separator className="my-8" />
 
       <div>
-        <p className="text-base font-bold mb-1 border-l-4 border-[#0b0c0c] pl-3">Fondo pensione</p>
+        <h2 className="text-lg font-semibold mb-1">Fondo pensione</h2>
         <p className="text-sm text-muted-foreground mb-5">
           Simulazione della crescita del capitale versato nel fondo pensione, applicando
           il rendimento annuo atteso all'intera somma (TFR + quota aderente + quota azienda).
@@ -493,8 +500,8 @@ export default function FpVsTfr() {
       <Separator className="my-8" />
 
       <div>
-        <p className="text-base font-bold mb-4 border-l-4 border-[#0b0c0c] pl-3">Riepilogo</p>
-        <div className="border border-border overflow-x-auto">
+        <h2 className="text-lg font-semibold mb-4">Riepilogo</h2>
+        <div className="border border-border rounded-lg overflow-hidden">
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-border bg-muted">

@@ -19,7 +19,8 @@ import {
 	CardHeader,
 	CardTitle,
 } from '@/components/ui/card';
-import { Tooltip } from '@/components/ui/tooltip';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 import { fmtEurRound } from '@/lib/formatters';
 import { parseEur, parseRate } from '@/lib/parse';
 import { N_SIMULAZIONI, runSimulation, type SimResult } from '@/lib/monteCarlo';
@@ -59,7 +60,7 @@ function HistoTooltip({
 	if (!active || !payload?.length) return null;
 	const d = payload[0].payload;
 	return (
-		<div className='border border-border bg-white px-3 py-2 text-xs shadow'>
+		<div className='rounded-lg border border-border bg-white px-3 py-2 text-xs shadow'>
 			<p className='text-muted-foreground'>{d.label}</p>
 			<p className='font-semibold'>{d.count} simulazioni</p>
 		</div>
@@ -113,27 +114,29 @@ export function MonteCarlo() {
 	return (
 		<div className='flex flex-col gap-6'>
 			{/* Parameters callout */}
-			<div className='border-l-4 border-[#1d70b8] bg-[#e8f1f8] px-4 py-4 text-sm leading-relaxed flex flex-col gap-2'>
-				<p className='font-semibold'>Parametri del modello</p>
-				<p>
-					I valori sono espressi in termini <strong>reali</strong>,
-					già al netto dell'inflazione. I default riflettono un fondo
-					pensione bilanciato europeo tipico (rendimento reale ~3,5%,
-					volatilità ~11%), in linea con i dati storici di lungo
-					periodo. Fonte:{' '}
-					<a href='https://www.covip.it/per-gli-operatori/fondi-pensione/costi-e-rendimenti-dei-fondi-pensione/elenco-dei-rendimenti' target='_blank' rel='noopener noreferrer'>
-						COVIP — Rendimenti dei fondi pensione
-					</a>
-					{'; '}
-					<a href='https://www.credit-suisse.com/about-us/en/reports-research/global-investment-returns-yearbook.html' target='_blank' rel='noopener noreferrer'>
-						Dimson-Marsh-Staunton, Global Investment Returns Yearbook
-					</a>
-					. Puoi modificare i parametri per rispecchiare il tuo comparto.
-				</p>
-				<p className='text-xs text-muted-foreground'>
-					I rendimenti passati non garantiscono quelli futuri.
-				</p>
-			</div>
+			<Alert>
+				<AlertDescription className='flex flex-col gap-2'>
+					<p className='font-semibold'>Parametri del modello</p>
+					<p>
+						I valori sono espressi in termini <strong>reali</strong>,
+						già al netto dell'inflazione. I default riflettono un fondo
+						pensione bilanciato europeo tipico (rendimento reale ~3,5%,
+						volatilità ~11%), in linea con i dati storici di lungo
+						periodo. Fonte:{' '}
+						<a href='https://www.covip.it/per-gli-operatori/fondi-pensione/costi-e-rendimenti-dei-fondi-pensione/elenco-dei-rendimenti' target='_blank' rel='noopener noreferrer'>
+							COVIP — Rendimenti dei fondi pensione
+						</a>
+						{'; '}
+						<a href='https://www.credit-suisse.com/about-us/en/reports-research/global-investment-returns-yearbook.html' target='_blank' rel='noopener noreferrer'>
+							Dimson-Marsh-Staunton, Global Investment Returns Yearbook
+						</a>
+						. Puoi modificare i parametri per rispecchiare il tuo comparto.
+					</p>
+					<p className='text-xs text-muted-foreground'>
+						I rendimenti passati non garantiscono quelli futuri.
+					</p>
+				</AlertDescription>
+			</Alert>
 
 			{/* Inputs */}
 			<div className='grid grid-cols-2 gap-3 sm:grid-cols-3'>
@@ -202,7 +205,7 @@ export function MonteCarlo() {
 					>
 						Orizzonte temporale
 					</label>
-					<div className='border-2 border-[#0b0c0c] bg-muted px-3 py-2 font-mono text-sm'>
+					<div className='rounded-md border border-input bg-muted px-3 py-2 font-mono text-sm'>
 						{years} anni
 					</div>
 				</div>
@@ -251,7 +254,7 @@ export function MonteCarlo() {
 								e.target.value as 'mensile' | 'annuale',
 							)
 						}
-						className='border-2 border-[#0b0c0c] bg-white px-3 py-2 text-sm font-mono focus-visible:outline-3 focus-visible:outline-[#ffdd00] focus-visible:outline-offset-0 appearance-none cursor-pointer'
+						className='rounded-md border border-input bg-background px-3 py-2 text-sm font-mono focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 appearance-none cursor-pointer'
 					>
 						<option value='mensile'>Mensile</option>
 						<option value='annuale'>Annuale</option>
@@ -294,11 +297,18 @@ export function MonteCarlo() {
 						<Card className='sm:col-span-1'>
 							<CardHeader className='pb-2'>
 								<CardDescription>
-									<Tooltip content="Percentuale di simulazioni in cui il capitale finale supera il tuo capitale obiettivo. Sopra il 70% è considerato solido; tra 40–70% accettabile; sotto il 40% richiede attenzione.">
-										<span className='border-b border-dashed border-current cursor-help'>
-											Probabilità di successo
-										</span>
-									</Tooltip>
+									<TooltipProvider>
+										<Tooltip>
+											<TooltipTrigger asChild>
+												<span className='border-b border-dashed border-current cursor-help'>
+													Probabilità di successo
+												</span>
+											</TooltipTrigger>
+											<TooltipContent className="max-w-xs">
+												<p>Percentuale di simulazioni in cui il capitale finale supera il tuo capitale obiettivo. Sopra il 70% è considerato solido; tra 40–70% accettabile; sotto il 40% richiede attenzione.</p>
+											</TooltipContent>
+										</Tooltip>
+									</TooltipProvider>
 								</CardDescription>
 								<CardTitle
 									className='text-4xl font-bold'
@@ -354,17 +364,24 @@ export function MonteCarlo() {
 
 					{/* Scenario table */}
 					<div>
-						<p className='text-base font-bold mb-1 border-l-4 border-[#0b0c0c] pl-3'>
+						<h3 className='text-lg font-semibold mb-1'>
 							Scenari
-						</p>
+						</h3>
 						<p className='text-sm text-muted-foreground mb-3'>
-							<Tooltip content='Un percentile indica la percentuale di simulazioni che si trovano al di sotto di quel valore. Il 10° percentile significa che il 90% delle simulazioni ha ottenuto un risultato migliore — è lo scenario peggiore realistico.'>
-								<span className='border-b border-dashed border-current cursor-help'>
-									Cosa sono i percentili?
-								</span>
-							</Tooltip>
+							<TooltipProvider>
+								<Tooltip>
+									<TooltipTrigger asChild>
+										<span className='border-b border-dashed border-current cursor-help'>
+											Cosa sono i percentili?
+										</span>
+									</TooltipTrigger>
+									<TooltipContent className="max-w-xs">
+										<p>Un percentile indica la percentuale di simulazioni che si trovano al di sotto di quel valore. Il 10° percentile significa che il 90% delle simulazioni ha ottenuto un risultato migliore — è lo scenario peggiore realistico.</p>
+									</TooltipContent>
+								</Tooltip>
+							</TooltipProvider>
 						</p>
-						<div className='border border-border overflow-x-auto'>
+						<div className='rounded-lg border border-border overflow-hidden'>
 							<table className='w-full text-sm'>
 								<thead>
 									<tr className='border-b border-border bg-muted'>
@@ -464,9 +481,9 @@ export function MonteCarlo() {
 
 					{/* Histogram */}
 					<div>
-						<p className='text-base font-bold mb-1 border-l-4 border-[#0b0c0c] pl-3'>
+						<h3 className='text-lg font-semibold mb-1'>
 							Distribuzione del capitale finale
-						</p>
+						</h3>
 						<p className='text-sm text-muted-foreground mb-4'>
 							Ogni barra mostra quante simulazioni hanno prodotto
 							un capitale finale in quell'intervallo. Le barre{' '}
@@ -561,13 +578,15 @@ export function MonteCarlo() {
 					</div>
 
 					{/* Disclaimer */}
-					<div className='border-l-4 border-error bg-[#fde8e6] px-4 py-3 text-xs leading-relaxed'>
-						La simulazione Monte Carlo è uno strumento statistico a
-						scopo educativo. I risultati dipendono dalle ipotesi di
-						rendimento e volatilità e non costituiscono previsioni
-						né consulenza finanziaria. Le performance future possono
-						differire significativamente da quelle simulate.
-					</div>
+					<Alert variant='destructive'>
+						<AlertDescription className='text-xs'>
+							La simulazione Monte Carlo è uno strumento statistico a
+							scopo educativo. I risultati dipendono dalle ipotesi di
+							rendimento e volatilità e non costituiscono previsioni
+							né consulenza finanziaria. Le performance future possono
+							differire significativamente da quelle simulate.
+						</AlertDescription>
+					</Alert>
 				</>
 			)}
 		</div>

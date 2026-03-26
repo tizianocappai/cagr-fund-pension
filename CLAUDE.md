@@ -47,14 +47,21 @@ src/
     monteCarlo.test.ts   # Unit tests for simulation pure functions
   components/
     ui/
-      button.tsx         # GOV.UK green primary button, variant prop
-      card.tsx           # Sharp-cornered card with border
-      input.tsx          # 2px border, yellow focus ring
-      separator.tsx
-      file-uploader.tsx  # Drag & drop, keyboard accessible
-      tooltip.tsx        # Hover/focus tooltip with black border
-    Nav.tsx              # Black service banner + tab navigation
-    Footer.tsx           # GOV.UK-style footer with beta disclaimer
+      button.tsx         # shadcn Button - blue primary, rounded corners
+      card.tsx           # shadcn Card - subtle shadows, rounded corners
+      input.tsx          # shadcn Input - blue focus ring, rounded borders
+      separator.tsx      # shadcn Separator
+      badge.tsx          # shadcn Badge
+      label.tsx          # shadcn Label
+      select.tsx         # shadcn Select dropdown
+      dialog.tsx         # shadcn Dialog modal
+      alert.tsx          # shadcn Alert for info/error callouts
+      table.tsx          # shadcn Table components
+      tooltip.tsx        # shadcn Tooltip (Radix UI based)
+      file-uploader.tsx  # Custom drag & drop uploader with semantic tokens
+      chart-tooltip.tsx  # Custom Recharts tooltip with semantic tokens
+    Nav.tsx              # White header with blue active tabs
+    Footer.tsx           # Footer with muted background
     CookieBanner.tsx     # GDPR cookie consent banner (localStorage)
     CagrCalculator.tsx   # Main calculator: file → parse → XIRR → results
     ContributionsChart.tsx   # Recharts bar chart (contributions by year)
@@ -76,37 +83,66 @@ src/
   index.css                  # Tailwind v4 @import + @theme design tokens
 ```
 
-## Design system — GOV.UK inspired
+## Design system — Modern shadcn/ui
 
-Visual style inspired by [GOV.UK Design System](https://design-system.service.gov.uk/).
+Visual style based on [shadcn/ui](https://ui.shadcn.com/) with a clean, professional aesthetic featuring blue accents, rounded corners, and subtle shadows.
 
-Key CSS custom properties defined in `src/index.css` via `@theme`:
+### Design tokens
 
-| Token                      | Value     | Usage                            |
-| -------------------------- | --------- | -------------------------------- |
-| `--color-background`       | `#ffffff` | Page background                  |
-| `--color-foreground`       | `#0b0c0c` | Primary text                     |
-| `--color-muted`            | `#f3f2f1` | Subtle surfaces                  |
-| `--color-muted-foreground` | `#505a5f` | Secondary text                   |
-| `--color-border`           | `#b1b4b6` | Card/separator borders           |
-| `--color-primary`          | `#00703c` | Primary button background        |
-| `--color-focus`            | `#ffdd00` | Focus ring (yellow)              |
-| `--color-error`            | `#d4351c` | Error states                     |
-| `--radius`                 | `0rem`    | No border radius (sharp corners) |
+Key CSS custom properties defined in `src/index.css` via `@theme` (HSL format):
 
-**Key rules:**
+| Token                          | HSL Value               | Hex Equivalent | Usage                            |
+| ------------------------------ | ----------------------- | -------------- | -------------------------------- |
+| `--color-background`           | `0 0% 100%`             | `#ffffff`      | Page background                  |
+| `--color-foreground`           | `0 0% 3.9%`             | `#0a0a0a`      | Primary text                     |
+| `--color-card`                 | `0 0% 100%`             | `#ffffff`      | Card backgrounds                 |
+| `--color-card-foreground`      | `0 0% 3.9%`             | `#0a0a0a`      | Card text                        |
+| `--color-muted`                | `0 0% 96.1%`            | `#f5f5f5`      | Subtle surfaces                  |
+| `--color-muted-foreground`     | `0 0% 45.1%`            | `#737373`      | Secondary text                   |
+| `--color-border`               | `0 0% 89.8%`            | `#e5e5e5`      | Card/separator borders           |
+| `--color-primary`              | `221.2 83.2% 53.3%`     | `#3b82f6`      | Primary button (blue)            |
+| `--color-primary-foreground`   | `0 0% 100%`             | `#ffffff`      | Text on primary buttons          |
+| `--color-destructive`          | `0 84.2% 60.2%`         | `#ef4444`      | Error states                     |
+| `--color-destructive-foreground` | `0 0% 98%`            | `#fafafa`      | Text on error backgrounds        |
+| `--color-ring`                 | `221.2 83.2% 53.3%`     | `#3b82f6`      | Focus ring (blue)                |
+| `--radius`                     | `0.5rem`                | `8px`          | Border radius for components     |
 
-- Use Tailwind canonical classes (`text-muted-foreground`, `border-border`, `bg-muted`) — do NOT use `bg-[--color-*]` arbitrary values
-- `bg-black` / `text-white` only for the service name header bar
-- Inputs: `border-2 border-[#0b0c0c]`, yellow `focus-visible:outline-[#ffdd00]`
-- Buttons: green `bg-[#00703c]`, `shadow-[0_2px_0_#002d18]`, no border-radius
-- Section headings in results: `border-l-4 border-[#0b0c0c] pl-3 font-bold`
-- Errors: `border-l-4 border-error bg-[#fde8e6]`
-- Info callouts: `border-l-4 border-[#1d70b8] bg-[#e8f1f8]`
-- Links: `#1d70b8`, underlined; hover `#003078` with thicker underline
-- Focus: yellow `#ffdd00` outline, 3px, offset 0
+### Component library
 
-**Important:** Tailwind v4 does NOT auto-wrap bare CSS variable names in `var()`. Always use explicit values or canonical utility classes.
+The project uses **shadcn/ui** components built on **Radix UI** primitives. All components follow the shadcn/ui design patterns:
+
+- **Button**: Blue primary variant, secondary (muted), destructive (red), ghost, and outline variants
+- **Card**: Rounded corners (8px), subtle border, optional shadow
+- **Input**: Rounded borders, blue focus ring, proper focus states
+- **Alert**: Info (default blue accent) and destructive (red) variants for callouts
+- **Dialog**: Modal overlay with backdrop, rounded content
+- **Select**: Dropdown with rounded styling, proper keyboard navigation
+- **Tooltip**: Radix UI based with TooltipProvider, TooltipTrigger, TooltipContent structure
+- **Table**: Clean table styling with striped rows and header styling
+
+### Key styling rules
+
+**Use semantic Tailwind classes** — always prefer canonical utility classes over arbitrary values:
+- ✅ `bg-muted`, `text-muted-foreground`, `border-border`, `text-foreground`
+- ❌ `bg-[#f5f5f5]`, `text-[#737373]`, `border-[#e5e5e5]`
+
+**Component patterns:**
+- **Section headings**: `<h2 className="text-lg font-semibold mb-4">Title</h2>`
+- **Info callouts**: `<Alert><AlertDescription>Content</AlertDescription></Alert>`
+- **Error callouts**: `<Alert variant="destructive"><AlertDescription>Content</AlertDescription></Alert>`
+- **Focus states**: `focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2`
+- **Rounded corners**: Most interactive elements use `rounded-md` (0.375rem) or inherit `--radius`
+
+**Links:**
+- Color: `hsl(var(--color-primary))` (blue)
+- Underlined by default with 4px offset
+- Hover: thicker underline (2px)
+- Focus: 2px blue ring with 2px offset, slightly rounded
+
+**Important:**
+- Tailwind v4 does NOT auto-wrap bare CSS variable names in `var()`. Always use explicit HSL values with `hsl(var(--color-*))` or canonical utility classes.
+- Charts (Recharts components) can use any colors for data visualization — the color restrictions apply only to UI chrome.
+- shadcn Tooltip components require proper structure: `<TooltipProvider><Tooltip><TooltipTrigger><TooltipContent></TooltipProvider>`
 
 ## Key implementation details
 

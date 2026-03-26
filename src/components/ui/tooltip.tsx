@@ -1,64 +1,32 @@
-import * as React from 'react'
-import { cn } from '@/lib/utils'
+"use client"
 
-interface TooltipProps {
-  content: React.ReactNode
-  children: React.ReactNode
-  className?: string
-  /** Controls horizontal alignment of the tooltip bubble. Default: 'center'. */
-  placement?: 'center' | 'start' | 'end'
-}
+import * as React from "react"
+import * as TooltipPrimitive from "@radix-ui/react-tooltip"
 
-export function Tooltip({ content, children, className, placement = 'center' }: TooltipProps) {
-  const [visible, setVisible] = React.useState(false)
-  const id = React.useId()
+import { cn } from "@/lib/utils"
 
-  const bubblePos =
-    placement === 'start'
-      ? 'left-0'
-      : placement === 'end'
-        ? 'right-0'
-        : 'left-1/2 -translate-x-1/2'
+const TooltipProvider = TooltipPrimitive.Provider
 
-  const arrowPos =
-    placement === 'start'
-      ? 'left-4'
-      : placement === 'end'
-        ? 'right-4'
-        : 'left-1/2 -translate-x-1/2'
+const Tooltip = TooltipPrimitive.Root
 
-  return (
-    <span className={cn('relative inline-flex items-center', className)}>
-      <span
-        role="button"
-        tabIndex={0}
-        aria-describedby={id}
-        className="cursor-help"
-        onMouseEnter={() => setVisible(true)}
-        onMouseLeave={() => setVisible(false)}
-        onFocus={() => setVisible(true)}
-        onBlur={() => setVisible(false)}
-        onKeyDown={e => {
-          if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setVisible(v => !v) }
-          if (e.key === 'Escape') setVisible(false)
-        }}
-      >
-        {children}
-      </span>
+const TooltipTrigger = TooltipPrimitive.Trigger
 
-      {visible && (
-        <span
-          id={id}
-          role="tooltip"
-          className={cn(
-            'absolute bottom-full mb-2 z-50 w-72 border-2 border-[#0b0c0c] bg-white text-[#0b0c0c] px-4 py-3 text-sm leading-relaxed shadow-md pointer-events-none',
-            bubblePos,
-          )}
-        >
-          {content}
-          <span className={cn('absolute top-full border-4 border-transparent border-t-[#0b0c0c]', arrowPos)} />
-        </span>
+const TooltipContent = React.forwardRef<
+  React.ElementRef<typeof TooltipPrimitive.Content>,
+  React.ComponentPropsWithoutRef<typeof TooltipPrimitive.Content>
+>(({ className, sideOffset = 4, ...props }, ref) => (
+  <TooltipPrimitive.Portal>
+    <TooltipPrimitive.Content
+      ref={ref}
+      sideOffset={sideOffset}
+      className={cn(
+        "z-50 overflow-hidden rounded-md bg-primary px-3 py-1.5 text-xs text-primary-foreground animate-in fade-in-0 zoom-in-95 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 origin-[--radix-tooltip-content-transform-origin]",
+        className
       )}
-    </span>
-  )
-}
+      {...props}
+    />
+  </TooltipPrimitive.Portal>
+))
+TooltipContent.displayName = TooltipPrimitive.Content.displayName
+
+export { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider }

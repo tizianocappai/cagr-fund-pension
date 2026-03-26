@@ -22,7 +22,7 @@ export function CookieBanner({ onConsent }: Props) {
   if (!visible) return null
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-40 border-t-2 border-[#0b0c0c] bg-[#f3f2f1] px-6 py-4 print:hidden">
+    <div className="fixed bottom-0 left-0 right-0 z-40 border-t border-border bg-card shadow-lg px-6 py-4 print:hidden">
       <div className="mx-auto max-w-4xl flex flex-col sm:flex-row sm:items-center gap-4">
         <p className="text-sm flex-1 leading-relaxed">
           Questo sito utilizza <strong>Vercel Analytics</strong> (statistiche aggregate anonime sulle visite) e un widget

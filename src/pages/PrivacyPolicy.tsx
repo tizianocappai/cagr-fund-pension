@@ -1,4 +1,5 @@
 import { Separator } from '@/components/ui/separator'
+import { Alert, AlertDescription } from '@/components/ui/alert'
 
 export default function PrivacyPolicy() {
   return (
@@ -8,12 +9,12 @@ export default function PrivacyPolicy() {
         <p className="mt-2 text-muted-foreground">Ultimo aggiornamento: marzo 2026</p>
       </header>
 
-      <div className="border-l-4 border-[#1d70b8] bg-[#e8f1f8] px-4 py-4 text-sm leading-relaxed mb-8">
-        <p>
+      <Alert className="mb-8">
+        <AlertDescription>
           Questo sito non raccoglie né trasmette dati finanziari personali. Tutti i calcoli avvengono
           interamente nel tuo browser. I file che carichi non vengono mai inviati a server esterni.
-        </p>
-      </div>
+        </AlertDescription>
+      </Alert>
 
       <Separator className="mb-8" />
 
@@ -32,7 +33,8 @@ export default function PrivacyPolicy() {
           <h2 className="text-xl font-bold mb-3">Dati trattati e finalità</h2>
           <div className="flex flex-col gap-4 text-sm leading-relaxed">
 
-            <div className="border-l-4 border-[#0b0c0c] bg-muted px-4 py-3">
+            <Alert className="mb-4">
+              <AlertDescription>
               <p className="font-semibold mb-1">1. Dati di navigazione — Vercel Analytics</p>
               <p className="text-muted-foreground">
                 Con il tuo consenso, questo sito utilizza <strong className="text-foreground">Vercel Analytics</strong> per
@@ -42,9 +44,11 @@ export default function PrivacyPolicy() {
                 <a href="https://vercel.com/legal/privacy-policy" target="_blank" rel="noopener noreferrer">Privacy Policy</a>.
               </p>
               <p className="text-muted-foreground mt-1">Base giuridica: consenso (Art. 6(1)(a) GDPR).</p>
-            </div>
+              </AlertDescription>
+            </Alert>
 
-            <div className="border-l-4 border-[#0b0c0c] bg-muted px-4 py-3">
+            <Alert className="mb-4">
+              <AlertDescription>
               <p className="font-semibold mb-1">2. Widget Buy Me a Coffee</p>
               <p className="text-muted-foreground">
                 Con il tuo consenso, viene caricato il widget di <strong className="text-foreground">Buy Me a Coffee</strong>,
@@ -53,20 +57,23 @@ export default function PrivacyPolicy() {
                 <a href="https://www.buymeacoffee.com/privacy-policy" target="_blank" rel="noopener noreferrer">Privacy Policy</a>.
               </p>
               <p className="text-muted-foreground mt-1">Base giuridica: consenso (Art. 6(1)(a) GDPR).</p>
-            </div>
+              </AlertDescription>
+            </Alert>
 
-            <div className="border-l-4 border-[#0b0c0c] bg-muted px-4 py-3">
+            <Alert>
+              <AlertDescription>
               <p className="font-semibold mb-1">3. Dati salvati localmente (localStorage)</p>
               <p className="text-muted-foreground">
                 Il sito salva nel tuo browser le seguenti preferenze, che non vengono mai trasmesse a server:
               </p>
               <ul className="list-disc pl-5 mt-1 text-muted-foreground flex flex-col gap-0.5">
-                <li><code className="text-xs bg-border px-1">gennaro_disclaimer_accepted</code> — conferma lettura avviso legale</li>
-                <li><code className="text-xs bg-border px-1">gennaro_cookie_consent</code> — preferenza cookie</li>
+                <li><code className="text-xs bg-muted px-1.5 py-0.5 rounded">gennaro_disclaimer_accepted</code> — conferma lettura avviso legale</li>
+                <li><code className="text-xs bg-muted px-1.5 py-0.5 rounded">gennaro_cookie_consent</code> — preferenza cookie</li>
                 <li>File Excel caricati (IndexedDB) — solo per evitare di ricaricarli ad ogni visita</li>
               </ul>
               <p className="text-muted-foreground mt-1">Base giuridica: interesse legittimo / funzionamento del servizio.</p>
-            </div>
+              </AlertDescription>
+            </Alert>
 
           </div>
         </section>

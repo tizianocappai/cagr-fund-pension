@@ -147,7 +147,7 @@ export const ForecastChart = React.memo(function ForecastChart({
       </div>
 
       {/* Year-by-year table */}
-      <div className="border border-border overflow-x-auto">
+      <div className="rounded-lg border border-border overflow-hidden">
         <table className="w-full text-sm">
           <thead>
             <tr className="border-b border-border bg-muted">

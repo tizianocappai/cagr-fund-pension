@@ -3,6 +3,7 @@ import { Link } from 'react-router'
 import { useMeta } from '@/lib/useMeta'
 import { CagrCalculator } from '@/components/CagrCalculator'
 import { FileUploader } from '@/components/ui/file-uploader'
+import { Alert, AlertDescription } from '@/components/ui/alert'
 import { clearFile, loadFile, saveFile } from '@/lib/fileStorage'
 import { parseFonte } from '@/lib/parseFonte'
 import { parseAmundi } from '@/lib/parseAmundi'
@@ -99,7 +100,7 @@ export default function RendimentoFondo() {
           id="provider"
           value={provider ?? ''}
           onChange={e => setProvider((e.target.value as Provider) || null)}
-          className="border-2 border-[#0b0c0c] bg-white px-3 py-2 text-sm font-mono focus-visible:outline-3 focus-visible:outline-[#ffdd00] focus-visible:outline-offset-0 appearance-none cursor-pointer"
+          className="rounded-md border-2 border-foreground bg-white px-3 py-2 text-sm font-mono focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none appearance-none cursor-pointer"
         >
           <option value="">Seleziona un fondo...</option>
           {providers.map(p => (
@@ -112,11 +113,13 @@ export default function RendimentoFondo() {
       {provider && ready && (
         <div key={provider}>
           {provider === 'cometa' && (
-            <div className="mb-6 border-l-4 border-[#1d70b8] bg-[#e8f1f8] px-4 py-3 text-sm">
-              Prima volta? Leggi la{' '}
-              <Link to="/cometa-guide">guida passo passo</Link>{' '}
-              per sapere come esportare il file dal portale Fondo Cometa.
-            </div>
+            <Alert className="mb-6">
+              <AlertDescription>
+                Prima volta? Leggi la{' '}
+                <Link to="/cometa-guide">guida passo passo</Link>{' '}
+                per sapere come esportare il file dal portale Fondo Cometa.
+              </AlertDescription>
+            </Alert>
           )}
 
           <FileUploader

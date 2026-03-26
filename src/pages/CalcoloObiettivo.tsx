@@ -14,6 +14,7 @@ import {
 import { Input } from '@/components/ui/input'
 import { Separator } from '@/components/ui/separator'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Alert, AlertDescription } from '@/components/ui/alert'
 import { ChartTooltip } from '@/components/ui/chart-tooltip'
 import { fmtEur, fmtEurRound, tickY } from '@/lib/formatters'
 import { parseEur, parseRate } from '@/lib/parse'
@@ -123,19 +124,19 @@ export default function CalcoloObiettivo() {
         </p>
       </header>
 
-      <div className="border-l-4 border-[#1d70b8] bg-[#e8f1f8] px-4 py-4 text-sm leading-relaxed mb-8">
-        <p>
+      <Alert className="mb-8">
+        <AlertDescription>
           In questa pagina cerchiamo di capire, numeri alla mano, quali sono le tue esigenze.
           In base al risultato finale che vuoi ottenere, la pagina ti guiderà step by step
           per capire cosa devi fare per raggiungere il tuo obiettivo.
-        </p>
-      </div>
+        </AlertDescription>
+      </Alert>
 
       <Separator className="mb-8" />
 
       {/* Inputs */}
       <div>
-        <p className="text-base font-bold mb-4 border-l-4 border-[#0b0c0c] pl-3">Il tuo obiettivo</p>
+        <h2 className="text-lg font-semibold mb-4">Il tuo obiettivo</h2>
         <div className="grid grid-cols-3 gap-4 mb-2">
           <div className="flex flex-col gap-1">
             <label htmlFor="capitale" className="text-xs tracking-widest uppercase text-muted-foreground">
@@ -187,7 +188,7 @@ export default function CalcoloObiettivo() {
           <Separator className="mb-8" />
 
           <div>
-            <p className="text-base font-bold mb-4 border-l-4 border-[#0b0c0c] pl-3">Risultato</p>
+            <h2 className="text-lg font-semibold mb-4">Risultato</h2>
             <div className="grid grid-cols-2 gap-3 mb-4">
               <Card>
                 <CardHeader className="pb-2">
@@ -236,7 +237,7 @@ export default function CalcoloObiettivo() {
 
           {/* Chart */}
           <div>
-            <p className="text-base font-bold mb-4 border-l-4 border-[#0b0c0c] pl-3">Proiezione dell'accumulo</p>
+            <h2 className="text-lg font-semibold mb-4">Proiezione dell'accumulo</h2>
             <AccumuloChart versamento={versamento} r={r} n={n} fv={fv} />
           </div>
         </>

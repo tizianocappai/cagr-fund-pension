@@ -15,6 +15,7 @@ import {
 } from 'recharts'
 import { Input } from '@/components/ui/input'
 import { Separator } from '@/components/ui/separator'
+import { Alert, AlertDescription } from '@/components/ui/alert'
 import { fmtEurRound, tickY } from '@/lib/formatters'
 import { parseEur } from '@/lib/parse'
 
@@ -135,7 +136,7 @@ function RendimentiTooltip({ active, payload, label }: {
   if (!active || !payload?.length) return null
   const v = payload[0].value
   return (
-    <div className="border border-border bg-white px-3 py-2 text-xs shadow-sm min-w-36">
+    <div className="rounded-lg border border-border bg-white px-3 py-2 text-xs shadow-sm min-w-36">
       <p className="font-semibold mb-1">{label}</p>
       <p className={v >= 0 ? 'text-primary font-mono' : 'text-error font-mono'}>
         {v >= 0 ? '+' : ''}{(v * 100).toFixed(1)}%
@@ -153,7 +154,7 @@ function ScenariTooltip({ active, payload, label }: {
 }) {
   if (!active || !payload?.length) return null
   return (
-    <div className="border border-border bg-white px-3 py-2 text-xs shadow-sm min-w-44">
+    <div className="rounded-lg border border-border bg-white px-3 py-2 text-xs shadow-sm min-w-44">
       <p className="font-semibold mb-1.5">{label}</p>
       {payload.map(p => (
         <p key={p.name} className="flex justify-between gap-4" style={{ color: p.stroke }}>
@@ -241,17 +242,20 @@ export default function Alternative() {
         </p>
       </div>
 
-      <div className="border-l-4 border-[#f59e0b] bg-[#fef9ec] px-4 py-3 text-sm mb-4">
-        <p className="font-semibold mb-1">Questo non è un consiglio di investimento</p>
-        <p className="text-muted-foreground">
-          I rendimenti storici non garantiscono rendimenti futuri. I dati mostrati sono indicativi
-          e basati su indici di riferimento. Prima di investire, valuta la tua situazione personale.
-        </p>
-      </div>
+      <Alert className="mb-4">
+        <AlertDescription>
+          <p className="font-semibold mb-1">Questo non è un consiglio di investimento</p>
+          <p className="text-muted-foreground">
+            I rendimenti storici non garantiscono rendimenti futuri. I dati mostrati sono indicativi
+            e basati su indici di riferimento. Prima di investire, valuta la tua situazione personale.
+          </p>
+        </AlertDescription>
+      </Alert>
 
       {/* Callout tassazione */}
-      <div className="border-l-4 border-[#1d70b8] bg-[#e8f1f8] px-4 py-4 text-sm mb-8">
-        <p className="font-semibold mb-2">Gli ETF hanno una fiscalità completamente diversa</p>
+      <Alert className="mb-8">
+        <AlertDescription>
+          <p className="font-semibold mb-2">Gli ETF hanno una fiscalità completamente diversa</p>
         <p className="text-muted-foreground mb-3">
           Investire in ETF non dà diritto ad alcuna delle agevolazioni fiscali previste per i fondi
           pensione o per il TFR. Prima di scegliere questa strada, è fondamentale conoscere le
@@ -261,46 +265,47 @@ export default function Alternative() {
           <table className="w-full text-xs border-collapse">
             <thead>
               <tr>
-                <th className="text-left py-1.5 pr-4 font-semibold text-[#0b0c0c] w-2/5">Aspetto fiscale</th>
-                <th className="text-left py-1.5 pr-4 font-semibold text-[#0b0c0c]">ETF (fai da te)</th>
-                <th className="text-left py-1.5 font-semibold text-[#0b0c0c]">Fondo pensione</th>
+                <th className="text-left py-1.5 pr-4 font-semibold text-foreground w-2/5">Aspetto fiscale</th>
+                <th className="text-left py-1.5 pr-4 font-semibold text-foreground">ETF (fai da te)</th>
+                <th className="text-left py-1.5 font-semibold text-foreground">Fondo pensione</th>
               </tr>
             </thead>
             <tbody className="text-muted-foreground">
-              <tr className="border-t border-[#c5d9ec]">
-                <td className="py-1.5 pr-4 font-medium text-[#0b0c0c]">Deducibilità contributi</td>
+              <tr className="border-t border-border">
+                <td className="py-1.5 pr-4 font-medium text-foreground">Deducibilità contributi</td>
                 <td className="py-1.5 pr-4">Nessuna — versamenti a carico tuo al 100%, senza sgravi IRPEF</td>
                 <td className="py-1.5">Deducibili fino a 5.300 € / anno dall'imponibile IRPEF</td>
               </tr>
-              <tr className="border-t border-[#c5d9ec]">
-                <td className="py-1.5 pr-4 font-medium text-[#0b0c0c]">Tassazione rendimenti</td>
+              <tr className="border-t border-border">
+                <td className="py-1.5 pr-4 font-medium text-foreground">Tassazione rendimenti</td>
                 <td className="py-1.5 pr-4">26% su plusvalenze e dividendi (imposta sostitutiva)</td>
                 <td className="py-1.5">20% sui rendimenti maturati annualmente (imposta sostitutiva ridotta)</td>
               </tr>
-              <tr className="border-t border-[#c5d9ec]">
-                <td className="py-1.5 pr-4 font-medium text-[#0b0c0c]">Tassazione in uscita</td>
+              <tr className="border-t border-border">
+                <td className="py-1.5 pr-4 font-medium text-foreground">Tassazione in uscita</td>
                 <td className="py-1.5 pr-4">26% sulle plusvalenze al momento della vendita</td>
                 <td className="py-1.5">9–15% sul capitale accumulato, con aliquota che scende negli anni</td>
               </tr>
-              <tr className="border-t border-[#c5d9ec]">
-                <td className="py-1.5 pr-4 font-medium text-[#0b0c0c]">TFR</td>
+              <tr className="border-t border-border">
+                <td className="py-1.5 pr-4 font-medium text-foreground">TFR</td>
                 <td className="py-1.5 pr-4">Non applicabile — il TFR non può essere destinato a ETF</td>
                 <td className="py-1.5">Il TFR può essere destinato al fondo pensione con vantaggi fiscali</td>
               </tr>
-              <tr className="border-t border-[#c5d9ec]">
-                <td className="py-1.5 pr-4 font-medium text-[#0b0c0c]">Contributo datore di lavoro</td>
+              <tr className="border-t border-border">
+                <td className="py-1.5 pr-4 font-medium text-foreground">Contributo datore di lavoro</td>
                 <td className="py-1.5 pr-4">Non previsto — nessun apporto aggiuntivo del datore</td>
                 <td className="py-1.5">Il datore può versare una quota aggiuntiva, spesso obbligatoria</td>
               </tr>
-              <tr className="border-t border-[#c5d9ec]">
-                <td className="py-1.5 pr-4 font-medium text-[#0b0c0c]">Liquidità</td>
+              <tr className="border-t border-border">
+                <td className="py-1.5 pr-4 font-medium text-foreground">Liquidità</td>
                 <td className="py-1.5 pr-4">Piena — puoi vendere in qualsiasi momento</td>
                 <td className="py-1.5">Vincolata — riscatto anticipato consentito solo in casi specifici</td>
               </tr>
             </tbody>
           </table>
         </div>
-      </div>
+        </AlertDescription>
+      </Alert>
 
       <Separator className="mb-8" />
 
@@ -313,10 +318,10 @@ export default function Alternative() {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           {/* ETF azionario */}
-          <div className="border border-border">
-            <div className="bg-[#f3f2f1] border-b border-border px-4 py-3 flex items-center justify-between">
+          <div className="rounded-lg border border-border overflow-hidden">
+            <div className="bg-muted border-b border-border px-4 py-3 flex items-center justify-between">
               <span className="font-bold text-sm">Azionario globale</span>
-              <span className="text-xs font-semibold px-2 py-0.5 border" style={{ color: '#d4351c', borderColor: '#d4351c' }}>
+              <span className="text-xs font-semibold px-2 py-0.5 rounded-full border" style={{ color: '#d4351c', borderColor: '#d4351c' }}>
                 Rischio alto
               </span>
             </div>
@@ -347,10 +352,10 @@ export default function Alternative() {
           </div>
 
           {/* ETF obbligazionario */}
-          <div className="border border-border">
-            <div className="bg-[#f3f2f1] border-b border-border px-4 py-3 flex items-center justify-between">
+          <div className="rounded-lg border border-border overflow-hidden">
+            <div className="bg-muted border-b border-border px-4 py-3 flex items-center justify-between">
               <span className="font-bold text-sm">Obbligazionario governativo</span>
-              <span className="text-xs font-semibold px-2 py-0.5 border" style={{ color: '#00703c', borderColor: '#00703c' }}>
+              <span className="text-xs font-semibold px-2 py-0.5 rounded-full border" style={{ color: '#00703c', borderColor: '#00703c' }}>
                 Rischio basso
               </span>
             </div>
@@ -397,16 +402,16 @@ export default function Alternative() {
               key={p.id}
               onClick={() => setSelectedId(p.id)}
               className={[
-                'border-2 px-3 py-2.5 text-sm font-semibold text-left transition-colors',
-                'focus-visible:outline-3 focus-visible:outline-[#ffdd00]',
+                'rounded-lg border-2 px-3 py-2.5 text-sm font-semibold text-left transition-colors',
+                'focus-visible:ring-2 focus-visible:ring-ring',
                 selectedId === p.id
-                  ? 'border-[#0b0c0c] bg-[#0b0c0c] text-white'
-                  : 'border-border bg-white text-[#0b0c0c] hover:border-[#0b0c0c]',
+                  ? 'border-foreground bg-foreground text-white'
+                  : 'border-border bg-white text-foreground hover:border-foreground',
               ].join(' ')}
             >
               <span className="block">{p.label}</span>
               <span className="block text-xs font-normal mt-0.5" style={{
-                color: selectedId === p.id ? '#b1b4b6' : p.rischioColor,
+                color: selectedId === p.id ? 'hsl(var(--muted-foreground))' : p.rischioColor,
               }}>
                 {p.rischioLabel}
               </span>
@@ -415,13 +420,13 @@ export default function Alternative() {
         </div>
 
         {/* Dettaglio profilo selezionato */}
-        <div className="border border-border">
+        <div className="rounded-lg border border-border overflow-hidden">
           <div
             className="border-b border-border px-4 py-3 flex items-center justify-between"
             style={{ borderLeftWidth: 4, borderLeftColor: profile.rischioColor }}
           >
             <span className="font-bold">{profile.label}</span>
-            <span className="text-xs font-semibold px-2 py-0.5 border" style={{
+            <span className="text-xs font-semibold px-2 py-0.5 rounded-full border" style={{
               color: profile.rischioColor,
               borderColor: profile.rischioColor,
             }}>
@@ -434,27 +439,29 @@ export default function Alternative() {
             {/* Allocazione */}
             <div>
               <p className="text-xs uppercase tracking-widest text-muted-foreground mb-2">Allocazione</p>
-              <div className="flex gap-1 h-6 mb-2">
+              <div className="flex gap-1 h-6 mb-2 rounded-md overflow-hidden">
                 <div
                   className="flex items-center justify-center text-xs font-semibold text-white"
-                  style={{ width: `${profile.equityPct * 100}%`, backgroundColor: '#d4351c' }}
+                  style={{ width: `${profile.equityPct * 100}%`, backgroundColor: '#3b82f6' }}
+                  title="Azioni"
                 >
                   {(profile.equityPct * 100).toFixed(0)}%
                 </div>
                 <div
-                  className="flex items-center justify-center text-xs font-semibold"
-                  style={{ width: `${profile.bondsPct * 100}%`, backgroundColor: '#b1b4b6' }}
+                  className="flex items-center justify-center text-xs font-semibold text-foreground"
+                  style={{ width: `${profile.bondsPct * 100}%`, backgroundColor: '#fcd34d' }}
+                  title="Obbligazioni"
                 >
                   {(profile.bondsPct * 100).toFixed(0)}%
                 </div>
               </div>
               <div className="flex gap-4 text-xs text-muted-foreground">
                 <span className="flex items-center gap-1.5">
-                  <span className="inline-block w-2.5 h-2.5" style={{ backgroundColor: '#d4351c' }} />
+                  <span className="inline-block w-2.5 h-2.5 rounded-sm" style={{ backgroundColor: '#3b82f6' }} />
                   IE00B4L5Y983 — azionario
                 </span>
                 <span className="flex items-center gap-1.5">
-                  <span className="inline-block w-2.5 h-2.5" style={{ backgroundColor: '#b1b4b6' }} />
+                  <span className="inline-block w-2.5 h-2.5 rounded-sm" style={{ backgroundColor: '#fcd34d' }} />
                   IE00B4WXJJ64 — obbligazionario
                 </span>
               </div>
@@ -464,19 +471,19 @@ export default function Alternative() {
             <div>
               <p className="text-xs uppercase tracking-widest text-muted-foreground mb-2">Statistiche storiche 2010–2024</p>
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-sm">
-                <div className="border border-border px-3 py-2.5">
+                <div className="rounded-lg border border-border px-3 py-2.5">
                   <p className="text-xs text-muted-foreground mb-0.5">CAGR storico</p>
                   <p className="font-mono font-bold text-lg">{(cagrValue * 100).toFixed(1)}%</p>
                 </div>
-                <div className="border border-border px-3 py-2.5">
+                <div className="rounded-lg border border-border px-3 py-2.5">
                   <p className="text-xs text-muted-foreground mb-0.5">Miglior anno</p>
                   <p className="font-mono font-bold text-lg text-primary">+{(bestYear * 100).toFixed(1)}%</p>
                 </div>
-                <div className="border border-border px-3 py-2.5">
+                <div className="rounded-lg border border-border px-3 py-2.5">
                   <p className="text-xs text-muted-foreground mb-0.5">Peggior anno</p>
                   <p className="font-mono font-bold text-lg text-error">{(worstYear * 100).toFixed(1)}%</p>
                 </div>
-                <div className="border border-border px-3 py-2.5">
+                <div className="rounded-lg border border-border px-3 py-2.5">
                   <p className="text-xs text-muted-foreground mb-0.5">Anni positivi</p>
                   <p className="font-mono font-bold text-lg">{positiveYears}/{YEARS.length}</p>
                 </div>
@@ -493,7 +500,7 @@ export default function Alternative() {
           Rendimento annuale del portafoglio blended per il profilo selezionato, 2010–2024.
         </p>
 
-        <div className="border border-border p-4">
+        <div className="rounded-lg border border-border p-4">
           <ResponsiveContainer width="100%" height={240} aria-label="Grafico rendimenti annuali">
             <BarChart data={annualBar} margin={{ top: 8, right: 8, left: 0, bottom: 0 }}>
               <CartesianGrid strokeDasharray="3 3" stroke="#e8e8e8" vertical={false} />
@@ -564,7 +571,7 @@ export default function Alternative() {
             Ipotesi di rendimento per scenario
           </p>
           <div className="overflow-x-auto">
-            <table className="w-full text-sm border border-border">
+            <table className="w-full text-sm rounded-lg border border-border overflow-hidden">
               <thead>
                 <tr className="bg-muted border-b border-border">
                   <th className="px-4 py-2.5 text-left font-semibold">Scenario</th>
@@ -625,7 +632,7 @@ export default function Alternative() {
         </div>
 
         {/* Grafico scenari */}
-        <div className="border border-border p-4">
+        <div className="rounded-lg border border-border p-4">
           <ResponsiveContainer width="100%" height={280} aria-label="Grafico scenari di crescita">
             <LineChart data={scenariData} margin={{ top: 8, right: 8, left: 0, bottom: 0 }}>
               <CartesianGrid strokeDasharray="3 3" stroke="#e8e8e8" vertical={false} />
@@ -688,14 +695,14 @@ export default function Alternative() {
       {/* Note finali */}
       <section className="mb-4 text-sm leading-relaxed flex flex-col gap-3 text-muted-foreground">
         <p>
-          <strong className="text-[#0b0c0c]">Fonti dati:</strong> I rendimenti annuali sono
+          <strong className="text-foreground">Fonti dati:</strong> I rendimenti annuali sono
           calcolati sul NAV rettificato (adjusted close) degli ETF quotati su Euronext Amsterdam —
           ticker IWDA.AS (IE00B4L5Y983) e IEAG.AS (IE00B4WXJJ64) — tramite Yahoo Finance.
           I dati coprono il periodo 2010–2024, dall'anno successivo alla quotazione di entrambi
           gli ETF (settembre–novembre 2009).
         </p>
         <p>
-          <strong className="text-[#0b0c0c]">Limiti del modello:</strong> Gli scenari futuri assumono
+          <strong className="text-foreground">Limiti del modello:</strong> Gli scenari futuri assumono
           un rendimento annuale costante e non tengono conto dell'impatto della tassazione del 26%
           sui rendimenti, dei costi di transazione, dello spread denaro-lettera, della fiscalità
           sui dividendi distribuiti e del rischio di sequenza dei rendimenti (sequence of returns risk).
@@ -709,7 +716,7 @@ export default function Alternative() {
       <section className="mb-4">
         <div className="flex items-center gap-3 mb-1">
           <h2 className="text-xl font-bold">Bonus: i BTP</h2>
-          <span className="text-xs font-semibold px-2 py-0.5 border border-[#1d70b8] text-[#1d70b8]">
+          <span className="text-xs font-semibold px-2 py-0.5 rounded-full border border-primary text-primary">
             Interesse semplice
           </span>
         </div>
@@ -734,7 +741,7 @@ export default function Alternative() {
           </p>
 
           {/* Callout differenza interesse semplice vs composto */}
-          <div className="border-l-4 border-[#0b0c0c] pl-4 py-1">
+          <div className="border-l-4 border-foreground pl-4 py-1">
             <p className="font-semibold mb-2">La differenza con l'interesse composto</p>
             <p className="text-muted-foreground mb-3">
               Con l'interesse semplice il capitale base non cresce mai: dopo 20 anni hai guadagnato
@@ -755,7 +762,7 @@ export default function Alternative() {
                 <tbody className="text-muted-foreground">
                   <tr className="border-b border-border">
                     <td className="py-1.5 pr-6">
-                      <span className="font-medium text-[#0b0c0c]">BTP</span>
+                      <span className="font-medium text-foreground">BTP</span>
                       <span className="block text-[10px]">10.000 € × 4% cedola semplice</span>
                     </td>
                     <td className="py-1.5 pr-6 text-right font-mono">14.000 €</td>
@@ -764,7 +771,7 @@ export default function Alternative() {
                   </tr>
                   <tr>
                     <td className="py-1.5 pr-6">
-                      <span className="font-medium text-[#0b0c0c]">ETF / fondo pensione</span>
+                      <span className="font-medium text-foreground">ETF / fondo pensione</span>
                       <span className="block text-[10px]">10.000 € × 4% composto</span>
                     </td>
                     <td className="py-1.5 pr-6 text-right font-mono text-primary">14.802 €</td>
@@ -785,24 +792,24 @@ export default function Alternative() {
             <p className="font-semibold mb-2">Quando i BTP hanno senso</p>
             <ul className="list-disc pl-5 flex flex-col gap-2 text-muted-foreground">
               <li>
-                <strong className="text-[#0b0c0c]">Obiettivo a scadenza fissa.</strong>{' '}
+                <strong className="text-foreground">Obiettivo a scadenza fissa.</strong>{' '}
                 Se sai già quando ti servirà il denaro — pensionamento tra 10 anni, acquisto
                 casa tra 5 — un BTP con quella scadenza ti garantisce il capitale nominale
                 indipendentemente dall'andamento dei mercati.
               </li>
               <li>
-                <strong className="text-[#0b0c0c]">Rendita periodica.</strong>{' '}
+                <strong className="text-foreground">Rendita periodica.</strong>{' '}
                 Le cedole semestrali sono ideali per chi vuole un flusso di cassa prevedibile
                 — ad esempio per integrare la pensione senza dover vendere asset.
               </li>
               <li>
-                <strong className="text-[#0b0c0c]">Tassazione agevolata.</strong>{' '}
+                <strong className="text-foreground">Tassazione agevolata.</strong>{' '}
                 I redditi da BTP sono tassati al <strong>12,5%</strong> anziché al 26%
                 applicato agli ETF e ai fondi comuni. Un vantaggio fiscale concreto
                 rispetto all'investimento azionario.
               </li>
               <li>
-                <strong className="text-[#0b0c0c]">Rischio di credito sovrano.</strong>{' '}
+                <strong className="text-foreground">Rischio di credito sovrano.</strong>{' '}
                 Il rischio principale è l'insolvenza dello Stato italiano, non la volatilità
                 di mercato. Per molti investitori è un profilo di rischio psicologicamente
                 più gestibile.
@@ -815,17 +822,17 @@ export default function Alternative() {
             <p className="font-semibold mb-2">I limiti da tenere a mente</p>
             <ul className="list-disc pl-5 flex flex-col gap-2 text-muted-foreground">
               <li>
-                <strong className="text-[#0b0c0c]">Nessun effetto composto automatico.</strong>{' '}
+                <strong className="text-foreground">Nessun effetto composto automatico.</strong>{' '}
                 Le cedole vanno reinvestite manualmente per sfruttare la capitalizzazione.
                 Se rimangono sul conto corrente perdono potere d'acquisto per effetto dell'inflazione.
               </li>
               <li>
-                <strong className="text-[#0b0c0c]">Rischio di tasso.</strong>{' '}
+                <strong className="text-foreground">Rischio di tasso.</strong>{' '}
                 Se i tassi di mercato salgono dopo l'acquisto, il prezzo del BTP scende.
                 Chi vende prima della scadenza può realizzare una minusvalenza.
               </li>
               <li>
-                <strong className="text-[#0b0c0c]">Non è uno strumento di accumulo.</strong>{' '}
+                <strong className="text-foreground">Non è uno strumento di accumulo.</strong>{' '}
                 A differenza di un ETF ad accumulazione o di un fondo pensione, un BTP
                 non è progettato per far crescere il capitale nel tempo: è uno strumento
                 di prestito con restituzione del nominale a scadenza.
